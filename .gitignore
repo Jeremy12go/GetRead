@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+
+# Credenciales
+.env
+
+# Docker
+Dockerfile
+
+# Servicios sin terminar
+
+service-gateway/
+service-orders/
+service-ratings/
+service-stores/
