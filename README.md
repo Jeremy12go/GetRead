@@ -23,11 +23,11 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 > - Docker
 > - Docker Compose
 
----
+> ---
 
-## Requisitos
-Antes de ejecutar la aplicación, se debe tener instalado:
-- [Docker desktop](https://docs.docker.com/desktop/)
+> ## Requisitos
+> Antes de ejecutar la aplicación, se debe tener instalado:
+> - [Docker desktop](https://docs.docker.com/desktop/)
 
 ---
 
@@ -62,7 +62,7 @@ Antes de ejecutar la aplicación, se debe tener instalado:
 
 #### Iniciamos la aplicación
 ```bash
-npm start
+    npm start
 ```
 
 
