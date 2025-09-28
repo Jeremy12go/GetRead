@@ -1,5 +1,5 @@
 const Account = require('../models/Account');
-const Profile = require('../models/ProfileSeller');
+const Profile = require('../models/ProfileBuyer');
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;

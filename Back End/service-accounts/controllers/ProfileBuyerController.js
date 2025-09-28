@@ -1,4 +1,4 @@
-const Profile = require('../models/Profile');
+const Profile = require('../models/ProfileBuyer');
 
 exports.getById = async (req, res) => {
   try {
