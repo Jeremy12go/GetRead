@@ -88,10 +88,16 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 Luego se debe ejecutar cada servicio independiente mente, considerando estar en la carpeta
 que contiene el proyecto:
 
-- Servicio de cuentas:
+- Servicio de accounts:
 ```bash
     cd '.\Back End\service-accounts'
     node \account-app.js
+```
+
+- Servicio de stores:
+```bash
+    cd '.\Back End\service-stores'
+    node \stores-app.js
 ```
 
 
