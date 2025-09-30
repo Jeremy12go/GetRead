@@ -1,0 +1,9 @@
+Se debe crear un archivo de nombre ".env" para cada servicio:
+
+PORT=<número_de_puerto>
+MONGO_URL=<ruta_de_la_DB_de_MongoDB>
+
+Para el servicio de store se debe tener una url extra
+para poder conectarse a la DB del servicio account.
+
+MONGO_URL_SUPORT=<ruta_de_la_DB_de_MongoDB>

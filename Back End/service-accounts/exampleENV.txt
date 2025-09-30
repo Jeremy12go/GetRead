@@ -1,4 +1,0 @@
-Se debe crear un archivo de nombre ".env" el cual debe contener:
-
-PORT=<número_de_puerto>
-MONGO_URL=<ruta_de_la_DB_de_MongoDB>

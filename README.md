@@ -85,6 +85,16 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
     npm install express dotenv cors
 ```
 
+Luego se debe ejecutar cada servicio independiente mente, considerando estar en la carpeta
+que contiene el proyecto:
+
+- Servicio de cuentas:
+```bash
+    cd '.\Back End\service-accounts'
+    node \account-app.js
+```
+
+
 > [!NOTE]
 > Las bases se crean automaticamente, pero no tienen datos xD
 > LOS DATOS VIENEN EN EL DLC
