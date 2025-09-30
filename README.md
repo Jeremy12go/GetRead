@@ -94,6 +94,24 @@ que contiene el proyecto:
     node \account-app.js
 ```
 
+- Servicio de gateway:
+```bash
+    cd '.\Back End\service-gateway'
+    node \gateway-app.js
+```
+
+- Servicio de orders:
+```bash
+    cd '.\Back End\service-orders'
+    node \orders-app.js
+```
+
+- Servicio de ratings:
+```bash
+    cd '.\Back End\service-ratings'
+    node \ratings-app.js
+```
+
 - Servicio de stores:
 ```bash
     cd '.\Back End\service-stores'
