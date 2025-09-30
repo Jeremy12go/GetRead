@@ -9,7 +9,6 @@ Dockerfile
 docker-compose.yml
 
 # Servicios sin terminar
-service-ratings/
 frontend/
 
 # Elementos expecificos
