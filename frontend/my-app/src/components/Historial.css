@@ -1,0 +1,57 @@
+.historial-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.historial-item {
+  display: flex;
+  align-items: center;
+  background: #f7f7f7;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px #0001;
+  transition: background 0.2s;
+}
+
+.historial-item:hover {
+  background: #e3f2fd;
+}
+
+.historial-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+.historial-info {
+  flex: 1;
+  text-align: left;
+}
+
+.historial-nombre {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.historial-fecha {
+  color: #888;
+  font-size: 14px;
+}
+
+.historial-total {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.historial-btn-volver {
+  margin-top: 20px;
+  background: #eee;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  cursor: pointer;
+}

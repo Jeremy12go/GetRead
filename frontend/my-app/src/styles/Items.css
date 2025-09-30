@@ -1,0 +1,43 @@
+.item-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    text-align: left;
+    cursor: pointer;
+    background-color: #ffffff;
+    gap: 10px;
+}
+
+.item-card:hover {
+    background-color: #dadada;
+}
+
+.item-imagen {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-nombre {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.item-rating {
+    margin: 0;
+    font-size: 16px;
+}
+
+.item-especialidad {
+    margin: 0;
+    font-size: 16px;
+}

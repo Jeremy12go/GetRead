@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 80px;
+}
+
+.check {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #4caf50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.check span {
+  color: white;
+  font-size: 60px;
+}
+
+.btn-calificar {
+  margin-top: 30px;
+  padding: 10px 30px;
+  font-size: 18px;
+  border-radius: 6px;
+  background: #605F66;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-volver {
+  margin-top: 16px;
+  background: #eee;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  cursor: pointer;
+}

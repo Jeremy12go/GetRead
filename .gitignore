@@ -8,9 +8,6 @@ node_modules/
 Dockerfile
 docker-compose.yml
 
-# Servicios sin terminar
-frontend/
-
 # Elementos expecificos
 products/
 stores/
