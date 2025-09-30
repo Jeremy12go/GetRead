@@ -9,8 +9,6 @@ Dockerfile
 docker-compose.yml
 
 # Servicios sin terminar
-
-service-gateway/
 service-orders/
 service-ratings/
 frontend/
