@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  id: { type: String, required: true },
   productList: [ { type: String } ],
   idProfile: { type: String, required: true} ,
   idStore: { type: String, required: true},

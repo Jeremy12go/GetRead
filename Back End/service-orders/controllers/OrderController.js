@@ -2,12 +2,14 @@ const Order = require('../models/Order');
 
 exports.getByIds = async (req, res) => {
   try {
-    const { ids } = req.body; // espera { ids: [array de ids] }
-    console.log("ids", ids)
+    const { ids } = req.body; // Espera { ids: [array de ids] }.
+    console.log("ids", {ids})
+
     if (!Array.isArray(ids) || ids.length === 0) {
       return res.status(400).json({ error: 'Debes enviar un array de ids' });
     }
-    const orders = await Order.find({ id: { $in: ids } });
+
+    const orders = await Order.find({ _id: { $in: ids } }).lean();
     res.json(orders);
   } catch (e) {
     res.status(500).json({ error: 'Error al obtener órdenes', detalle: e.message });
@@ -32,7 +34,6 @@ exports.create = async (req, res) => {
       const { idProfile, productList, totalPrice, idStore } = req.body;
 
       const order = await Order.create({
-        id: `order${numOrder + 1}`, 
         productList, 
         idProfile,
         idStore,
