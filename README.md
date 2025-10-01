@@ -56,8 +56,8 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 
 #### Instalar dependencias y librerias usadas
 ```bash
-    npm install
-    npm install axios
+    npm i
+    npm i axios
 ```
 
 #### Iniciamos la aplicación
@@ -74,15 +74,15 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 
 - En la ruta de los servicio: accounts, orders, ratings.
 ```bash
-    npm install express mongoose dotenv
+    npm i express mongoose dotenv
 ```
 - En la ruta del servicio stores
 ```bash
-    npm install express mongoose multer dotenv
+    npm i express mongoose multer dotenv
 ```
 - En la ruta del servicio gateway
 ```bash
-    npm install express dotenv cors
+    npm i express dotenv cors
 ```
 
 Luego se debe ejecutar cada servicio independiente mente, considerando estar en la carpeta
