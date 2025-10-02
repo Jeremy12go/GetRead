@@ -38,7 +38,6 @@ describe("getByIds controller", () => {
       }
     ];
 
-    // Mock de Order.find().lean()
     Order.find.mockReturnValue({
       lean: jest.fn().mockResolvedValue(mockOrders)
     });
