@@ -70,6 +70,7 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 
 > [!IMPORTANT]
 > Cada servicio debe instalar y iniciarse independientemente.
+> Para cada servicio se debe generar su respectivo .env, siguiendo el archivo 'exampleENV.txt' 
 
 
 - En la ruta de los servicio: accounts, orders, ratings.
