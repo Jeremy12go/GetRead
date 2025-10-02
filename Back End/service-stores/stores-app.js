@@ -22,5 +22,5 @@ mongoConnect()
     });
   })
   .catch((e) => {
-    console.error('Error al conectar a MongoDB', error.message);
+    console.error('Error al conectar a MongoDB', e.message);
   });

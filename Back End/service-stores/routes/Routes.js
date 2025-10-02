@@ -1,10 +1,19 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const multer = require('multer');
-const Store = require('../models/Store');
 const StoreController = require('../controllers/StoreController');
-const Product = require('../models/Product');
-const ProductController = require('../controllers/ProductController');
+const Product = require('../models/Book');
+const ProductController = require('../controllers/BookController');
+
+const StoreSchema = new mongoose.Schema({
+  name: { type: String, required: true},
+  phoneNumber: { type: String, required: true },
+  orders: [ { type: String, ref: 'Order'} ],
+  books: [ { type: String, ref: 'Book' } ],
+  avgRating: Number,
+  logo: { data: Buffer, contentType: String }
+});
 
 // endpoints para Product.
 router.get('/product/id/:id', ProductController.getById);
@@ -26,20 +35,19 @@ const uploadStore = multer({ storageStore });
 // Crear tienda con logo.
 router.post('/', uploadStore.single('logo'), async (req, res) => {
   try {
-    const { id, name, category, city, description } = req.body;
-
-    const store = await Store.create({
-      id,
+    const { name, phoneNumber, orders, books } = req.body;
+    const Store = req.app.locals.supportDB.model('Store', StoreSchema);
+    const store_ = await Store.create({
       name,
-      category,
-      city,
-      description,
+      phoneNumber,
+      orders,
+      books,
       logo: {
         data: req.file.buffer,
         contentType: req.file.mimetype
       }
     });
-    res.status(201).json({ message: 'Tienda creada', store });
+    res.status(201).json({ message: 'Tienda creada', store_ });
   } catch (e) {
     res.status(500).json({ error: 'Error al guardar la tienda', detalle: e.message });
   }
