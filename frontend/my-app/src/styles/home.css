@@ -1,0 +1,49 @@
+body{
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    height: 100%;
+}
+
+/* Menu bar */
+nav {
+    background: #444;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+
+/* Slider */
+.containerSlider{
+    background: linear-gradient(to right, rgb(255, 255, 255), #444, rgb(255, 255, 255));
+    width: 100%;
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.containerSlider img {
+    width: 15%;
+    height: 90%;
+    margin-top: 15px;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 2px solid rgb(255, 255, 255);
+    transition: all ease-in-out 0.5s;
+}
+
+.containerSlider img:hover {
+    width: 20%;
+}

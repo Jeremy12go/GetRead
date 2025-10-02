@@ -54,7 +54,7 @@ function App() {
                 {pantallaActual === "inicio" ? (
                     <>
                         <p style={{ fontWeight: 'bold', fontSize: '70px', margin:'40px'}}>
-                            Utal Eats
+                            Get & Read
                         </p>
                         <Contenedor>
                             <div style={{ textAlign: 'center' }}>
