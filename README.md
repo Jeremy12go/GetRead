@@ -4,6 +4,10 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 
 ---
 
+## Requisitos
+- Node.js
+- MongoDB
+
 ## Tecnologías
 
 ### Backend

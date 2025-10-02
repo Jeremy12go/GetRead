@@ -1,0 +1,45 @@
+/* barra de búsqueda */
+.search-container {
+  display: flex;
+  align-items: center;   
+  justify-content: center;
+  gap: 15px;          
+  width: 100%;    
+  margin: 20px auto;    
+}
+
+.search-container img {
+  position: absolute;
+  left: 10px;
+  width: 10%;       
+  object-fit: contain;
+}
+
+.search-container input[type="text"] {
+  width: 50%;            /* Barra ocupa el 50% del ancho */
+  max-width: 400px;      /* Máximo ancho */
+  padding: 10px 15px;
+  border: 2px solid #444;
+  border-radius: 20px;
+  outline: none;
+  font-size: 16px;
+}
+
+/* barra de navegación */
+nav {
+    background: #73a942;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}

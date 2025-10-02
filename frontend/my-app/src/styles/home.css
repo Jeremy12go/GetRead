@@ -4,46 +4,65 @@ body{
     height: 100%;
 }
 
-/* Menu bar */
-nav {
-    background: #444;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
+
+/* Carousel */
+.carousel{
+  --gap: 10px;
+  --img-w: 6%;      
+  --img-h: 300px;       
+  --duration: 18s;     
+
+  width: 100%;
+  height: var(--img-h);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to right, #fff, #444, #fff);
 }
 
-nav a {
-    color: #fff;
-    text-decoration: none;
-    margin: 0 15px;
-    font-weight: bold;
+.carousel::before,
+.carousel::after{
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 120px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+.carousel::before{
+  left: 0;
+  background: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0));
+}
+.carousel::after{
+  right: 0;
+  background: linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0));
 }
 
-nav a:hover {
-    text-decoration: underline;
+.carousel_track{
+  display: flex;
+  gap: var(--gap);
+  align-items: center;
+  height: 100%;
+  width: max-content;
+  animation: scroll var(--duration) linear infinite;
+  will-change: transform;
 }
 
-
-/* Slider */
-.containerSlider{
-    background: linear-gradient(to right, rgb(255, 255, 255), #444, rgb(255, 255, 255));
-    width: 100%;
-    height: 350px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+.carousel:hover .carousel_track{
+  animation-play-state: paused;
 }
 
-.containerSlider img {
-    width: 15%;
-    height: 90%;
-    margin-top: 15px;
-    object-fit: cover;
-    border-radius: 15px;
-    border: 2px solid rgb(255, 255, 255);
-    transition: all ease-in-out 0.5s;
+/* Imágenes */
+.carousel_track img{
+  flex: 0 0 auto;          
+  width: var(--img-w);
+  height: calc(var(--img-h) - 30px);
+  object-fit: cover;
+  border-radius: 15px;
+  border: 2px solid #fff;
 }
 
-.containerSlider img:hover {
-    width: 20%;
+@keyframes scroll{
+  from{ transform: translateX(0); }
+  to  { transform: translateX(calc(-1 * ( (var(--img-w) + var(--gap)) * 5 ))); }
 }
