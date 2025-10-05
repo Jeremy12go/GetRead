@@ -9,8 +9,7 @@ import img_5 from '../assets/PortadasLibros/Sennor.jpg';
 function App() {
 
     return(
-        <div class="general">
-
+        <div>
             { /* Menu bar */ }
             < Header/>
             { /* Carouser */ }
@@ -34,6 +33,9 @@ function App() {
                     <img src={img_4} />
                     <img src={img_5} /> 
                 </div>
+            </div>
+            <div class="bloque_si">
+                algo
             </div>
         </div>
     );

@@ -1,22 +1,26 @@
 import '../styles/header.css'
 import logo from '../assets/logBackgroundWhite.png'
 import lg_carrito from '../assets/carrito.png'
+import usuario from '../assets/usuario.png'
+import lupa from '../assets/lupa.png'
 
 function App(){
 
     return(
-        <div>
+        <div class="general">
             <div class="search-container">
                 {/* Logo */}
-                <img src={logo} />
+                <img class="logo" src={logo} />
 
                 {/* Barra de búsqueda */}
                 <input type="text" placeholder="Buscar..." />
+                <img class="lupa" src={lupa} />
 
-                {/* Carro */}
-                {/*<img src={lg_carrito} />*/}
+                {/* Carrito de compras*/}
+                <img class="carrito" src={lg_carrito} />
 
                 {/* Perfil */}
+                <img class="usuario" src={usuario} />
 
             </div>
             
