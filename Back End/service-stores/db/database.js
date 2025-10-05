@@ -2,25 +2,27 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const mongoConnect = async () => {
-  try {
-    // conexión principal
-    const mainConnection = await mongoose.createConnection(process.env.MONGO_URL_BASE, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+  let mainConnection;
+  let supportConnection;
 
-    // conexión secundaria
-    const supportConnection = await mongoose.createConnection(process.env.MONGO_URL_SUPORT, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-  } catch(e) {
-    console.error('Error al conectar a MongoDB:', error.message);
-  };
-  
-  console.log('Conectado a MongoDB');
-  
-  return { mainConnection, supportConnection };
+  try {
+    if (!process.env.MONGO_URL_BASE) {
+      throw new Error('Falta MONGO_URL_BASE en .env');
+    }
+    if (!process.env.MONGO_URL_SUPORT) {
+      throw new Error('Falta MONGO_URL_SUPORT en .env');
+    }
+
+    mainConnection = await mongoose.createConnection(process.env.MONGO_URL_BASE).asPromise();
+    supportConnection = await mongoose.createConnection(process.env.MONGO_URL_SUPORT).asPromise();
+
+    console.log('Conectado a MongoDB (main & support)');
+    return { mainConnection, supportConnection };
+
+  } catch (e) {
+    console.error('Error al conectar a MongoDB:', e.message);
+    throw e;
+  }
 };
 
 module.exports = { mongoConnect };
