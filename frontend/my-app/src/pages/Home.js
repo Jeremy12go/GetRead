@@ -12,6 +12,7 @@ function App() {
         <div>
             { /* Menu bar */ }
             < Header/>
+            
             { /* Carouser */ }
             <div class="carousel" >
                 <div class="carousel_track">
@@ -34,8 +35,41 @@ function App() {
                     <img src={img_5} /> 
                 </div>
             </div>
-            <div class="bloque_si">
-                algo
+
+            {/* Filtro */}
+            <div class="filtre" >
+                <label>
+                Filtrar:
+                <select id="categorySelect" class="CategoriaMenu" >
+                    <option value="all">Genero</option>
+                    {/* INSERTAR GENEROS POR LOS EXISTENTE EN LA DB */}
+                    <option value="tech">SEXO1</option>
+                    <option value="pets">SEXO2</option>
+                    <option value="food">SEXO3</option>
+                </select>
+                <select id="category2Select" class="CategoriaMenu2" >
+                    <option value="all">Rango Publico</option>
+                    {/* INSERTAR RANGOS POR LOS EXISTENTE EN LA DB */}
+                    <option value="tech">GAY 1</option>
+                    <option value="pets">GAY 2</option>
+                    <option value="food">GAY 3</option>
+                </select>
+                </label>
+            </div>
+
+            {/* Catalogo */}
+            <div class="grid-wrap">
+                <img class="card" src={img_1} />
+                <img class="card" src={img_2} />
+                <img class="card" src={img_3} />
+                <img class="card" src={img_4} />
+                <img class="card" src={img_5} />
+
+                <img class="card" src={img_1} />
+                <img class="card" src={img_2} />
+                <img class="card" src={img_3} />
+                <img class="card" src={img_4} />
+                <img class="card" src={img_5} />
             </div>
         </div>
     );
