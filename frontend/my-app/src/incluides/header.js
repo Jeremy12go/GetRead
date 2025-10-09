@@ -1,10 +1,11 @@
 import '../styles/header.css'
+import { useState } from "react";
 import logo from '../assets/logBackgroundWhite.png'
 import lg_carrito from '../assets/carrito.png'
 import usuario from '../assets/usuario.png'
 import lupa from '../assets/lupa.png'
 
-function App(){
+function Header({ view, setView }) {
 
     return(
         <div class="general">
@@ -20,7 +21,10 @@ function App(){
                 <img class="carrito" src={lg_carrito} />
 
                 {/* Perfil */}
-                <img class="usuario" src={usuario} />
+                <div class="login-container" onClick={() => setView('login')}>
+                    <img class="usuario" src={usuario}  />
+                    <button class="BinicioSesion" >Login</button>
+                </div>
 
             </div>
             
@@ -36,4 +40,4 @@ function App(){
     );
 }
 
-export default App;
+export default Header;
