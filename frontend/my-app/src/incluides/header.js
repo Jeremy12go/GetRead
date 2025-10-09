@@ -1,5 +1,4 @@
 import '../styles/header.css'
-import { useState } from "react";
 import logo from '../assets/logBackgroundWhite.png'
 import lg_carrito from '../assets/carrito.png'
 import usuario from '../assets/usuario.png'
@@ -31,10 +30,10 @@ function Header({ view, setView }) {
 
             {/* Botones */}
             <nav>
-                <a href="index.php">Inicio</a>
-                <a href="registrar.php">Registrar</a>
-                <a href="eliminar.php">Eliminar</a>
-                <a href="editar.php">Editar</a>
+                <a onClick={() => setView('start')}>Inicio</a>
+                <a>Registrar</a>
+                <a>Eliminar</a>
+                <a>Editar</a>
             </nav>
         </div>
     );

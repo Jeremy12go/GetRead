@@ -1,4 +1,12 @@
 .App {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: center;
+  margin: 10px auto;
   text-align: center;
 }
 
@@ -36,7 +44,9 @@
 }
 
 .text-common {
-  color: rgba(16, 16, 16, 0.8)
+  color: rgba(16, 16, 16, 0.8);
+  font-size: 16px;
+  margin-top: 0;
 }
 
 .text-subrayado {
@@ -46,7 +56,22 @@
 }
 
 .text-titulos {
-  color: #373737
+  color: #373737;
+  font-size: 35px;
+  margin-bottom: 4px;
+  margin-top: 0px;
+}
+
+.text-input {
+  font-size: 16px;
+  text-align: left;
+  max-width: 100px;
+  margin: 0 0 5px 30px;
+}
+
+.text-error {
+  color: red;
+  margin-top: 10px;
 }
 
 .boton-iniciar {
@@ -57,6 +82,7 @@
   background-color: #272727;
   border: none;
   cursor: pointer;
+  height: 45px;
 }
 
 .boton-iniciar:hover {
@@ -65,7 +91,7 @@
 }
 
 .input-text {
-  width: 100%;
+  width: 340px;
   height: 45px;
   font-size: 16px;
   padding: 8px 12px;

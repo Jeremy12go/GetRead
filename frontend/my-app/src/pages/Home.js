@@ -1,5 +1,7 @@
 import '../styles/home.css';
-import Login from "../pages/Login";
+import Login from "./Login";
+import Register from "./Register.js";
+import homePostLogin from './HomePostLogin.js'
 import { useState } from "react";
 import Header from '../incluides/header.js'
 import img_1 from '../assets/PortadasLibros/Harry.jpg';
@@ -12,19 +14,16 @@ function App() {
 
     const [view, setView] = useState('home');
 
-    const changeView = (newView) => setView(newView);
-
-    if (view === 'login') {
-        return <Login onClose={() => setView('home')} />;
-    } 
-
     return(
         <div>
             { /* Menu bar */ }
             < Header view={view} setView={setView} />
             { view === 'login' ?
-                <Login onClose={() => setView('home')} /> :
-
+                (<Login view={view} setView={setView} onClose={() => setView('home')} />) :
+                view === 'register' ? 
+                (<Register onClose={() => setView('home')} />) :
+                view === 'homePostLogin' ?
+                (<homePostLogin/>) :
                 <div>
                     {/* Carouser */} 
                     <div class="carousel" >
