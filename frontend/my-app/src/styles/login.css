@@ -6,8 +6,6 @@
   border-radius: 8px;
   background-color: #f9f9f9;
   text-align: center;
-  margin: 10px auto;
-  text-align: center;
 }
 
 .App-logo {
@@ -63,9 +61,10 @@
 }
 
 .text-input {
+  position: relative;
+  left: 20px;
   font-size: 16px;
   text-align: left;
-  max-width: 100px;
   margin: 0 0 5px 30px;
 }
 
@@ -83,6 +82,7 @@
   border: none;
   cursor: pointer;
   height: 45px;
+  margin-top: 10px;
 }
 
 .boton-iniciar:hover {
@@ -91,7 +91,7 @@
 }
 
 .input-text {
-  width: 340px;
+  width: 800px;
   height: 45px;
   font-size: 16px;
   padding: 8px 12px;

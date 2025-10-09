@@ -30,7 +30,7 @@ function Header({ view, setView }) {
 
             {/* Botones */}
             <nav>
-                <a onClick={() => setView('start')}>Inicio</a>
+                <a onClick={() => setView('homePostLogin')}>Inicio</a>
                 <a>Registrar</a>
                 <a>Eliminar</a>
                 <a>Editar</a>

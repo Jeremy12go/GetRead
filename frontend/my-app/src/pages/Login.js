@@ -1,6 +1,5 @@
 import '../styles/login.css';
 import { useState } from "react";
-import homePostLogin from "./HomePostLogin.js";
 import { loginAccount } from '../API/APIGateway.js';
 
 function Login({ view, setView }) {
@@ -15,7 +14,6 @@ function Login({ view, setView }) {
         try {
             const res = await loginAccount(email, password);
             localStorage.setItem('idProfile', res.data);
-            const p = localStorage.getItem('idProfile');
             console.log('Login en el perfil:', res.data);
             setView('homePostLogin');
         } catch (e) {
@@ -43,7 +41,7 @@ function Login({ view, setView }) {
                 </p>
 
                 <div>
-                    <p className="text-input"> Email* </p>
+                    <p className="text-common"> Email* </p>
                     <input
                         type="text"
                         placeholder="Email"
@@ -52,7 +50,7 @@ function Login({ view, setView }) {
                         onChange={(e)=> setEmail(e.target.value)
                     }/>
 
-                    <p className="text-input"> Contraseña* </p>
+                    <p className="text-common"> Contraseña* </p>
                     <input
                         type="password"
                         placeholder="Contraseña"

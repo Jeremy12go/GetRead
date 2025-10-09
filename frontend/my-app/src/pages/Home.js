@@ -1,7 +1,7 @@
 import '../styles/home.css';
 import Login from "./Login";
 import Register from "./Register.js";
-import homePostLogin from './HomePostLogin.js'
+import HomePostLogin from './HomePostLogin.js'
 import { useState } from "react";
 import Header from '../incluides/header.js'
 import img_1 from '../assets/PortadasLibros/Harry.jpg';
@@ -23,7 +23,7 @@ function App() {
                 view === 'register' ? 
                 (<Register onClose={() => setView('home')} />) :
                 view === 'homePostLogin' ?
-                (<homePostLogin/>) :
+                (<HomePostLogin/>) :
                 <div>
                     {/* Carouser */} 
                     <div class="carousel" >
