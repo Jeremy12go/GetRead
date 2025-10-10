@@ -5,7 +5,7 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const account = await Account.findOne({ email }).populate('profileSeller');
+    const account = await Account.findOne({ email }).populate('profile');
     if ( !account ) {
       return res.status(404).json({ error: 'Perfil no encontrado para ese correo' });
     }
