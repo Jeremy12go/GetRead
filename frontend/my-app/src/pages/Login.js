@@ -1,8 +1,8 @@
 import '../styles/login.css';
 import { useState } from "react";
-import { loginAccount } from '../API/APIGateway.js';
+import { loginAccount, getProfile } from '../API/APIGateway.js';
 
-function Login({ view, setView }) {
+function Login({ view, setView, stateLogin, setStateLogin, name, setName }) {
     
     const [errorLogin, setErrorLogin] = useState(false);
     const [ email , setEmail ] = useState('');
@@ -14,7 +14,8 @@ function Login({ view, setView }) {
         try {
             const res = await loginAccount(email, password);
             localStorage.setItem('idProfile', res.data);
-            console.log('Login en el perfil:', res.data);
+            setName((await getProfile(res.data)).data.name);
+            setStateLogin(true);
             setView('homePostLogin');
         } catch (e) {
             if (e.response && e.response.data && e.response.data.error){
@@ -25,6 +26,7 @@ function Login({ view, setView }) {
             }
         }
     };
+
 
     return (
         <div className="App">

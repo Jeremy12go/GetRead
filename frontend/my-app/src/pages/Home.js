@@ -12,14 +12,20 @@ import img_5 from '../assets/PortadasLibros/Sennor.jpg';
 
 function App() {
 
-    const [view, setView] = useState('home');
+    const [ view, setView ] = useState('home');
+    const [ stateLogin, setStateLogin ] = useState(false);
+    const [ name, setName ] = useState('');
 
     return(
         <div>
             { /* Menu bar */ }
-            < Header view={view} setView={setView} />
+            < Header view={view} setView={setView} 
+                stateLogin={stateLogin} setStateLogin={setStateLogin}
+                name={name} setName={setName} />
             { view === 'login' ?
-                (<Login view={view} setView={setView} onClose={() => setView('home')} />) :
+                (<Login view={view} setView={setView} stateLogin={stateLogin}
+                     setStateLogin={setStateLogin} name={name} setName={setName}
+                     onClose={() => setView('home')} />) :
                 view === 'register' ? 
                 (<Register onClose={() => setView('home')} />) :
                 view === 'homePostLogin' ?
