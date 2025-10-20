@@ -37,7 +37,6 @@ function Principal({ cambiarPantalla }) {
         const sum = starsArray.reduce((acc, star) => acc + star, 0);
         return (sum / starsArray.length).toFixed(1);
     }
-    
 
     useEffect(() => {
         const StoresByCity = async () => {

@@ -22,7 +22,8 @@ function App() {
             < Header view={view} setView={setView} 
                 stateLogin={stateLogin} setStateLogin={setStateLogin}
                 name={name} setName={setName} />
-            { view === 'login' ?
+
+            {   view === 'login' ?
                 (<Login view={view} setView={setView} stateLogin={stateLogin}
                      setStateLogin={setStateLogin} name={name} setName={setName}
                      onClose={() => setView('home')} />) :
@@ -31,7 +32,17 @@ function App() {
                 view === 'homePostLogin' ?
                 (<HomePostLogin/>) :
                 <div>
-                    {/* Carouser */} 
+                    
+                    { !stateLogin ?
+                    <div class="hero-section">
+                        <div class="hero-content">
+                            <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
+                            <p>Disfruta de un sinfín de libros para ti...</p>
+                            <button>Quiero leer</button>
+                        </div>
+                    </div> :
+                    
+                    /* Carouser */ 
                     <div class="carousel" >
                         <div class="carousel_track">
                             <img src={img_1} />
@@ -53,6 +64,7 @@ function App() {
                             <img src={img_5} /> 
                         </div>
                     </div>
+                    }
 
                     {/* Filtro */}
                     <div class="filtre" >
