@@ -1,9 +1,12 @@
 import '../styles/register.css'
 import React, { useState } from 'react';
 import { registerAccount } from '../API/APIGateway';
+import { useNavigate } from 'react-router-dom';
+
 
 function Register({ cambiarPantalla }) {
-
+    
+    const navigate = useNavigate();
     const [ email , setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ name, setName ] = useState('');
@@ -20,7 +23,7 @@ function Register({ cambiarPantalla }) {
     try {
         const res = await registerAccount(email, password, name, phoneNumber, address);
         console.log('Cuenta creada:', res.data);
-        cambiarPantalla("inicio");
+        navigate("/Home");
     } catch (e) {
         console.error('Error al registrar:', e.response?.data || e.message);
     }

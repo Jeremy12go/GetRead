@@ -1,9 +1,10 @@
+import '../styles/carrito.css';
+
 import React, { useState } from "react";
-import "./Carrito.css";
 import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
 
 
-function Carrito({ infoTienda, carrito, setCarrito, volver, irAConfirmacion, logoTienda, setIdTiendaACalificar, setIdOrdenACalificar }) {
+function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, logoTienda, setIdTiendaACalificar, setIdOrdenACalificar }) {
   const [enviando, setEnviando] = useState(false);
 
   const sumar = (id) => { // para sumar cantidad
@@ -26,7 +27,7 @@ function Carrito({ infoTienda, carrito, setCarrito, volver, irAConfirmacion, log
     setCarrito(carrito.filter(item => item.id !== id));
   };
 
-  const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+  const total = (carrito || []).reduce((acc, item) => acc + item.precio * item.cantidad, 0);
 
    const handleGuardarPedido = async () => {
     setEnviando(true);

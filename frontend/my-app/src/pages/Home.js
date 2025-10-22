@@ -1,109 +1,103 @@
 import '../styles/home.css';
+
+import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+import { useState } from "react";
+
 import Login from "./Login";
 import Register from "./Register.js";
 import HomePostLogin from './HomePostLogin.js'
-import { useState } from "react";
+import Carrito from './Carrito.js'
 import Header from '../incluides/header.js'
+import Perfil from './Perfil.js'
+
 import img_1 from '../assets/PortadasLibros/Harry.jpg';
 import img_2 from '../assets/PortadasLibros/Juego.jpg';
 import img_3 from '../assets/PortadasLibros/Franki.jpg';
 import img_4 from '../assets/PortadasLibros/Quijote.jpg';
 import img_5 from '../assets/PortadasLibros/Sennor.jpg';
 
+
+function Home({stateLogin}){
+return (
+    <div>
+        {!stateLogin ? (
+            <div className="hero-section">
+                <div className="hero-content">
+                    <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
+                    <p>Disfruta de un sinfín de libros para ti...</p>
+                    <button>Quiero leer</button>
+                </div>
+            </div>
+        ):(
+            <div className="carousel" >
+                <div className="carousel_track">
+                    {[img_1, img_2, img_3, img_4, img_5].map((img, i) => (
+                        <img key={i} src={img} alt={`Libro ${i}`} />
+                    ))}
+                </div>
+            </div>
+        )}
+
+        {/* Filtro */}
+        <div className="filtre" >
+            <label>
+            Filtrar:
+            <select id="categorySelect" className="CategoriaMenu" >
+                <option value="all">Genero</option>
+                <option value="tech">SEXO1</option>
+                <option value="pets">SEXO2</option>
+                <option value="food">SEXO3</option>
+            </select>
+            <select id="category2Select" className="CategoriaMenu2" >
+                <option value="all">Rango Publico</option>
+                <option value="tech">GAY 1</option>
+                <option value="pets">GAY 2</option>
+                <option value="food">GAY 3</option>
+            </select>
+            </label>
+        </div>
+        {/* Catalogo */}
+        <div className="grid-wrap">
+            {[img_1, img_2, img_3, img_4, img_5].map((img, i) => (
+                <img key={i} className="card" src={img} alt={`Portada ${i}`} />
+            ))}
+        </div>
+    </div>
+);
+}
+
+
 function App() {
 
-    const [ view, setView ] = useState('home');
     const [ stateLogin, setStateLogin ] = useState(false);
     const [ name, setName ] = useState('');
 
     return(
-        <div>
-            { /* Menu bar */ }
-            < Header view={view} setView={setView} 
-                stateLogin={stateLogin} setStateLogin={setStateLogin}
-                name={name} setName={setName} />
+        <Router>
+            <Header stateLogin={stateLogin} setStateLogin={setStateLogin} name={name} setName={setName} />
+            <Routes>
+                <Route path="/home" element={<Home stateLogin={stateLogin} />} />
 
-            {   view === 'login' ?
-                (<Login view={view} setView={setView} stateLogin={stateLogin}
-                     setStateLogin={setStateLogin} name={name} setName={setName}
-                     onClose={() => setView('home')} />) :
-                view === 'register' ? 
-                (<Register onClose={() => setView('home')} />) :
-                view === 'homePostLogin' ?
-                (<HomePostLogin/>) :
-                <div>
-                    
-                    { !stateLogin ?
-                    <div class="hero-section">
-                        <div class="hero-content">
-                            <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
-                            <p>Disfruta de un sinfín de libros para ti...</p>
-                            <button>Quiero leer</button>
-                        </div>
-                    </div> :
-                    
-                    /* Carouser */ 
-                    <div class="carousel" >
-                        <div class="carousel_track">
-                            <img src={img_1} />
-                            <img src={img_2} />
-                            <img src={img_3} />
-                            <img src={img_4} />
-                            <img src={img_5} />
+                {/*Pagina principal*/}
+                <Route path="/" element={<Home stateLogin={stateLogin} />} />
 
-                            <img src={img_1} />
-                            <img src={img_2} />
-                            <img src={img_3} />
-                            <img src={img_4} />
-                            <img src={img_5} /> 
+                {/*Login*/}
+                <Route path="/login" element={<Login setStateLogin={setStateLogin} name={name} setName={setName} />} />
 
-                            <img src={img_1} />
-                            <img src={img_2} />
-                            <img src={img_3} />
-                            <img src={img_4} />
-                            <img src={img_5} /> 
-                        </div>
-                    </div>
-                    }
+                {/*Registro*/}
+                <Route path="/register" element={<Register />} />
 
-                    {/* Filtro */}
-                    <div class="filtre" >
-                        <label>
-                        Filtrar:
-                        <select id="categorySelect" class="CategoriaMenu" >
-                            <option value="all">Genero</option>
-                            {/* INSERTAR GENEROS POR LOS EXISTENTE EN LA DB */}
-                            <option value="tech">SEXO1</option>
-                            <option value="pets">SEXO2</option>
-                            <option value="food">SEXO3</option>
-                        </select>
-                        <select id="category2Select" class="CategoriaMenu2" >
-                            <option value="all">Rango Publico</option>
-                            {/* INSERTAR RANGOS POR LOS EXISTENTE EN LA DB */}
-                            <option value="tech">GAY 1</option>
-                            <option value="pets">GAY 2</option>
-                            <option value="food">GAY 3</option>
-                        </select>
-                        </label>
-                    </div>
+                {/*Home post login*/}
+                <Route path="/homepostlogin" element={stateLogin ? <HomePostLogin setStateLogin={setStateLogin} /> : <Navigate to="/login" replace/>} />
 
-                    {/* Catalogo */}
-                    <div class="grid-wrap">
-                        <img class="card" src={img_1} />
-                        <img class="card" src={img_2} />
-                        <img class="card" src={img_3} />
-                        <img class="card" src={img_4} />
-                        <img class="card" src={img_5} />
+                {/*Carrito*/}
+                <Route path="/carrito" element={stateLogin ? <Carrito /> : <Navigate to="/login" replace />} />
 
-                        <img class="card" src={img_1} />
-                        <img class="card" src={img_2} />
-                        <img class="card" src={img_3} />
-                        <img class="card" src={img_4} />
-                        <img class="card" src={img_5} />
-                    </div>
-                </div>
-            }
-        </div>
+                {/*Perfil*/}
+                <Route path="/perfil" element={stateLogin ? <Perfil /> : <Navigate to="/login" replace />} />
+
+            </Routes>
+        </Router>
     );
 }
 

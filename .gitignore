@@ -16,3 +16,9 @@ stores_db-products.json
 stores_db-stores.json
 linkProductos.js
 linkRatings.js
+
+# Logs
+logs
+
+# Gestor de servicios
+gestor-servicios.bat
