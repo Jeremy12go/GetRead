@@ -1,4 +1,5 @@
 import '../styles/header.css'
+import '../styles/styles.css'
 import logo from '../assets/logBackgroundWhite.png'
 import lg_carrito from '../assets/carrito.png'
 import usuario from '../assets/usuario.png'
@@ -49,11 +50,11 @@ function Header({ stateLogin, name }) {
             
 
             {/* Botones */}
-            <nav>
-                <a onClick={() => navigate('/home')}>Inicio</a>
-                <a onClick={() => navigate('/register')}>Registrar</a>
-                <a>Eliminar</a>
-                <a>Editar</a>
+            <nav className='nav'>
+                <button className="header-button" onClick={() => navigate('/home')}>Inicio</button>
+                <button className="header-button" onClick={() => navigate('/register')}>Registrar</button>
+                <button className="header-button" onClick={() => navigate('/delete')}>Eliminar</button>
+                <button className="header-button" onClick={() => navigate('/edit')}>Editar</button>
             </nav>
         </div>
     );

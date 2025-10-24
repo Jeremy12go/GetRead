@@ -1,4 +1,5 @@
 import '../styles/home.css';
+import '../styles/styles.css';
 
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import { useState } from "react";
@@ -25,7 +26,7 @@ return (
                 <div className="hero-content">
                     <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
                     <p>Disfruta de un sinfín de libros para ti...</p>
-                    <button>Quiero leer</button>
+                    <button className='button-generic'>Quiero leer</button>
                 </div>
             </div>
         ):(

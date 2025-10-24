@@ -1,5 +1,5 @@
 .general {
-  background: #ffffff;
+  background: #73a942;
   padding: 20px 0 0 0;
 }
 
@@ -84,7 +84,7 @@
 
 /* barra de navegación */
 nav {
-    background: #73a942;
+    background: black;
     color: #fff;
     margin-top: 10px;
     padding: 10px;
