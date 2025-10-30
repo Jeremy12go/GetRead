@@ -1,4 +1,5 @@
 import '../styles/login.css';
+import '../styles/styles.css';
 import { useState } from "react";
 import { loginAccount, getProfile } from '../API/APIGateway.js';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +20,7 @@ function Login({ setStateLogin, setName }) {
             localStorage.setItem('idProfile', res.data);
             setName((await getProfile(res.data)).data.name);
             setStateLogin(true);
-            navigate('homePostLogin');
+            navigate('/home');
         } catch (e) {
             if (e.response && e.response.data && e.response.data.error){
                 setErrorLogin(e.response.data.error);
@@ -67,7 +68,7 @@ function Login({ setStateLogin, setName }) {
                 </div>
             </div>
             <div>
-                <button onClick={handleSubmit} className="boton-iniciar" >
+                <button onClick={handleSubmit} className="button-generic" >
                     Iniciar Sesión
                 </button>
                 {errorLogin && (

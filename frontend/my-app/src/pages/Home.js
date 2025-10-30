@@ -6,10 +6,11 @@ import { useState } from "react";
 
 import Login from "./Login";
 import Register from "./Register.js";
-import HomePostLogin from './HomePostLogin.js'
-import Carrito from './Carrito.js'
-import Header from '../incluides/header.js'
-import Perfil from './Perfil.js'
+import HomePostLogin from "./HomePostLogin.js";
+import Carrito from "./Carrito.js";
+import Header from "../incluides/header.js";
+import Perfil from "./Perfil.js";
+import Editar from "./Editar.js";
 
 import img_1 from '../assets/PortadasLibros/Harry.jpg';
 import img_2 from '../assets/PortadasLibros/Juego.jpg';
@@ -95,7 +96,8 @@ function App() {
                 <Route path="/carrito" element={stateLogin ? <Carrito /> : <Navigate to="/login" replace />} />
 
                 {/*Perfil*/}
-                <Route path="/perfil" element={stateLogin ? <Perfil /> : <Navigate to="/login" replace />} />
+                <Route path="/perfil" element={stateLogin ? <Perfil setStateLogin={setStateLogin} setName={setName} /> : <Navigate to="/home" replace />} />
+                <Route path="/editar" element={stateLogin ? <Editar /> : <Navigate to="/editar" replace />} />
 
             </Routes>
         </Router>

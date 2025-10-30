@@ -1,4 +1,5 @@
 import '../styles/carrito.css';
+import '../styles/styles.css';
 
 import React, { useState } from "react";
 import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
@@ -97,11 +98,11 @@ function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, 
         Total: ${total}
       </div>
       <div className="carrito-botones">
-        <button onClick={volver} className="carrito-btn-volver">Volver</button>
+        <button onClick={volver} className="button-generic">Volver</button>
         <button
           onClick={handleGuardarPedido}
           disabled={carrito.length === 0 || enviando}
-          className="carrito-btn-realizar"
+          className="button-generic"
         >
           {enviando ? "Enviando pedido..." : "Realizar pedido"}
         </button>

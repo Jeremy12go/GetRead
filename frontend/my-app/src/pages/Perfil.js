@@ -1,11 +1,13 @@
 import { useState, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 import { getProfile } from '../API/APIGateway.js';
 import "../styles/perfil.css";
 
 import usuario from '../assets/usuario.png'
 
-export default function Perfil() {
+export default function Perfil({ setStateLogin, setName }) {
   const [perfil, setPerfil] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const idProfile = localStorage.getItem('idProfile');
@@ -14,6 +16,14 @@ export default function Perfil() {
       console.log(res.data) ||
       setPerfil(res.data));
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('idProfile');
+    setStateLogin(false);
+    setName('');
+    setPerfil(null);
+    navigate('/home');
+  };
 
   return (
     <div className="perfil-page">
@@ -42,8 +52,8 @@ export default function Perfil() {
           {/* Botones debajo */}
           <div className="perfil-botones">
             <button className="btn verde">Ver Historial Pedidos</button>
-            <button className="btn negro">Editar Perfil</button>
-            <button className="btn rojo">Cerrar Sesión</button>
+            <button className="btn negro" onClick={()=> navigate('/editar')}>Editar Perfil</button>
+            <button className="btn rojo" onClick={handleLogout}>Cerrar Sesión</button>
             <button className="btn azul">Ver libros Adquiridos</button>
           </div>
         </div>
