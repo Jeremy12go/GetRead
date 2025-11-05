@@ -9,7 +9,7 @@ const { mongoConnect } = require('./db/database');
 const Routes = require('./routes/Routes'); // Routes.
 app.use('/accounts', Routes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 mongoConnect()
   .then(() => {

@@ -1,23 +1,80 @@
+.general {
+  background: #73a942;
+  padding: 20px 0 0 0;
+}
+
 /* barra de búsqueda */
 .search-container {
   display: flex;
   align-items: center;   
   justify-content: center;
   gap: 15px;          
-  width: 100%;    
-  margin: 20px auto;    
+  width: 100%;     
+  margin: 0 auto 20px auto; 
 }
 
-.search-container img {
+.logo {
   position: absolute;
   left: 10px;
   width: 10%;       
   object-fit: contain;
 }
 
+.carrito {
+  position: absolute;
+  right: 150px;
+  width: 40px;
+  object-fit: contain;
+}
+
+.login-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-container:hover .BinicioSesion {
+  text-decoration: underline;
+}
+
+.usuario {
+  position: absolute;
+  right: 35px;
+  width: 40px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.BinicioSesion {
+  position: absolute;
+  right: 33px;
+  top: 58px;
+  cursor: pointer;
+  width: 40px;
+  height: 20px;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  margin: 0;  
+}
+
+.BinicioSesion:hover {
+  text-decoration: underline;
+}
+
+.lupa {
+  position: absolute;
+  right: 34%;
+  width: 2%;
+  object-fit: contain;
+  cursor: text;
+}
+
 .search-container input[type="text"] {
-  width: 50%;            /* Barra ocupa el 50% del ancho */
-  max-width: 400px;      /* Máximo ancho */
+  width: 50%;        
+  max-width: 400px;   
   padding: 10px 15px;
   border: 2px solid #444;
   border-radius: 20px;
@@ -27,8 +84,9 @@
 
 /* barra de navegación */
 nav {
-    background: #73a942;
+    background: black;
     color: #fff;
+    margin-top: 10px;
     padding: 10px;
     text-align: center;
 }

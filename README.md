@@ -62,6 +62,7 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 ```bash
     npm i
     npm i axios
+    npm install react-router-dom
 ```
 
 #### Iniciamos la aplicación

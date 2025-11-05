@@ -8,9 +8,9 @@ export const registerAccount = (email, password, name, phoneNumber, address) => 
 export const loginAccount = (email, password) => axios.post(`${API_URL}/accounts/login`,
      { email, password });
 
-export const getProfile = (idProfile) => axios.get(`${API_URL}/accounts/profile/${idProfile}`);
+export const getProfile = (idProfile) => axios.get(`${API_URL}/accounts/profileB/${idProfile}`);
 
-export const updateProfile = (idProfile, data) => axios.put(`${API_URL}/accounts/profile/${idProfile}`, data);
+export const updateProfile = (idProfile, data) => axios.put(`${API_URL}/accounts/profileB/${idProfile}`, data);
 
 
 // Service-Order
