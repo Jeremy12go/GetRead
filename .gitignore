@@ -11,9 +11,6 @@ docker-compose.yml
 # Elementos expecificos
 products/
 stores/
-seed.js
-stores_db-products.json
-stores_db-stores.json
 linkProductos.js
 linkRatings.js
 
