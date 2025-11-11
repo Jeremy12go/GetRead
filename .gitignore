@@ -13,3 +13,9 @@ products/
 stores/
 linkProductos.js
 linkRatings.js
+
+# Logs
+logs
+
+# Gestor de servicios
+gestor-servicios.bat

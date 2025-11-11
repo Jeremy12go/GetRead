@@ -1,8 +1,12 @@
 import '../styles/login.css';
+import '../styles/styles.css';
 import { useState } from "react";
 import { loginAccount, getProfile } from '../API/APIGateway.js';
+import { useNavigate } from 'react-router-dom';
 
-function Login({ view, setView, stateLogin, setStateLogin, name, setName }) {
+function Login({ setStateLogin, setName }) {
+
+    const navigate = useNavigate();
     
     const [errorLogin, setErrorLogin] = useState(false);
     const [ email , setEmail ] = useState('');
@@ -16,7 +20,7 @@ function Login({ view, setView, stateLogin, setStateLogin, name, setName }) {
             localStorage.setItem('idProfile', res.data);
             setName((await getProfile(res.data)).data.name);
             setStateLogin(true);
-            setView('homePostLogin');
+            navigate('/home');
         } catch (e) {
             if (e.response && e.response.data && e.response.data.error){
                 setErrorLogin(e.response.data.error);
@@ -37,7 +41,7 @@ function Login({ view, setView, stateLogin, setStateLogin, name, setName }) {
 
                 <p className="text-common">
                     ¿Primera vez?{' '}
-                    <span onClick={() => setView('register')} className="text-subrayado">
+                    <span onClick={() => navigate('/register')} className="text-subrayado">
                         Haz click aquí!
                     </span>
                 </p>
@@ -64,7 +68,7 @@ function Login({ view, setView, stateLogin, setStateLogin, name, setName }) {
                 </div>
             </div>
             <div>
-                <button onClick={handleSubmit} className="boton-iniciar" >
+                <button onClick={handleSubmit} className="button-generic" >
                     Iniciar Sesión
                 </button>
                 {errorLogin && (

@@ -1,11 +1,11 @@
 import '../styles/register.css'
-import '../styles/styles.css';
 import React, { useState } from 'react';
+import '../styles/styles.css';
 import { registerAccount } from '../API/APIGateway';
 import { useNavigate } from 'react-router-dom';
 
 
-function Register({ cambiarPantalla }) {
+function Editar({}) {
     
     const navigate = useNavigate();
     const [ email , setEmail ] = useState('');
@@ -34,7 +34,7 @@ function Register({ cambiarPantalla }) {
         <div class="App">
             <div>
                 <p className="text-titulos">
-                    Registro
+                    Editar información
                 </p>
                 <div>
                     
@@ -57,25 +57,15 @@ function Register({ cambiarPantalla }) {
                         className="input-text" />
 
                     <p className="text-common">
-                        Email*</p>
-                    <input type="email" placeholder="Email" 
-                        value={email} onChange={ (e) => setEmail(e.target.value) }
-                        className="input-text" />
-
-                    <p className="text-common">
                         Contraseña*</p>
                     <input type="password" placeholder="Contraseña"
                         value={password} onChange={ (e) => setPassword(e.target.value) }
                         className="input-text" />
-
-                    <p className="text-common">
-                        Se creara un perfil automaticamente asociado a tu dirección de correo.
-                    </p>
                 </div>
             </div>
             <div>
-                <button onClick={ handleSubmit } className="button-generic">
-                    Registrar
+                <button className="button-generic" onClick={ handleSubmit }>
+                    Confirmar
                 </button>
                 {errorRegistro && (
                     <p style={{ visibility: errorRegistro ? 'visible' : 'hidden' }}>
@@ -87,4 +77,4 @@ function Register({ cambiarPantalla }) {
     );
 }
 
-export default Register;
+export default Editar;
