@@ -9,18 +9,17 @@ app.use('/stores', StoreRoutes);
 
 const { mongoConnect } = require('./db/database');
 
-
 const PORT = process.env.PORT;
+
 mongoConnect()
-  .then(({ mainConnection, supportConnection }) => {
-    
-    app.locals.mainDB = mainConnection;
-    app.locals.supportDB = supportConnection;
+  .then(({ storesDB, accountsDB }) => {
+    app.locals.storesDB = storesDB;
+    app.locals.accountsDB = accountsDB;
 
     app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
     });
   })
   .catch((e) => {
-    console.error('Error al conectar a MongoDB', e.message);
+    console.error('Error al conectar a MongoDB Atlas', e.message);
   });

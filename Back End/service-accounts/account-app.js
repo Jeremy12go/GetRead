@@ -6,7 +6,7 @@ app.use(express.json()); // Middleware.
 
 const { mongoConnect } = require('./db/database');
 
-const Routes = require('./routes/Routes'); // Routes.
+const Routes = require('./routes/Routes'); 
 app.use('/accounts', Routes);
 
 const PORT = process.env.PORT;
@@ -18,5 +18,5 @@ mongoConnect()
     });
   })
   .catch((e) => {
-    console.error('Error al conectar a MongoDB', e.message);
+    console.error('Error al conectar a MongoDB Atlas', e.message);
   });

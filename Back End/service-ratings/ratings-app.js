@@ -10,7 +10,7 @@ const { mongoConnect } = require('./db/database');
 const profileRoutes = require('./routes/RatingRoutes');
 app.use('/ratings', profileRoutes);
 
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT;
 
 mongoConnect()
   .then(() => {

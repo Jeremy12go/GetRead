@@ -45,7 +45,6 @@ function Header({ stateLogin, name }) {
                     {console.log("estado: "+stateLogin)}
 
                 </div>
-
             </div>
             
 
