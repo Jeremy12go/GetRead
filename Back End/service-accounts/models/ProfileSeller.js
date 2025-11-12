@@ -5,7 +5,7 @@ const profileSellerSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true },
   address: { type: String, required: true },
   orders: [ { type: String, ref: 'Order'} ],
-  books: [ { type: String, ref: 'Book' } ],
+  books: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Book' } ],
   avgRating: Number,
   logo: { data: Buffer, contentType: String }
 });

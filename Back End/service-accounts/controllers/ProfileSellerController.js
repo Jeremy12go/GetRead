@@ -26,3 +26,23 @@ exports.update = async (req, res) => {
     res.status(400).json({ error: 'Error al actualizar profile', detalle: e.message });
   }
 };
+
+//Export para añadir un libro al vendedor
+exports.addBookToSeller = async (req, res) => {
+  const { bookId } = req.body;
+
+  try{
+    const seller = await Profile.findByIdAndUpdate(
+        req.params.id,
+        { $push: { books : bookId} },
+        { new: true }
+    );
+    if (!seller) {
+      return res.status(404).json({ error: 'Vendedor no encontrado'});
+    }
+
+    res.status(200).json({ message: 'Libro añadido al perfil', seller })
+  } catch(e) {
+    res.status(500).json({ error: 'Error al actualizar perfil', detalle: e.message });
+  }
+}

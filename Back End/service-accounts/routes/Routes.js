@@ -16,4 +16,7 @@ router.put('/profileB/:id', controllerProfileBuyer.update);
 router.get('/profileS/:id', controllerProfileSeller.getById);
 router.put('/profileS/:id', controllerProfileSeller.update);
 
+//ruta para agregar un libro al perfil vendedor
+router.put('/:id/addbook',controllerProfileSeller.addBookToSeller);
+
 module.exports = router;
