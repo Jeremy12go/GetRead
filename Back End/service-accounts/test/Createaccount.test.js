@@ -1,4 +1,5 @@
 //Código de prueba para creación de una cuenta en base a AccountController.js
+
 const { create } = require('../controllers/AccountController');
 const Account = require('../models/Account');
 const Profile = require('../models/ProfileBuyer');

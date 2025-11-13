@@ -2,7 +2,7 @@ const Book = require('../models/Book');
 
 exports.getById = async (req, res) => {
   try {
-    const book = await Book.findOne({ id: req.params._id });
+    const book = await Book.findOne({ id: req.params.id });
     if (!book) {
       return res.status(404).json({ error: 'Libro no encontrado' });
     }
@@ -58,7 +58,7 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    const removedBook = await Book.findByIdAndDelete({id: req.params._id});
+    const removedBook = await Book.findByIdAndDelete(req.params.id);
     if (!removedBook)
       return res.status(404).json({ error: 'Libro no encontrado' });
 

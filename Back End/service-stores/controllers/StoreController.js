@@ -25,8 +25,12 @@ exports.getByCity = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try {
+    const Store = req.app.locals.supportDB.model('Store', StoreSchema);
+
     const store = await Store.findOne({ id: req.params.id });
+
     if (!store) return res.status(404).json({ error: 'Tienda no encontrada' });
+
     res.json(store);
   } catch (e) {
     res.status(500).json({ error: 'Error al obtener la tienda', detalle: e.message });
@@ -35,6 +39,8 @@ exports.getById = async (req, res) => {
 
 exports.getLogo = async (req, res) => {
   try {
+    const Store = req.app.locals.supportDB.model('Store', StoreSchema);
+
     const store = await Store.findOne({ id: req.params.id });
 
     if (!store || !store.logo) {
@@ -43,6 +49,7 @@ exports.getLogo = async (req, res) => {
 
     res.contentType(store.logo.contentType);
     res.send(store.logo.data);
+
   } catch (e) {
     res.status(500).json({ error: 'Error al obtener logo', detalle: e.message });
   }
@@ -50,17 +57,20 @@ exports.getLogo = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    const Store = req.app.locals.supportDB.model('Store', StoreSchema);
+
     const store = await Store.findOneAndUpdate(
       { id: req.params.id },
       req.body,
       { new: true, runValidators: true }
     );
 
-    if(!store)
-      return res.status(404).json({error: 'Tienda no encontrada', detalle: e.message } );
+    if (!store)
+      return res.status(404).json({ error: 'Tienda no encontrada' });
 
     res.json(store);
-  } catch(e) {
+
+  } catch (e) {
     res.status(400).json({ error: 'Error al actualizar', detalle: e.message });
   }
 };
@@ -81,7 +91,7 @@ exports.addRating = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    const removedStore = await Store.findByIdAndDelete({id: req.params.id});
+    const removedStore = await Store.findByIdAndDelete(req.params.id);
     if (!removedStore)
       return res.status(404).json({ error: 'Tienda no encontrada' });
 
