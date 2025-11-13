@@ -1,5 +1,7 @@
 const Account = require('../models/Account');
-const Profile = require('../models/ProfileBuyer');
+const Profilebuyer = require('../models/ProfileBuyer');
+//Cambios
+const Profileseller = require('../models/Profileseller');
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -24,7 +26,7 @@ exports.create = async (req, res) => {
   try {
     const { email, password, name, phoneNumber, address } = req.body;
 
-    const profile = await Profile.create({
+    const profile = await Profilebuyer.create({
       name: name,  
       phoneNumber: phoneNumber,
       address: address
@@ -33,13 +35,36 @@ exports.create = async (req, res) => {
     const account = await Account.create({
       email: email,
       password: password,
-      profile: profile._id
+      profilebuyer: profile._id
     });
     res.status(201).json(account);
   } catch(e) {
     res.status(400).json({error: 'Datos inválidos', detalle: e.message });
   }
 };
+//cambio en este metodo
+exports.createseller = async (req, res) => {
+  try {
+    const { email, password, name, phoneNumber, address } = req.body;
+
+    const profile = await Profileseller.create({
+      name: name,
+      phoneNumber: phoneNumber,
+      address: address,
+      //cambio aqui
+      avgRating: 0
+    });
+
+    const account = await Account.create({
+      email: email,
+      password: password,
+      profileseller: profile._id
+    });
+    res.status(201).json(account);
+  } catch(e) {
+    res.status(400).json({error: 'Datos inválidos', detalle: e.message });
+  }
+}
 
 exports.remove = async (req, res) => {
   try {

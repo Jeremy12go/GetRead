@@ -6,6 +6,8 @@ const controllerProfileSeller = require('../controllers/ProfileSellerController'
 
 router.post('/login', controllerAccount.login);
 router.post('/', controllerAccount.create);
+//cambio aqui
+router.post('/createseller', controllerAccount.createseller);
 router.delete('/:email', controllerAccount.remove);
 
 router.get('/profileB/:id', controllerProfileBuyer.getById);
