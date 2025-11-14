@@ -16,7 +16,7 @@ const bookSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   stock: { type: Number, required: true},
   description: { type: String, required: true },
-  genre: { type: String, enum: Genre},
+  genre: [ { type: String, enum: Genre} ],
   public_range: { type: String, enum: Public_Range }
 });
 

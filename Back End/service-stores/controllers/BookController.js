@@ -183,6 +183,11 @@ exports.createbook = async (req, res) => {
         ? { data: req.file.buffer, contentType: req.file.mimetype }
         : undefined;
 
+    const parsedGenre = typeof genre === 'string'
+      ? JSON.parse(genre)
+        : genre;
+
+
     const book = await Book.create({
       idseller,
       isbn,
@@ -191,15 +196,14 @@ exports.createbook = async (req, res) => {
       price: Number(price),
       stock: Number(stock),
       description,
-      genre,
+      genre: parsedGenre,
       public_range,
       image
     });
 
-    // Responde inmediatamente con éxito
     res.status(201).json(book);
 
-    // Vincula al vendedor en segundo plano
+    //se usa axios para vincular con el servicio de cuentas para añadir el libro al vendedor :D
     axios.put(`${process.env.ACCOUNTS_SERVICE_URL}/${idseller}/addbook`, {
       bookId: book._id
     }).catch(err => {

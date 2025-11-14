@@ -7,7 +7,6 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Endpoints para libros
 router.post('/', upload.single('image'), BookController.createbook);
 router.get('/:id', BookController.getById);
 router.get('/seller/:idseller', BookController.getByIdSeller);
