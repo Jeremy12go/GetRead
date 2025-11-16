@@ -15,19 +15,32 @@ function Login({ setStateLogin, setName }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorLogin('');
+
         try {
+            localStorage.clear();
             const res = await loginAccount(email, password);
-            localStorage.setItem('idProfile', res.data);
-            setName((await getProfile(res.data)).data.name);
+            console.log('Respuesta login:', res.data);
+
+            const account = res.data.account;
+            const profile = res.data.profile;
+
+            localStorage.setItem('account', JSON.stringify(account));
+            localStorage.setItem('profile', JSON.stringify({
+                ...profile,
+                email: account.email
+            }));
+
+            setName(profile.name);
             setStateLogin(true);
             navigate('/home');
+
         } catch (e) {
-            if (e.response && e.response.data && e.response.data.error){
+            if (e.response?.data?.error) {
                 setErrorLogin(e.response.data.error);
-                console.error('Error al registrar:', e.response?.data || e.message);
-            } else{
-                console.error('Error al registrar:', e.response?.data || e.message);
+            } else {
+                setErrorLogin('Error al iniciar sesión');
             }
+            console.error('Error al hacer login:', e.response?.data || e.message);
         }
     };
 

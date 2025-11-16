@@ -28,9 +28,13 @@
 }
 
 .login-container {
+  position: absolute; /* ⭐ Agregado */
+  right: 20px; /* ⭐ Posicionar el contenedor completo */
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column; /* ⭐ Apilar verticalmente */
+  align-items: center; /* ⭐ Centrar horizontalmente */
+  gap: 0px; 
+  cursor: pointer;
 }
 
 .login-container:hover .BinicioSesion {
@@ -38,26 +42,20 @@
 }
 
 .usuario {
-  position: absolute;
-  right: 35px;
   width: 40px;
+  height: 40px;
   object-fit: contain;
-  cursor: pointer;
 }
 
 .BinicioSesion {
-  position: absolute;
-  right: 33px;
-  top: 58px;
   cursor: pointer;
-  width: 40px;
-  height: 20px;
   background: none;
   border: none;
-  color: inherit;
+  color: inherit; /* ⭐ Cambia según tu diseño */
   font: inherit;
   padding: 0;
-  margin: 0;  
+  margin: 0;
+  font-size: 16px;
 }
 
 .BinicioSesion:hover {

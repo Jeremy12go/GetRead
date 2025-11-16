@@ -97,7 +97,7 @@ function App() {
 
                 {/*Perfil*/}
                 <Route path="/perfil" element={stateLogin ? <Perfil setStateLogin={setStateLogin} setName={setName} /> : <Navigate to="/home" replace />} />
-                <Route path="/editar" element={stateLogin ? <Editar /> : <Navigate to="/editar" replace />} />
+                <Route path="/editar" element={stateLogin ? <Editar setName={setName} /> : <Navigate to="/login" replace />} />
 
             </Routes>
         </Router>

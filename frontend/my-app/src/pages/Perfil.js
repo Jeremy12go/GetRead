@@ -7,15 +7,46 @@ import usuario from '../assets/usuario.png'
 
 export default function Perfil({ setStateLogin, setName }) {
   const [perfil, setPerfil] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const idProfile = localStorage.getItem('idProfile');
-    if (!idProfile) return;
-    getProfile(idProfile).then(res => 
-      console.log(res.data) ||
-      setPerfil(res.data));
-  }, []);
+useEffect(() => {
+  const loadProfile = async () => {
+    try {
+      const savedProfile = JSON.parse(localStorage.getItem('profile'));
+      const savedAccount = JSON.parse(localStorage.getItem('account'));
+      
+      if (savedProfile) {
+        setPerfil(savedProfile);
+      }
+
+      if (savedAccount?._id) {
+        
+        const response = await getProfile(savedAccount._id);
+        
+        if (response.data && response.data.profile) {
+          const freshProfile = {
+            ...response.data.profile,
+            email: response.data.account?.email || savedAccount.email
+          };
+          
+          setPerfil(freshProfile);
+          localStorage.setItem('profile', JSON.stringify(freshProfile));
+        } else {
+          console.error('No se recibió perfil del backend');
+        }
+      }
+      
+    } catch (error) {
+      console.error('Error al cargar perfil:', error);
+      console.error('Error response:', error.response?.data);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadProfile();
+}, []);
 
   const handleLogout = () => {
     localStorage.removeItem('idProfile');
@@ -44,7 +75,7 @@ export default function Perfil({ setStateLogin, setName }) {
               <p>Nombre: {perfil.name}</p>
               <p>Dirección: {perfil.address}</p>
               <p>Correo electrónico: {perfil.email}</p>
-              <p>Perfil: {perfil.role}</p>
+              <p>Perfil: {perfil._id}</p>
               <p>Teléfono: {perfil.phoneNumber}</p>
             </div>
           </div> {/* ← cierre de perfil-header */}

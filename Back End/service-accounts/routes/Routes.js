@@ -16,4 +16,7 @@ router.put('/profileB/:id', controllerProfileBuyer.update);
 router.get('/profileS/:id', controllerProfileSeller.getById);
 router.put('/profileS/:id', controllerProfileSeller.update);
 
+router.get('/profile/:id', controllerAccount.getProfile);
+router.put('/profile/:id', controllerAccount.updateProfile);
+
 module.exports = router;
