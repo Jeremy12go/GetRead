@@ -1,4 +1,5 @@
-const Book = require('../models/Book');
+const mongoose = require('mongoose');
+const Book = require('../models/Book')(mongoose);
 const axios = require('axios');
 
 //version antigua//
@@ -110,6 +111,7 @@ exports.createbook = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try {
+    const Book = require('../models/Book')(req.app.locals.mainDB);
     const book = await Book.findById(req.params.id);
     if (!book) {
       return res.status(404).json({ error: 'Libro no encontrado' });
@@ -216,3 +218,17 @@ exports.createbook = async (req, res) => {
   }
 };
 
+exports.modifystock = async(req, res) =>{
+  try {
+    const Book = require('../models/Book')(req.app.locals.mainDB);
+    const book = await Book.findByIdAndUpdate(
+        req.params.id,
+        { stock: req.body.stock },
+        { new: true }
+    );
+    if (!book) return res.status(404).json({ error: 'Libro no encontrado' });
+    res.json(book);
+  } catch (e) {
+    res.status(500).json({ error: 'Error al actualizar stock', detalle: e.message });
+  }
+};

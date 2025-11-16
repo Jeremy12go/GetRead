@@ -13,5 +13,5 @@ router.get('/seller/:idseller', BookController.getByIdSeller);
 router.get('/:id/image', BookController.getImage);
 router.put('/:id', BookController.update);
 router.delete('/:id', BookController.remove);
-
+router.patch('/:id/stock', BookController.modifystock);
 module.exports = router;
