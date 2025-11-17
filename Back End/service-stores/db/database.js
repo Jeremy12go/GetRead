@@ -7,7 +7,7 @@ const mongoConnect = async () => {
       throw new Error('Falta MONGO_URL en .env');
     }
 
-    mainConnection = await mongoose.createConnection(process.env.MONGO_URL_BASE);
+    mainConnection = await mongoose.createConnection(process.env.MONGO_URL);
 
     const storesDB = mainConnection.useDb('stores_db');
     const accountsDB = mainConnection.useDb('account_db');

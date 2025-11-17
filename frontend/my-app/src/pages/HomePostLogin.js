@@ -29,17 +29,17 @@ import usuarioImg from '../assets/usuario.png';
 
 export default function Principal({ setStateLogin }) {
 
-    const [carrito, setCarrito] = useState([]);
+    const [ carrito, setCarrito ] = useState([]);
     const [ stores, setStores ] = useState([]);
 
-    const [productosTienda, setProductosTienda] = useState([]);
-    const [tiendaSeleccionada, setTiendaSeleccionada] = useState(null);
-    const [perfil, setPerfil] = useState(null);
-    const [user, setUser] = useState(false);
+    const [ productosTienda, setProductosTienda ] = useState([]);
+    const [ tiendaSeleccionada, setTiendaSeleccionada ] = useState(null);
+    const [ perfil, setPerfil] = useState(null);
+    const [ user, setUser] = useState(false);
 
-    const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
-    const [idTiendaACalificar, setIdTiendaACalificar] = useState(null);
-    const [idOrdenACalificar, setIdOrdenACalificar] = useState(null);   
+    const [ pedidoSeleccionado, setPedidoSeleccionado ] = useState(null);
+    const [ idTiendaACalificar, setIdTiendaACalificar ] = useState(null);
+    const [ idOrdenACalificar, setIdOrdenACalificar ] = useState(null);   
 
     const navigate = useNavigate();
 

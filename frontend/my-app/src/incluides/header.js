@@ -29,7 +29,6 @@ function Header({ stateLogin, name }) {
                 } />
 
                 {/* Perfil */}
-
                 <div className="login-container"
                     onClick={() => 
                         stateLogin
@@ -50,10 +49,8 @@ function Header({ stateLogin, name }) {
 
             {/* Botones */}
             <nav className='nav'>
-                <button className="header-button" onClick={() => navigate('/home')}>Inicio</button>
-                <button className="header-button" onClick={() => navigate('/register')}>Registrar</button>
-                <button className="header-button" onClick={() => navigate('/delete')}>Eliminar</button>
-                <button className="header-button" onClick={() => navigate('/edit')}>Editar</button>
+                <button className="header-button" onClick={() => navigate('/home')}>Home</button>
+                <button className="header-button" onClick={() => navigate('/homepostlogin')}>HomePostLogin</button>
             </nav>
         </div>
     );
