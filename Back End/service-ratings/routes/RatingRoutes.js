@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/RatingController');
 const Rating = require('../models/Rating');
-
+/*
 router.get('/:idOrder', controller.getByIdOrder);
 router.get('/stores/:idStore', controller.getRatingsByStoreId);
 router.post('/', controller.create);
@@ -21,5 +21,15 @@ router.get('/stores/:idStore', async (req, res) => {
         res.status(500).json({ message: "Error al buscar ratings", error: err.message });
     }
 });
+*/
+
+///los de arriba estan viejos
+//estos son nuevos
+router.get('/order/:idOrder', controller.getByIdOrder);
+router.get('/seller/:idSeller', controller.getRatingsBySellerId);
+router.post('/', controller.create);
+router.post('/neocreate', controller.neoCreate);
+router.put('/order/:idOrder', controller.update);
+router.delete('/order/:idOrder', controller.remove);
 
 module.exports = router;

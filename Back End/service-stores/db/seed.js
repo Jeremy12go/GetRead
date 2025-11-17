@@ -3,11 +3,12 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
-const Product = require('../models/Book');
+const Book = require('../models/Book');
 
 const StoreSchema = new mongoose.Schema({
   name: { type: String, required: true},
   phoneNumber: { type: String, required: true },
+  address: { type: String, required: true },
   orders: [ { type: String, ref: 'Order'} ],
   books: [ { type: String, ref: 'Book' } ],
   avgRating: Number,
@@ -21,11 +22,11 @@ async function seed() {
     await mongoose.connect(process.env.MONGO_URL_BASE);
     console.log('Conectado a la DB Principal');
 
-    // ---------- CARGA DE PRODUCTS ----------
-    const productsPath = path.join(__dirname, 'stores_db-products.json');
-    const productsRaw = JSON.parse(fs.readFileSync(productsPath, 'utf-8'));
+    // ---------- CARGA DE LIBROS ----------
+    const booksPath = path.join(__dirname, 'stores_db-products.json');
+    const booksRaw = JSON.parse(fs.readFileSync(booksPath, 'utf-8'));
 
-    const products = productsRaw.map(p => ({
+    const books = booksRaw.map(p => ({
       ...p,
       _id: new mongoose.Types.ObjectId(p._id),
       image: {
@@ -34,11 +35,11 @@ async function seed() {
       }
     }));
 
-    await Product.insertMany(products);
-    console.log('Productos insertados');
+    await Book.insertMany(books);
+    console.log('Libros insertados');
 
 
-    await mongoose.connect(process.env.MONGO_URL_SUPORT);
+    await mongoose.connect(process.env.MONGO_URL_SUPPORT);
     console.log('Conectado a la DB Secundaria');
 
     // ---------- CARGA DE STORES ----------

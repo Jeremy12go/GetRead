@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 const StoreSchema = new mongoose.Schema({
   name: { type: String, required: true},
   phoneNumber: { type: String, required: true },
+  address: { type: String, required: true},
   orders: [ { type: String, ref: 'Order'} ],
   books: [ { type: String, ref: 'Book' } ],
-  avgRating: Number
+  avgRating: Number,
+  logo: { data: Buffer, contentType: String }
 });
 
 exports.getByCity = async (req, res) => {

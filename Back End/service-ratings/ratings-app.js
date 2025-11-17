@@ -7,8 +7,8 @@ app.use(express.json());
 
 const { mongoConnect } = require('./db/database');
 
-const profileRoutes = require('./routes/RatingRoutes');
-app.use('/ratings', profileRoutes);
+const ratingRoutes = require('./routes/RatingRoutes');
+app.use('/ratings', ratingRoutes);
 
 const PORT = process.env.PORT;
 
@@ -19,5 +19,5 @@ mongoConnect()
     });
   })
   .catch((e) => {
-    console.error('Error al conectar a MongoDB', error.message);
+    console.error('Error al conectar a MongoDB', e.message);
   });
