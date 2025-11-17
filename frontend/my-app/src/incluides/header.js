@@ -7,22 +7,27 @@ import lupa from '../assets/lupa.png'
 import { useNavigate } from 'react-router-dom';
 
 
-function Header({ stateLogin, name }) {
+function Header({ stateLogin, name , profileImage }) {
 
     const navigate = useNavigate();
+    
+    const API_URL = 'http://localhost:3000';
+
+    const displayImage = profileImage 
+        ? `${API_URL}${profileImage}` 
+        : usuario;
 
     return(
-        <div class="general">
-            <div class="search-container">
+        <div className="general">
+            <div className="search-container">
                 {/* Logo */}
-                <img class="logo" src={logo} onClick = { () => navigate('/home') } />
+                <img className="logo" src={logo} onClick = { () => navigate('/home') } />
 
                 {/* Barra de búsqueda */}
                 <input type="text" placeholder="Buscar..." />
-                <img class="lupa" src={lupa} />
-
+                <img className="lupa" src={lupa} />
                 {/* Carrito de compras*/}
-                <img class="carrito" src={lg_carrito} onClick={() => 
+                <img className="carrito" src={lg_carrito} onClick={() => 
                     stateLogin
                      ? navigate('/carrito')
                      : navigate('/homePostLogin')
@@ -37,11 +42,10 @@ function Header({ stateLogin, name }) {
                     }
                 >
                     
-                    <img class="usuario" src={usuario}  />
+                    <img className="usuario" src={displayImage} onError={(e) => e.target.src = usuario} />
                     { stateLogin ?
-                    <button class="BinicioSesion" >{name}</button> :
-                    <button class="BinicioSesion" >Perfil</button>}
-                    {console.log("estado: "+stateLogin)}
+                    <button className="BinicioSesion" >{name}</button> :
+                    <button className="BinicioSesion" >Perfil</button>}
 
                 </div>
             </div>

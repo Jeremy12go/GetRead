@@ -77,10 +77,13 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 > Cada servicio debe instalar y iniciarse independientemente.
 > Para cada servicio se debe generar su respectivo .env, siguiendo el archivo 'exampleENV.txt' 
 
-
 - En la ruta de los servicio: accounts, orders, ratings.
 ```bash
     npm i express mongoose dotenv
+```
+- En la ruta del servicio accounts
+```bash
+    npm install multer
 ```
 - En la ruta del servicio stores
 ```bash

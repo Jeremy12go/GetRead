@@ -2,7 +2,7 @@ import '../styles/home.css';
 import '../styles/styles.css';
 
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
-import { useState } from "react";
+import { useState, useEffect} from "react";
 
 import Login from "./Login";
 import Register from "./Register.js";
@@ -73,10 +73,38 @@ function App() {
 
     const [ stateLogin, setStateLogin ] = useState(false);
     const [ name, setName ] = useState('');
+    const [ profileImage, setProfileImage ] = useState(null);
+
+    useEffect(() => {
+        const loadProfileImage = () => {
+            const savedProfile = JSON.parse(localStorage.getItem('profile'));
+            const savedAccount = JSON.parse(localStorage.getItem('account'));
+            
+            if (savedProfile?.profileImage) {
+                setProfileImage(savedProfile.profileImage);
+            } else if (savedAccount?.profileImage) {
+                setProfileImage(savedAccount.profileImage);
+            } else {
+                setProfileImage(null);
+        }
+        };
+
+        loadProfileImage();
+
+        const handleProfileUpdate = () => {
+            loadProfileImage();
+        };
+
+        window.addEventListener('profileUpdated', handleProfileUpdate);
+        
+        return () => {
+            window.removeEventListener('profileUpdated', handleProfileUpdate);
+        };
+    }, []);
 
     return(
         <Router>
-            <Header stateLogin={stateLogin} setStateLogin={setStateLogin} name={name} setName={setName} />
+            <Header stateLogin={stateLogin} setStateLogin={setStateLogin} name={name} setName={setName} profileImage={profileImage} />
             <Routes>
                 <Route path="/home" element={<Home stateLogin={stateLogin} />} />
 
@@ -84,7 +112,7 @@ function App() {
                 <Route path="/" element={<Home stateLogin={stateLogin} />} />
 
                 {/*Login*/}
-                <Route path="/login" element={<Login setStateLogin={setStateLogin} name={name} setName={setName} />} />
+                <Route path="/login" element={<Login setStateLogin={setStateLogin} name={name} setName={setName} setProfileImage={setProfileImage} />} />
 
                 {/*Registro*/}
                 <Route path="/register" element={<Register />} />
@@ -97,7 +125,7 @@ function App() {
 
                 {/*Perfil*/}
                 <Route path="/perfil" element={stateLogin ? <Perfil setStateLogin={setStateLogin} setName={setName} /> : <Navigate to="/home" replace />} />
-                <Route path="/editar" element={stateLogin ? <Editar /> : <Navigate to="/editar" replace />} />
+                <Route path="/editar" element={stateLogin ? <Editar setName={setName} /> : <Navigate to="/login" replace />} />
 
             </Routes>
         </Router>
