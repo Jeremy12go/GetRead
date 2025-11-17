@@ -2,6 +2,8 @@ const Account = require('../models/Account');
 const Profilebuyer = require('../models/ProfileBuyer');
 //Cambios
 const Profileseller = require('../models/Profileseller');
+const path = require('path');
+const fs = require('fs');
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -36,7 +38,8 @@ exports.login = async (req, res) => {
         _id: account._id,
         email: account.email,
         profilebuyer: account.profilebuyer,
-        profileseller: account.profileseller
+        profileseller: account.profileseller,
+        profileImage: account.profileImage
       },
       profile: {
         _id: profile._id,
@@ -188,7 +191,8 @@ exports.getProfile = async (req, res) => {
         _id: account._id,
         email: account.email,
         profilebuyer: account.profilebuyer,
-        profileseller: account.profileseller
+        profileseller: account.profileseller,
+        profileImage: account.profileImage
       },
       profile: {
         _id: profile._id,
@@ -213,5 +217,44 @@ exports.remove = async (req, res) => {
     res.status(204).end();
   } catch (e) {
     res.status(500).json({ error: 'Error al eliminar cuenta', detalle: e.message });
+  }
+};
+
+exports.uploadAccountImage = async (req, res) => {
+  try {
+    const { id } = req.params; // ID de la Account
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No se proporcionó ninguna imagen' });
+    }
+
+    const account = await Account.findById(id);
+    if (!account) return res.status(404).json({ error: 'Cuenta no encontrada' });
+
+    // Eliminar imagen anterior si existe
+    if (account.profileImage) {
+      const oldImagePath = path.join(__dirname, '..', account.profileImage.replace(/^\//, ''));
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    // Guardar ruta de la nueva imagen
+    account.profileImage = `/uploads/profiles/${req.file.filename}`;
+    await account.save();
+
+    res.json({
+      message: 'Imagen subida correctamente',
+      profileImage: account.profileImage,
+      account: {
+        _id: account._id,
+        email: account.email,
+        profileImage: account.profileImage
+      }
+    });
+
+  } catch (e) {
+    console.error('Error al subir imagen:', e);
+    res.status(500).json({ error: 'Error al subir imagen', detalle: e.message });
   }
 };

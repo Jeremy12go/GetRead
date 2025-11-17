@@ -4,6 +4,9 @@ node_modules/
 # Credenciales
 .env
 
+# Imagenes subidas
+uploads/
+
 # Docker
 Dockerfile
 docker-compose.yml

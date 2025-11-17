@@ -4,7 +4,7 @@ import { useState } from "react";
 import { loginAccount, getProfile } from '../API/APIGateway.js';
 import { useNavigate } from 'react-router-dom';
 
-function Login({ setStateLogin, setName }) {
+function Login({ setStateLogin, setName, setProfileImage }) {
 
     const navigate = useNavigate();
     
@@ -19,7 +19,6 @@ function Login({ setStateLogin, setName }) {
         try {
             localStorage.clear();
             const res = await loginAccount(email, password);
-            console.log('Respuesta login:', res.data);
 
             const account = res.data.account;
             const profile = res.data.profile;
@@ -27,8 +26,17 @@ function Login({ setStateLogin, setName }) {
             localStorage.setItem('account', JSON.stringify(account));
             localStorage.setItem('profile', JSON.stringify({
                 ...profile,
-                email: account.email
+                email: account.email,
+                profileImage: account.profileImage
             }));
+
+            if (profile?.profileImage) {
+                setProfileImage(profile.profileImage);
+            } else if (account?.profileImage) {
+                setProfileImage(account.profileImage);
+            }
+
+            window.dispatchEvent(new Event('profileUpdated'));
 
             setName(profile.name);
             setStateLogin(true);

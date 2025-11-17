@@ -7,10 +7,16 @@ import lupa from '../assets/lupa.png'
 import { useNavigate } from 'react-router-dom';
 
 
-function Header({ stateLogin, name }) {
+function Header({ stateLogin, name , profileImage }) {
 
     const navigate = useNavigate();
     
+    const API_URL = 'http://localhost:3000';
+
+    const displayImage = profileImage 
+        ? `${API_URL}${profileImage}` 
+        : usuario;
+
     return(
         <div className="general">
             <div className="search-container">
@@ -37,7 +43,7 @@ function Header({ stateLogin, name }) {
                     }
                 >
                     
-                    <img className="usuario" src={usuario}  />
+                    <img className="usuario" src={displayImage} onError={(e) => e.target.src = usuario} />
                     { stateLogin ?
                     <button className="BinicioSesion" >{name}</button> :
                     <button className="BinicioSesion" >Perfil</button>}

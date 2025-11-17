@@ -8,6 +8,7 @@ const accountSchema = new mongoose.Schema({
   profilebuyer: {type: String, required: true},
   profileseller: {type: String, required: true}
    */
+  profileImage: { type: String, default: null },
   profileseller: { type: mongoose.Schema.Types.ObjectId, ref: 'ProfileSeller' },
   profilebuyer: { type: mongoose.Schema.Types.ObjectId, ref: 'ProfileBuyer' }
 });
