@@ -101,7 +101,7 @@ exports.createOrderFromCart = async (req, res) => {
     const { buyerId } = req.params;
     console.log('buyer id es: ', buyerId);
 
-    // 1. Obtener perfil comprador
+    //para obtener el perfil comrpador
     const buyerRes = await axios.get(`${process.env.ACCOUNTS_SERVICE_URL}/buyer/${buyerId}`);
     const buyer = buyerRes.data;
 
@@ -109,7 +109,7 @@ exports.createOrderFromCart = async (req, res) => {
       return res.status(400).json({ error: 'Carrito vacío o comprador no encontrado' });
     }
 
-    // 2. Construir productList y calcular totalPrice
+
     let totalPrice = 0;
     const productList = [];
     const sellersSet = new Set();
@@ -133,7 +133,7 @@ exports.createOrderFromCart = async (req, res) => {
 
       sellersSet.add(book.idseller);
 
-      // 3. Descontar stock del libro
+      //llamamos al servicio de libros y actualizamos stock
       await axios.patch(`${process.env.BOOKS_SERVICE_URL}/${book._id}/stock`, {
         stock: book.stock - item.quantity
       }).catch(err => {
@@ -141,7 +141,6 @@ exports.createOrderFromCart = async (req, res) => {
       });
     }
 
-    // 4. Crear la orden
     const order = await Order.create({
       productList,
       idBuyer: buyer._id,
@@ -150,32 +149,39 @@ exports.createOrderFromCart = async (req, res) => {
       status: 'Pendiente'
     });
 
-    // 5. Vaciar carrito del comprador
+    //llamamos el servicio de cuenta para vaciar carrito
     await axios.patch(`${process.env.ACCOUNTS_SERVICE_URL}/buyer/${buyerId}/clearcart`)
         .catch(err => {
           console.error('Error al vaciar carrito del comprador:', err.message);
         });
 
-    // 6. Vincular la orden al perfil del comprador
+    //llamamos el servicio de cuenta para vincular la orden y guardarla en el array de oredenes
     await axios.put(`${process.env.ACCOUNTS_SERVICE_URL}/buyer/${buyerId}/addorder`, {
       orderId: order._id
     }).catch(err => {
       console.error('Error al vincular orden con comprador:', err.message);
     });
 
-    // 7. Actualizar lista de libros del comprador
+    //hacemos lo mismo pero con la cuenta del vendedor
+    for (const sellerId of order.idSellers) {
+      await axios.put(`${process.env.ACCOUNTS_SERVICE_URL}/seller/${sellerId}/addorder`, {
+        orderId: order._id
+      }).catch(err => {
+        console.error(`Error al vincular orden con vendedor ${sellerId}:`, err.message);
+      });
+    }
+
     const librosComprados = productList.map(p => ({
       book: p.book,
       quantity: p.quantity,
     }));
-
+    //llamamos al servicio de cuentas para actualizar los libros del comprador
     await axios.put(`${process.env.ACCOUNTS_SERVICE_URL}/buyer/${buyerId}/addbooks`, {
       books: librosComprados
     }).catch(err => {
       console.error('Error al actualizar libros del comprador:', err.message)
     });
 
-    // 8. Responder con la orden creada
     res.status(201).json(order);
 
   } catch (e) {

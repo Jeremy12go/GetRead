@@ -11,10 +11,10 @@ router.post('/createseller', controllerAccount.createseller);
 router.delete('/:email', controllerAccount.remove);
 
 router.get('/buyer/:buyerId', controllerProfileBuyer.getById);
-router.put('/profileB/:id', controllerProfileBuyer.update);
+router.put('/buyer/:id', controllerProfileBuyer.update);
 
-router.get('/profileS/:id', controllerProfileSeller.getById);
-router.put('/profileS/:id', controllerProfileSeller.update);
+router.get('/seller/:id', controllerProfileSeller.getById);
+router.put('/seller/:id', controllerProfileSeller.update);
 
 //ruta para agregar un libro al perfil vendedor
 router.put('/:id/addbook',controllerProfileSeller.addBookToSeller);
@@ -28,4 +28,7 @@ router.patch('/:buyerId/addtocart', controllerProfileBuyer.addToCart);
 router.patch('/buyer/:buyerId/clearcart', controllerProfileBuyer.clearCart);
 router.put('/buyer/:buyerId/addorder', controllerProfileBuyer.addOrder);
 router.put('/buyer/:buyerId/addbooks', controllerProfileBuyer.addBooks);
+router.put('/seller/:sellerId/addorder', controllerProfileSeller.addOrder);
+router.patch('/seller/:idSeller/updaterating', controllerProfileSeller.updateRating);
+
 module.exports = router;
