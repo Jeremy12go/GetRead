@@ -28,11 +28,11 @@
 }
 
 .login-container {
-  position: absolute; /* ⭐ Agregado */
-  right: 20px; /* ⭐ Posicionar el contenedor completo */
+  position: absolute;
+  right: 20px;
   display: flex;
-  flex-direction: column; /* ⭐ Apilar verticalmente */
-  align-items: center; /* ⭐ Centrar horizontalmente */
+  flex-direction: column;
+  align-items: center;
   gap: 0px; 
   cursor: pointer;
 }
@@ -52,7 +52,7 @@
   cursor: pointer;
   background: none;
   border: none;
-  color: inherit; /* ⭐ Cambia según tu diseño */
+  color: inherit; 
   font: inherit;
   padding: 0;
   margin: 0;

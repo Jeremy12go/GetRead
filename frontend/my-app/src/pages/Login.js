@@ -1,7 +1,7 @@
 import '../styles/login.css';
 import '../styles/styles.css';
 import { useState } from "react";
-import { loginAccount, getProfile } from '../API/APIGateway.js';
+import { loginAccount } from '../API/APIGateway.js';
 import { useNavigate } from 'react-router-dom';
 
 function Login({ setStateLogin, setName, setProfileImage }) {
