@@ -18,5 +18,5 @@ mongoConnect()
     });
   })
   .catch((e) => {
-    console.error('Error al conectar a MongoDB', e.message);
+    console.error('Error al conectar a MongoDB Atlas', error.message);
   });

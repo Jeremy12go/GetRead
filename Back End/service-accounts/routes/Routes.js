@@ -3,6 +3,7 @@ const router = express.Router();
 const controllerAccount = require('../controllers/AccountController');
 const controllerProfileBuyer = require('../controllers/ProfileBuyerController');
 const controllerProfileSeller = require('../controllers/ProfileSellerController');
+const upload = require('../middlewares/upload');
 
 router.post('/login', controllerAccount.login);
 router.post('/', controllerAccount.create);
@@ -30,5 +31,10 @@ router.put('/buyer/:buyerId/addorder', controllerProfileBuyer.addOrder);
 router.put('/buyer/:buyerId/addbooks', controllerProfileBuyer.addBooks);
 router.put('/seller/:sellerId/addorder', controllerProfileSeller.addOrder);
 router.patch('/seller/:idSeller/updaterating', controllerProfileSeller.updateRating);
+
+router.get('/profile/:id', controllerAccount.getProfile);
+router.put('/profile/:id', controllerAccount.updateProfile);
+
+router.post('/:id/upload-image', upload.single('profileImage'), controllerAccount.uploadAccountImage);
 
 module.exports = router;

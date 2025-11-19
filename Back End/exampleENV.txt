@@ -1,11 +1,4 @@
 Se debe crear un archivo de nombre ".env" para cada servicio:
 
 PORT=<número_de_puerto>
-MONGO_URL=<ruta_de_la_DB_de_MongoDB>
-
-Para el servicio de store se debe tener una url extra
-para poder conectarse a la DB del servicio account. Además,
-considerar los siguientes nombres:
-
-MONGO_URL_BASE=<ruta_de_la_DB_de_MongoDB>
-MONGO_URL_SUPORT=<ruta_de_la_DB_de_MongoDB>
+MONGO_URL=mongodb+srv://get_read_db:<db_password>@cluster0.wjmk0oe.mongodb.net/?appName=Cluster0

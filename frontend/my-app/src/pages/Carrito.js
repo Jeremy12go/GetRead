@@ -1,7 +1,7 @@
 import '../styles/carrito.css';
 import '../styles/styles.css';
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
 
 

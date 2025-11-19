@@ -1,33 +1,54 @@
 import '../styles/login.css';
 import '../styles/styles.css';
 import { useState } from "react";
-import { loginAccount, getProfile } from '../API/APIGateway.js';
+import { loginAccount } from '../API/APIGateway.js';
 import { useNavigate } from 'react-router-dom';
 
-function Login({ setStateLogin, setName }) {
+function Login({ setStateLogin, setName, setProfileImage }) {
 
     const navigate = useNavigate();
     
-    const [errorLogin, setErrorLogin] = useState(false);
+    const [ errorLogin, setErrorLogin ] = useState(false);
     const [ email , setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorLogin('');
+
         try {
+            localStorage.clear();
             const res = await loginAccount(email, password);
-            localStorage.setItem('idProfile', res.data);
-            setName((await getProfile(res.data)).data.name);
+
+            const account = res.data.account;
+            const profile = res.data.profile;
+
+            localStorage.setItem('account', JSON.stringify(account));
+            localStorage.setItem('profile', JSON.stringify({
+                ...profile,
+                email: account.email,
+                profileImage: account.profileImage
+            }));
+
+            if (profile?.profileImage) {
+                setProfileImage(profile.profileImage);
+            } else if (account?.profileImage) {
+                setProfileImage(account.profileImage);
+            }
+
+            window.dispatchEvent(new Event('profileUpdated'));
+
+            setName(profile.name);
             setStateLogin(true);
             navigate('/home');
+
         } catch (e) {
-            if (e.response && e.response.data && e.response.data.error){
+            if (e.response?.data?.error) {
                 setErrorLogin(e.response.data.error);
-                console.error('Error al registrar:', e.response?.data || e.message);
-            } else{
-                console.error('Error al registrar:', e.response?.data || e.message);
+            } else {
+                setErrorLogin('Error al iniciar sesión');
             }
+            console.error('Error al hacer login:', e.response?.data || e.message);
         }
     };
 

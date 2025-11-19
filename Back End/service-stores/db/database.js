@@ -2,27 +2,21 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const mongoConnect = async () => {
-  // mainConnection es la base principal para libros
-  // supportConnection es la base secundaria para datos auxiliares o historicos
-  let mainConnection;
-  let supportConnection;
-
   try {
-    if (!process.env.MONGO_URL_BASE) {
-      throw new Error('Falta MONGO_URL_BASE en .env');
-    }
-    if (!process.env.MONGO_URL_SUPPORT) {
-      throw new Error('Falta MONGO_URL_SUPPORT en .env');
+    if (!process.env.MONGO_URL) {
+      throw new Error('Falta MONGO_URL en .env');
     }
 
-    mainConnection = await mongoose.createConnection(process.env.MONGO_URL_BASE).asPromise();
-    supportConnection = await mongoose.createConnection(process.env.MONGO_URL_SUPPORT).asPromise();
+    mainConnection = await mongoose.createConnection(process.env.MONGO_URL);
 
-    console.log('Conectado a MongoDB (main & support)');
-    return { mainConnection, supportConnection };
+    const storesDB = mainConnection.useDb('stores_db');
+    const accountsDB = mainConnection.useDb('account_db');
+
+    console.log('Conectado a MongoDB Atlas');  
+    return { storesDB, accountsDB };
 
   } catch (e) {
-    console.error('Error al conectar a MongoDB:', e.message);
+    console.error('Error al conectar a MongoDB Atlas:', e.message);
     throw e;
   }
 };
