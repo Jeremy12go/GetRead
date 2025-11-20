@@ -4,9 +4,11 @@ const BookController = require('../controllers/BookController');
 const multer = require('multer');
 
 //configuracion para guardar la imagen en memoria
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+//const storage = multer.memoryStorage();
+//const upload = multer({ storage });
+const upload = require('../db/cloudinary.js');
 
+router.get('/', BookController.getAllBooks);
 router.post('/', upload.single('image'), BookController.createbook);
 router.get('/:id', BookController.getById);
 router.get('/seller/:idseller', BookController.getByIdSeller);

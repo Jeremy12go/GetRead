@@ -83,11 +83,11 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 ```
 - En la ruta del servicio accounts
 ```bash
-    npm install multer
+    npm i multer
 ```
 - En la ruta del servicio stores
 ```bash
-    npm i express mongoose multer dotenv
+    npm i express mongoose multer dotenv cloudinary multer-storage-cloudinary
 ```
 - En la ruta del servicio gateway
 ```bash

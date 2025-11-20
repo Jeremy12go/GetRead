@@ -1,6 +1,3 @@
-const mongoose = require('mongoose');
-//const Book = require('../models/Book')(mongoose);
-const axios = require('axios');
 
 //version antigua//
 /*
@@ -109,9 +106,23 @@ exports.createbook = async (req, res) => {
 
 //version nueva
 
+const mongoose = require('mongoose');
+//const Book = require('../models/Book')(mongoose);
+const axios = require('axios');
+
+exports.getAllBooks = async (req, res) => {
+  try {
+    const Book = require('../models/Book');
+    const books = await Book.find();
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 exports.getById = async (req, res) => {
   try {
-    const Book = require('../models/Book')(req.app.locals.mainDB);
+    const Book = require('../models/Book');
     const book = await Book.findById(req.params.id);
     if (!book) {
       return res.status(404).json({ error: 'Libro no encontrado' });
@@ -124,6 +135,7 @@ exports.getById = async (req, res) => {
 
 exports.getByIdSeller = async (req, res) => {
   try {
+    const Book = require('../models/Book');
     const books = await Book.find({ idseller: req.params.idseller });
     if (books.length === 0) {
       return res.status(404).json({ error: 'Libros no encontrados' });
@@ -136,12 +148,12 @@ exports.getByIdSeller = async (req, res) => {
 
 exports.getImage = async (req, res) => {
   try {
-    const book = await Book.findById(req.params.id);
+    const Book = require('../models/Book');
+    const book = await Book.findById(req.params.id).select("image");
     if (!book || !book.image) {
       return res.status(404).send('Imagen no encontrada');
     }
-    res.contentType(book.image.contentType);
-    res.send(book.image.data);
+    res.json({ cover: book.cover });
   } catch (e) {
     res.status(500).json({ error: 'Error al obtener imagen', detalle: e.message });
   }
@@ -149,6 +161,7 @@ exports.getImage = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    const Book = require('../models/Book');
     const book = await Book.findByIdAndUpdate(
         req.params.id,
         req.body,
@@ -165,6 +178,7 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    const Book = require('../models/Book');
     const removedBook = await Book.findByIdAndDelete(req.params.id);
     if (!removedBook) {
       return res.status(404).json({ error: 'Libro no encontrado' });
@@ -181,9 +195,7 @@ exports.createbook = async (req, res) => {
 
     const { idseller, isbn, author, name, price, stock, description, genre, public_range } = req.body;
 
-    const image = req.file
-        ? { data: req.file.buffer, contentType: req.file.mimetype }
-        : undefined;
+    const image = req.file.path;
 
     const parsedGenre = typeof genre === 'string'
       ? JSON.parse(genre)
@@ -217,75 +229,6 @@ exports.createbook = async (req, res) => {
     res.status(400).json({ error: 'El libro no tiene datos válidos', detalle: e.message });
   }
 };
-
-exports.createbook_cagados = async (req, res) => {
-  try {
-    const Book = require('../models/Book')(req.app.locals.mainDB);
-
-    const {
-      _id,
-      idseller,
-      isbn,
-      author,
-      name,
-      price,
-      stock,
-      description,
-      genre,
-      public_range,
-      image
-    } = req.body;
-
-    // -----------------------------
-    // 1. CONVERTIR LA IMAGEN BASE64
-    // -----------------------------
-    let parsedImage = undefined;
-
-    if (image && image.data) {
-      // si viene así: { data: "...base64...", contentType: "image/png" }
-      parsedImage = {
-        data: Buffer.from(image.data, "base64"),
-        contentType: image.contentType || "image/jpeg"
-      };
-    }
-
-    // -----------------------------
-    // 2. ASEGURAR QUE GENRE SEA ARRAY
-    // -----------------------------
-    const parsedGenre = Array.isArray(genre)
-      ? genre
-      : typeof genre === "string"
-        ? JSON.parse(genre)
-        : [];
-
-    // -----------------------------
-    // 3. CREAR EL LIBRO
-    // -----------------------------
-    const book = await Book.create({
-      _id: _id ? new mongoose.Types.ObjectId(_id) : undefined,
-      idseller,
-      isbn,
-      author,
-      name,
-      price: Number(price),
-      stock: Number(stock),
-      description,
-      genre: parsedGenre,
-      public_range,
-      image: parsedImage
-    });
-
-    res.status(201).json(book);
-
-  } catch (e) {
-    console.error("Error al crear libro:", e);
-    res.status(400).json({
-      error: "El libro no tiene datos válidos",
-      detalle: e.message
-    });
-  }
-};
-
 
 exports.modifystock = async(req, res) =>{
   try {

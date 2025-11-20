@@ -19,8 +19,16 @@ import img_4 from '../assets/PortadasLibros/Quijote.jpg';
 import img_5 from '../assets/PortadasLibros/Sennor.jpg';
 import ico_addCarrito from '../assets/anadirCarro.png';
 
-
 function Home({stateLogin}){
+
+    const [books, setBooks] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:3004/stores")
+        .then(res => res.json())
+        .then(data => setBooks(data));
+    }, []);
+
     return (
         <div>
             {!stateLogin ? (
@@ -34,8 +42,8 @@ function Home({stateLogin}){
             ):(
                 <div className="carousel" >
                     <div className="carousel_track">
-                        {[img_1, img_2, img_3, img_4, img_5, img_1, img_2, img_3, img_4, img_5].map((img, i) => (
-                            <img key={i} src={img} alt={`Libro ${i}`} />
+                        {books.map((book, i) => (
+                            <img key={i} src={book.image} alt={book.title} />
                         ))}
                     </div>
                 </div>
@@ -61,9 +69,9 @@ function Home({stateLogin}){
             </div>
             {/* Catalogo */}
             <div className="grid-wrap">
-                {[img_1, img_2, img_3, img_4, img_5].map((img, i) => (
+                {books.map((book, i) => (
                     <div key={i} className="card-container">
-                        <img className="card-image" src={img} alt={`Portada ${i}`} />
+                        <img className="card-image" src={book.image} alt={book.title} />
 
                         <div className="bottom-bar">
                             <img src={ico_addCarrito} className="bar-btn"/>
