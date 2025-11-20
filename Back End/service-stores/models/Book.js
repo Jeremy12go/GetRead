@@ -28,4 +28,6 @@ bookSchema.index({ name: 1 });
 bookSchema.index({ author: 1 });
 bookSchema.index({ genre: 1 });
 
-module.exports = (connection) => connection.model('Book', bookSchema);
+//module.exports = (connection) => connection.model('Book', bookSchema);
+module.exports = mongoose.models.book || mongoose.model('book', bookSchema);
+

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Book = require('../models/Book')(mongoose);
+//const Book = require('../models/Book')(mongoose);
 const axios = require('axios');
 
 //version antigua//
@@ -177,7 +177,7 @@ exports.remove = async (req, res) => {
 
 exports.createbook = async (req, res) => {
   try {
-    const Book = require('../models/Book')(req.app.locals.mainDB);
+    const Book = require('../models/Book');
 
     const { idseller, isbn, author, name, price, stock, description, genre, public_range } = req.body;
 
@@ -217,6 +217,75 @@ exports.createbook = async (req, res) => {
     res.status(400).json({ error: 'El libro no tiene datos válidos', detalle: e.message });
   }
 };
+
+exports.createbook_cagados = async (req, res) => {
+  try {
+    const Book = require('../models/Book')(req.app.locals.mainDB);
+
+    const {
+      _id,
+      idseller,
+      isbn,
+      author,
+      name,
+      price,
+      stock,
+      description,
+      genre,
+      public_range,
+      image
+    } = req.body;
+
+    // -----------------------------
+    // 1. CONVERTIR LA IMAGEN BASE64
+    // -----------------------------
+    let parsedImage = undefined;
+
+    if (image && image.data) {
+      // si viene así: { data: "...base64...", contentType: "image/png" }
+      parsedImage = {
+        data: Buffer.from(image.data, "base64"),
+        contentType: image.contentType || "image/jpeg"
+      };
+    }
+
+    // -----------------------------
+    // 2. ASEGURAR QUE GENRE SEA ARRAY
+    // -----------------------------
+    const parsedGenre = Array.isArray(genre)
+      ? genre
+      : typeof genre === "string"
+        ? JSON.parse(genre)
+        : [];
+
+    // -----------------------------
+    // 3. CREAR EL LIBRO
+    // -----------------------------
+    const book = await Book.create({
+      _id: _id ? new mongoose.Types.ObjectId(_id) : undefined,
+      idseller,
+      isbn,
+      author,
+      name,
+      price: Number(price),
+      stock: Number(stock),
+      description,
+      genre: parsedGenre,
+      public_range,
+      image: parsedImage
+    });
+
+    res.status(201).json(book);
+
+  } catch (e) {
+    console.error("Error al crear libro:", e);
+    res.status(400).json({
+      error: "El libro no tiene datos válidos",
+      detalle: e.message
+    });
+  }
+};
+
 
 exports.modifystock = async(req, res) =>{
   try {

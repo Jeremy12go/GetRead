@@ -1,4 +1,4 @@
 Se debe crear un archivo de nombre ".env" para cada servicio:
 
 PORT=<número_de_puerto>
-MONGO_URL=mongodb+srv://get_read_db:<db_password>@cluster0.wjmk0oe.mongodb.net/?appName=Cluster0
+MONGO_URL=mongodb+srv://get_read_db:<db_password>@cluster0.wjmk0oe.mongodb.net/DB?appName=Cluster0
