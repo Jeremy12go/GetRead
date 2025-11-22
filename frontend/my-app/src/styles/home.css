@@ -26,52 +26,23 @@ body{
   background-attachment: fixed;
 }
 
-.carousel::before,
-.carousel::after{
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 120px;
-  height: 100%;
-  pointer-events: none;
-  z-index: 2;
-}
-.carousel::before{
-  left: 0;
-  background: linear-gradient(to right, #e4e4e4, rgba(255, 197, 111, 0));
-}
-.carousel::after{
-  right: 0;
-  background: linear-gradient(to left, #e4e4e4, rgba(255,255,255,0));
-}
-
 .carousel_track{
   display: flex;
   gap: var(--gap);
   align-items: center;
   height: 100%;
-  width: max-content;
   animation: scroll var(--duration) linear infinite;
   will-change: transform;
-}
-
-.carousel:hover .carousel_track{
-  animation-play-state: paused;
 }
 
 /* Imágenes */
 .carousel_track img{
   flex: 0 0 auto;          
-  width: var(--img-w);
+  width: 150px;
   height: calc(var(--img-h) - 30px);
   object-fit: cover;
   border-radius: 15px;
   border: 2px solid #fff;
-}
-
-@keyframes scroll{
-  from{ transform: translateX(0); }
-  to  { transform: translateX(calc(-1 * ( (var(--img-w) + var(--gap)) * 5 ))); }
 }
 
 /* Filtro */

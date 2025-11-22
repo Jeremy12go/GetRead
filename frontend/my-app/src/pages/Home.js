@@ -1,150 +1,208 @@
-import '../styles/home.css';
-import '../styles/styles.css';
+    import '../styles/home.css';
+    import '../styles/styles.css';
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect} from "react";
+    import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+    import { useRef, useState, useEffect} from "react";
 
-import Login from "./Login";
-import Register from "./Register.js";
-import HomePostLogin from "./HomePostLogin.js";
-import Carrito from "./Carrito.js";
-import Header from "../incluides/header.js";
-import Perfil from "./Perfil.js";
-import Editar from "./Editar.js";
+    import Login from "./Login";
+    import Register from "./Register.js";
+    import HomePostLogin from "./HomePostLogin.js";
+    import Carrito from "./Carrito.js";
+    import Header from "../incluides/header.js";
+    import Perfil from "./Perfil.js";
+    import Editar from "./Editar.js";
+    import ico_addCarrito from '../assets/anadirCarro.png';
 
-import img_1 from '../assets/PortadasLibros/Harry.jpg';
-import img_2 from '../assets/PortadasLibros/Juego.jpg';
-import img_3 from '../assets/PortadasLibros/Franki.jpg';
-import img_4 from '../assets/PortadasLibros/Quijote.jpg';
-import img_5 from '../assets/PortadasLibros/Sennor.jpg';
-import ico_addCarrito from '../assets/anadirCarro.png';
+    function Home({ stateLogin, search }){
 
-function Home({stateLogin}){
+        const [ books, setBooks ] = useState([]);
+        const [ genreFilter, setGenreFilter ] = useState("all");
+        const [ ageFilter, setAgeFilter ] = useState("all");
 
-    const [books, setBooks] = useState([]);
+        useEffect(() => {
+            fetch("http://localhost:3004/stores")
+            .then(res => res.json())
+            .then(data => setBooks(data));
+        }, []);
 
-    useEffect(() => {
-        fetch("http://localhost:3004/stores")
-        .then(res => res.json())
-        .then(data => setBooks(data));
-    }, []);
+        const carouselRef = useRef(null);
 
-    return (
-        <div>
-            {!stateLogin ? (
-                <div className="hero-section">
-                    <div className="hero-content">
-                        <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
-                        <p>Disfruta de un sinfín de libros para ti...</p>
-                        <button className='button-generic'>Quiero leer</button>
-                    </div>
-                </div>
-            ):(
-                <div className="carousel" >
-                    <div className="carousel_track">
-                        {books.map((book, i) => (
-                            <img key={i} src={book.image} alt={book.title} />
-                        ))}
-                    </div>
-                </div>
-            )}
+        useEffect(() => {
+            const track = carouselRef.current;
+            if (!track) return;
 
-            {/* Filtro */}
-            <div className="filtre" >
-                <label>
-                Filtrar:
-                <select id="categorySelect" className="CategoriaMenu" >
-                    <option value="all">Genero</option>
-                    <option value="tech">SEXO1</option>
-                    <option value="pets">SEXO2</option>
-                    <option value="food">SEXO3</option>
-                </select>
-                <select id="category2Select" className="CategoriaMenu2" >
-                    <option value="all">Rango Publico</option>
-                    <option value="tech">GAY 1</option>
-                    <option value="pets">GAY 2</option>
-                    <option value="food">GAY 3</option>
-                </select>
-                </label>
-            </div>
-            {/* Catalogo */}
-            <div className="grid-wrap">
-                {books.map((book, i) => (
-                    <div key={i} className="card-container">
-                        <img className="card-image" src={book.image} alt={book.title} />
+            let speed = 1;
 
-                        <div className="bottom-bar">
-                            <img src={ico_addCarrito} className="bar-btn"/>
+            const animation = () => {
+            track.scrollLeft += speed;
+
+            if (track.scrollLeft >= track.scrollWidth / 2) {
+                track.scrollLeft = 0;
+            }
+
+            requestAnimationFrame(animation);
+            };
+
+            animation();
+        }, []);
+
+        const filteredBooks = books.filter( book => {
+            const matchesGenre = genreFilter === "all" || book.genre?.includes(genreFilter);
+            const matchesAge = ageFilter === "all" || book.public_range === ageFilter;
+            const matchesSearch = !search || search.trim() === "" || book.name?.toLowerCase().includes(search.toLowerCase());
+            return matchesGenre && matchesAge && matchesSearch;
+        });
+
+        return (
+            <div>
+                {!stateLogin ? (
+                    <div className="hero-section">
+                        <div className="hero-content">
+                            <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
+                            <p>Disfruta de un sinfín de libros para ti...</p>
+                            <button className='button-generic'>Quiero leer</button>
                         </div>
                     </div>
-                ))}
+                ):(
+                    <div className="carousel" ref={ carouselRef }>
+                        <div className="carousel_track">
+                            {[...books, ...books].map((book, i) => (
+                                <img key={i} src={book.image} alt={book.title} />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Filtro */}
+                <div className="filtre" >
+                    <label>
+                    Filtrar:
+                    <select value={ genreFilter } 
+                        onChange={(e) => setGenreFilter(e.target.value) }  >
+
+                        <option value="all">Todo Genero</option>
+                        <option value="Novela">Novela</option>
+                        <option value="Cuento">Cuento</option>
+                        <option value="Fabula">Fabula</option>
+                        <option value="Comedia">Comedia</option>
+                        <option value="Drama">Drama</option>
+                        <option value="Filosofico">Filosofico</option>
+                        <option value="Cientifico">Cientifico</option>
+                        <option value="Fantasia">Fantasia</option>
+                        <option value="Ciencia Ficción">Ciencia Ficción</option>
+                        <option value="Terror">Terror</option>
+                        <option value="Misterio">Misterio</option>
+                        <option value="Suspenso">Suspenso</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Biografia">Biografia</option>
+                        <option value="Historia">Historia</option>
+                        <option value="Ciencia">Ciencia</option>
+                        <option value="Filosofia">Filosofia</option>
+                        <option value="Psicologia">Psicologia</option>
+                        <option value="Autoayuda">Autoayuda</option>
+                        <option value="Politica">Politica</option>
+                        <option value="Economia">Economia</option>
+                        <option value="Educación">Educación</option>
+                        <option value="Arte">Arte</option>
+                        <option value="Musica">Musica</option>
+                        <option value="Cine">Cine</option>
+                        <option value="Tecnologia">Tecnologia</option>
+                        <option value="Turismo">Turismo</option>
+                        <option value="Gastronomia">Gastronomia</option>
+                        <option value="Espiritualidad">Espiritualidad</option>
+                        <option value="Religión">Religión</option>
+                    </select>
+                    <select value={ ageFilter } onChange={ (e) => setAgeFilter(e.target.value) } >
+                        
+                        <option value="all">Todas las Edades</option>
+                        <option value="Infantil">Infantil</option>
+                        <option value="Juvenil">Juvenil</option>
+                        <option value="Adulto">Adulto</option>
+                        <option value="Todo Publico">Todo Publico</option>
+                    </select>
+                    </label>
+                </div>
+                
+                {/* Catalogo */}
+                <div className="grid-wrap">
+                    { filteredBooks.map((book, i) => (
+                        <div key={i} className="card-container">
+                            <img className="card-image" src={book.image} alt={book.title} />
+
+                            <div className="bottom-bar">
+                                <img src={ico_addCarrito} className="bar-btn"/>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    }
 
 
-function App() {
+    function App() {
 
-    const [ stateLogin, setStateLogin ] = useState(false);
-    const [ name, setName ] = useState('');
-    const [ profileImage, setProfileImage ] = useState(null);
+        const [ stateLogin, setStateLogin ] = useState(false);
+        const [ name, setName ] = useState('');
+        const [ profileImage, setProfileImage ] = useState(null);
+        const [ search, setSearch ] = useState('');
 
-    useEffect(() => {
-        const loadProfileImage = () => {
-            const savedProfile = JSON.parse(localStorage.getItem('profile'));
-            const savedAccount = JSON.parse(localStorage.getItem('account'));
+        useEffect(() => {
+            const loadProfileImage = () => {
+                const savedProfile = JSON.parse(localStorage.getItem('profile'));
+                const savedAccount = JSON.parse(localStorage.getItem('account'));
+                
+                if (savedProfile?.profileImage) {
+                    setProfileImage(savedProfile.profileImage);
+                } else if (savedAccount?.profileImage) {
+                    setProfileImage(savedAccount.profileImage);
+                } else {
+                    setProfileImage(null);
+            }
+            };
+
+            // loadProfileImage();
+
+            const handleProfileUpdate = () => {
+                loadProfileImage();
+            };
+
+            window.addEventListener('profileUpdated', handleProfileUpdate);
             
-            if (savedProfile?.profileImage) {
-                setProfileImage(savedProfile.profileImage);
-            } else if (savedAccount?.profileImage) {
-                setProfileImage(savedAccount.profileImage);
-            } else {
-                setProfileImage(null);
-        }
-        };
+            return () => {
+                window.removeEventListener('profileUpdated', handleProfileUpdate);
+            };
+        }, []);
 
-        // loadProfileImage();
+        return(
+            <Router>
+                <Header stateLogin={ stateLogin } setStateLogin={ setStateLogin } name={ name }
+                setName={ setName } profileImage={ profileImage } search={ search } setSearch={ setSearch } />
+                <Routes>
+                    <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } /> } />
 
-        const handleProfileUpdate = () => {
-            loadProfileImage();
-        };
+                    {/*Pagina principal*/}
+                    <Route path="/" element={ <Home stateLogin={stateLogin} search={ search } />} />
 
-        window.addEventListener('profileUpdated', handleProfileUpdate);
-        
-        return () => {
-            window.removeEventListener('profileUpdated', handleProfileUpdate);
-        };
-    }, []);
+                    {/*Login*/}
+                    <Route path="/login" element={<Login setStateLogin={setStateLogin} name={name} setName={setName} setProfileImage={setProfileImage} />} />
 
-    return(
-        <Router>
-            <Header stateLogin={stateLogin} setStateLogin={setStateLogin} name={name} setName={setName} profileImage={profileImage} />
-            <Routes>
-                <Route path="/home" element={<Home stateLogin={stateLogin} />} />
+                    {/*Registro*/}
+                    <Route path="/register" element={<Register />} />
 
-                {/*Pagina principal*/}
-                <Route path="/" element={<Home stateLogin={stateLogin} />} />
+                    {/*Home post login*/}
+                    <Route path="/homepostlogin" element={stateLogin ? <HomePostLogin setStateLogin={setStateLogin} /> : <Navigate to="/login" replace/>} />
 
-                {/*Login*/}
-                <Route path="/login" element={<Login setStateLogin={setStateLogin} name={name} setName={setName} setProfileImage={setProfileImage} />} />
+                    {/*Carrito*/}
+                    <Route path="/carrito" element={stateLogin ? <Carrito /> : <Navigate to="/login" replace />} />
 
-                {/*Registro*/}
-                <Route path="/register" element={<Register />} />
+                    {/*Perfil*/}
+                    <Route path="/perfil" element={stateLogin ? <Perfil setStateLogin={setStateLogin} setName={setName} /> : <Navigate to="/home" replace />} />
+                    <Route path="/editar" element={stateLogin ? <Editar setName={setName} /> : <Navigate to="/login" replace />} />
 
-                {/*Home post login*/}
-                <Route path="/homepostlogin" element={stateLogin ? <HomePostLogin setStateLogin={setStateLogin} /> : <Navigate to="/login" replace/>} />
+                </Routes>
+            </Router>
+        );
+    }
 
-                {/*Carrito*/}
-                <Route path="/carrito" element={stateLogin ? <Carrito /> : <Navigate to="/login" replace />} />
-
-                {/*Perfil*/}
-                <Route path="/perfil" element={stateLogin ? <Perfil setStateLogin={setStateLogin} setName={setName} /> : <Navigate to="/home" replace />} />
-                <Route path="/editar" element={stateLogin ? <Editar setName={setName} /> : <Navigate to="/login" replace />} />
-
-            </Routes>
-        </Router>
-    );
-}
-
-export default App;
+    export default App;

@@ -7,7 +7,7 @@ import lupa from '../assets/lupa.png'
 import { useNavigate } from 'react-router-dom';
 
 
-function Header({ stateLogin, name , profileImage }) {
+function Header({ stateLogin, name , profileImage, search, setSearch }) {
 
     const navigate = useNavigate();
     
@@ -24,7 +24,9 @@ function Header({ stateLogin, name , profileImage }) {
                 <img className="logo" src={logo} onClick = { () => navigate('/home') } />
 
                 {/* Barra de búsqueda */}
-                <input type="text" placeholder="Buscar..." />
+                <input type="text" placeholder="Buscar..." value={ search }
+                    onChange={ (e) => setSearch(e.target.value) } />
+
                 <img className="lupa" src={lupa} />
                 {/* Carrito de compras*/}
                 <img className="carrito" src={lg_carrito} onClick={() => 
