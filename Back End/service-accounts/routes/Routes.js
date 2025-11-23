@@ -9,6 +9,7 @@ const Account = require('../models/Account');
 const Profilebuyer = require('../models/ProfileBuyer');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.ID_CLIENTE);
+const { sendPasswordResetEmail } = require('../utils/sendMail');
 
 router.post('/login', controllerAccount.login);
 router.post('/', controllerAccount.create);
@@ -67,6 +68,7 @@ router.post("/google/tokenLogin", async (req, res) => {
 
   const payload = ticket.getPayload();
   const email = payload.email;
+  let resetToken = '';
 
   let account = await Account.findOne({ email });
 
@@ -87,14 +89,45 @@ router.post("/google/tokenLogin", async (req, res) => {
       profilebuyer: buyer._id,
       profileImage: payload.picture
     });
+    resetToken = buyer._id.toString();
   }
 
-  const profile = await Profilebuyer.findById(account.profilebuyer);
+  const resetLink = `http://localhost:3002/reset-password/${resetToken}`;
 
-  res.json({
-    account,
-    profile
-  });
+  await sendPasswordResetEmail(payload.email, payload.name, resetLink);
+
+  const profile = await Profilebuyer.findById(account.profilebuyer);
+  res.json({ account, profile });
+});
+
+// Reestablecer contraseña
+router.post("/reset-password/:token", async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    const token = req.params.token;
+
+    const buyer = await Profilebuyer.findById(token);
+    if (!buyer) {
+      return res.status(404).json({ error: "Token inválido" });
+    }
+
+    const account = await Account.findOne({ profilebuyer: buyer._id });
+    if (!account) {
+      return res.status(404).json({ error: "Cuenta no encontrada" });
+    }
+
+    account.password = newPassword;
+    await account.save();
+
+    res.json({ ok: true, message: "Contraseña actualizada correctamente" });
+
+  } catch (e) {
+    console.error("Error cambiando contraseña:", e);
+    res.status(500).json({
+      error: "Error interno",
+      detalle: e.message
+    });
+  }
 });
 
 module.exports = router;

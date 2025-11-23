@@ -11,6 +11,7 @@
     import Header from "../incluides/header.js";
     import Perfil from "./Perfil.js";
     import Editar from "./Editar.js";
+    import ResetPassword from "../pages/ResetPassword";
     import ico_addCarrito from '../assets/anadirCarro.png';
 
     function Home({ stateLogin, search }){
@@ -31,7 +32,7 @@
             const track = carouselRef.current;
             if (!track) return;
 
-            let speed = 1;
+            let speed = 0.5;
 
             const animation = () => {
             track.scrollLeft += speed;
@@ -186,6 +187,9 @@
 
                     {/*Login*/}
                     <Route path="/login" element={<Login setStateLogin={setStateLogin} name={name} setName={setName} setProfileImage={setProfileImage} />} />
+
+                    {/* Reset de la contraseña */}
+                    <Route path="/reset-password/:token" element={<ResetPassword />} />
 
                     {/*Registro*/}
                     <Route path="/register" element={<Register />} />
