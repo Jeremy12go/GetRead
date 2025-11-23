@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+/*
 import ContenedorItems from "../components/ContenedorItems";
 import ContenedorComida from "../components/ContenedorComida";
 import Carrito from "./Carrito.js";
@@ -8,23 +8,25 @@ import Historial from "../components/Historial";
 import Realizado from "../components/Realizado";
 import Calificar from "../components/Calificar";
 import Pedido from "../components/Pedido";
-import { storeByCity, getProfile, getProductsByStore, getRatingsByStore } from '../API/APIGateway.js';
 import carritoImg from '../assets/carrito.png';
 import historialImg from '../assets/historial.png';
 import lupaImg from '../assets/lupa.png';
 import usuarioImg from '../assets/usuario.png';
+*/
+import { storeByCity, getProfile, getProductsByStore, getRatingsByStore } from '../API/APIGateway.js';
 
-    function calcularAverageRating(ratings) {
-        if (!Array.isArray(ratings) || ratings.length === 0) return "N/A";
-        const starsArray = ratings
-            .map(r => typeof r.stars === "number" ? r.stars : Number(r.stars))
-            .filter(star => !isNaN(star));
-        if (starsArray.length === 0) return "N/A";
-        const sum = starsArray.reduce((acc, star) => acc + star, 0);
-        return (sum / starsArray.length).toFixed(1);
-    }
 
-export default function Principal({ setStateLogin }) {
+function calcularAverageRating(ratings) {
+    if (!Array.isArray(ratings) || ratings.length === 0) return "N/A";
+    const starsArray = ratings
+        .map(r => typeof r.stars === "number" ? r.stars : Number(r.stars))
+        .filter(star => !isNaN(star));
+    if (starsArray.length === 0) return "N/A";
+    const sum = starsArray.reduce((acc, star) => acc + star, 0);
+    return (sum / starsArray.length).toFixed(1);
+}
+
+function HomePostLogin({ setStateLogin }) {
 
     const [ carrito, setCarrito ] = useState([]);
     const [ stores, setStores ] = useState([]);
@@ -102,3 +104,5 @@ export default function Principal({ setStateLogin }) {
         });
     };
 } 
+
+export default HomePostLogin;

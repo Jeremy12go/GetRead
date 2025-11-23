@@ -40,7 +40,7 @@ function Login({ setStateLogin, setName, setProfileImage }) {
 
             window.dispatchEvent(new Event('profileUpdated'));
 
-            setName(profile.name);
+            setName(profile.name.split(" ")[0]);
             setStateLogin(true);
             navigate('/home');
 
