@@ -1,83 +1,71 @@
-    import '../styles/home.css';
-    import '../styles/styles.css';
+import '../styles/home.css';
+import '../styles/styles.css';
+import { useRef, useState, useEffect} from "react";
+import ico_addCarrito from '../assets/anadirCarro.png';
 
-    import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-    import { useRef, useState, useEffect} from "react";
+function Home({ stateLogin, search }){
 
-    import Login from "./Login";
-    import Register from "./Register.js";
-    import HomePostLogin from "./HomePostLogin.js";
-    import Carrito from "./Carrito.js";
-    import Header from "../incluides/header.js";
-    import Perfil from "./Perfil.js";
-    import Editar from "./Editar.js";
-    import ResetPassword from "../pages/ResetPassword";
-    import ico_addCarrito from '../assets/anadirCarro.png';
+    const [ books, setBooks ] = useState([]);
+    const [ genreFilter, setGenreFilter ] = useState("all");
+    const [ ageFilter, setAgeFilter ] = useState("all");
 
-    function Home({ stateLogin, search }){
+    useEffect(() => {
+        fetch("http://localhost:3004/stores")
+        .then(res => res.json())
+        .then(data => setBooks(data));
+    }, []);
 
-        const [ books, setBooks ] = useState([]);
-        const [ genreFilter, setGenreFilter ] = useState("all");
-        const [ ageFilter, setAgeFilter ] = useState("all");
+    const carouselRef = useRef(null);
 
-        useEffect(() => {
-            fetch("http://localhost:3004/stores")
-            .then(res => res.json())
-            .then(data => setBooks(data));
-        }, []);
+    useEffect(() => {
+        const track = carouselRef.current;
+        if (!track) return;
 
-        const carouselRef = useRef(null);
+        let speed = 0.5;
 
-        useEffect(() => {
-            const track = carouselRef.current;
-            if (!track) return;
+        const animation = () => {
+        track.scrollLeft += speed;
 
-            let speed = 0.5;
+        if (track.scrollLeft >= track.scrollWidth / 2) {
+            track.scrollLeft = 0;
+        }
 
-            const animation = () => {
-            track.scrollLeft += speed;
+        requestAnimationFrame(animation);
+        };
 
-            if (track.scrollLeft >= track.scrollWidth / 2) {
-                track.scrollLeft = 0;
-            }
+        animation();
+    }, []);
 
-            requestAnimationFrame(animation);
-            };
+    const filteredBooks = books.filter( book => {
+        const matchesGenre = genreFilter === "all" || book.genre?.includes(genreFilter);
+        const matchesAge = ageFilter === "all" || book.public_range === ageFilter;
+        const matchesSearch = !search || search.trim() === "" || book.name?.toLowerCase().includes(search.toLowerCase());
+        return matchesGenre && matchesAge && matchesSearch;
+    });
 
-            animation();
-        }, []);
-
-        const filteredBooks = books.filter( book => {
-            const matchesGenre = genreFilter === "all" || book.genre?.includes(genreFilter);
-            const matchesAge = ageFilter === "all" || book.public_range === ageFilter;
-            const matchesSearch = !search || search.trim() === "" || book.name?.toLowerCase().includes(search.toLowerCase());
-            return matchesGenre && matchesAge && matchesSearch;
-        });
-
-        return (
-            <div>
-                {!stateLogin ? (
-                    <div className="hero-section">
-                        <div className="hero-content">
-                            <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
-                            <p>Disfruta de un sinfín de libros para ti...</p>
-                            <button className='button-generic'>Quiero leer</button>
-                        </div>
+    return (
+        <div>
+            {!stateLogin ? (
+                <div className="hero-section">
+                    <div className="hero-content">
+                        <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
+                        <p>Disfruta de un sinfín de libros para ti...</p>
+                        <button className='button-generic'>Quiero leer</button>
                     </div>
-                ):(
-                    <div className="carousel" ref={ carouselRef }>
-                        <div className="carousel_track">
-                            {[...books, ...books].map((book, i) => (
-                                <img key={i} src={book.image} alt={book.title} />
-                            ))}
-                        </div>
+                </div>
+            ):(
+                <div className="carousel" ref={ carouselRef }>
+                    <div className="carousel_track">
+                        {[...books, ...books].map((book, i) => (
+                            <img key={i} src={book.image} alt={book.title} />
+                        ))}
                     </div>
-                )}
+                </div>
+            )}
 
-                {/* Filtro */}
-                <div className="filtre" >
-                    <label>
-                    Filtrar:
+            {/* Filtro */}
+            <div className="filtre" >
+                <label> Filtrar:
                     <select value={ genreFilter } 
                         onChange={(e) => setGenreFilter(e.target.value) }  >
 
@@ -113,6 +101,7 @@
                         <option value="Espiritualidad">Espiritualidad</option>
                         <option value="Religión">Religión</option>
                     </select>
+
                     <select value={ ageFilter } onChange={ (e) => setAgeFilter(e.target.value) } >
                         
                         <option value="all">Todas las Edades</option>
@@ -121,92 +110,23 @@
                         <option value="Adulto">Adulto</option>
                         <option value="Todo Publico">Todo Publico</option>
                     </select>
-                    </label>
-                </div>
-                
-                {/* Catalogo */}
-                <div className="grid-wrap">
-                    { filteredBooks.map((book, i) => (
-                        <div key={i} className="card-container">
-                            <img className="card-image" src={book.image} alt={book.title} />
-
-                            <div className="bottom-bar">
-                                <img src={ico_addCarrito} className="bar-btn"/>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                </label>
             </div>
-        );
-    }
-
-
-    function App() {
-
-        const [ stateLogin, setStateLogin ] = useState(false);
-        const [ name, setName ] = useState('');
-        const [ profileImage, setProfileImage ] = useState(null);
-        const [ search, setSearch ] = useState('');
-
-        useEffect(() => {
-            const loadProfileImage = () => {
-                const savedProfile = JSON.parse(localStorage.getItem('profile'));
-                const savedAccount = JSON.parse(localStorage.getItem('account'));
-                
-                if (savedProfile?.profileImage) {
-                    setProfileImage(savedProfile.profileImage);
-                } else if (savedAccount?.profileImage) {
-                    setProfileImage(savedAccount.profileImage);
-                } else {
-                    setProfileImage(null);
-            }
-            };
-
-            // loadProfileImage();
-
-            const handleProfileUpdate = () => {
-                loadProfileImage();
-            };
-
-            window.addEventListener('profileUpdated', handleProfileUpdate);
             
-            return () => {
-                window.removeEventListener('profileUpdated', handleProfileUpdate);
-            };
-        }, []);
+            {/* Catalogo */}
+            <div className="grid-wrap">
+                { filteredBooks.map((book, i) => (
+                    <div key={i} className="card-container">
+                        <img className="card-image" src={book.image} alt={book.title} />
 
-        return(
-            <Router>
-                <Header stateLogin={ stateLogin } setStateLogin={ setStateLogin } name={ name }
-                setName={ setName } profileImage={ profileImage } search={ search } setSearch={ setSearch } />
-                <Routes>
-                    <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } /> } />
+                        <div className="bottom-bar">
+                            <img src={ico_addCarrito} className="bar-btn"/>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
 
-                    {/*Pagina principal*/}
-                    <Route path="/" element={ <Home stateLogin={stateLogin} search={ search } />} />
-
-                    {/*Login*/}
-                    <Route path="/login" element={<Login setStateLogin={setStateLogin} name={name} setName={setName} setProfileImage={setProfileImage} />} />
-
-                    {/* Reset de la contraseña */}
-                    <Route path="/reset-password/:token" element={<ResetPassword />} />
-
-                    {/*Registro*/}
-                    <Route path="/register" element={<Register />} />
-
-                    {/*Home post login*/}
-                    <Route path="/homepostlogin" element={stateLogin ? <HomePostLogin setStateLogin={setStateLogin} /> : <Navigate to="/login" replace/>} />
-
-                    {/*Carrito*/}
-                    <Route path="/carrito" element={stateLogin ? <Carrito /> : <Navigate to="/login" replace />} />
-
-                    {/*Perfil*/}
-                    <Route path="/perfil" element={stateLogin ? <Perfil setStateLogin={setStateLogin} setName={setName} /> : <Navigate to="/home" replace />} />
-                    <Route path="/editar" element={stateLogin ? <Editar setName={setName} /> : <Navigate to="/login" replace />} />
-
-                </Routes>
-            </Router>
-        );
-    }
-
-    export default App;
+export default Home;

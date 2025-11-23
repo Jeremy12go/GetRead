@@ -8,10 +8,7 @@ import Historial from "../components/Historial";
 import Realizado from "../components/Realizado";
 import Calificar from "../components/Calificar";
 import Pedido from "../components/Pedido";
-
 import { storeByCity, getProfile, getProductsByStore, getRatingsByStore } from '../API/APIGateway.js';
-import { arrayBufferToBase64 } from '../base64.js';
-
 import carritoImg from '../assets/carrito.png';
 import historialImg from '../assets/historial.png';
 import lupaImg from '../assets/lupa.png';
@@ -97,9 +94,7 @@ export default function Principal({ setStateLogin }) {
         return [...prev, {
             id: producto.id,
             nombre: producto.name,
-            imagen: producto.image
-            ? `data:${producto.image.contentType};base64,${arrayBufferToBase64(producto.image.data.data)}`
-            : "./logo.png",
+            imagen: producto.image,
             precio: producto.price,
             cantidad: 1,
             idStore: producto.idStore

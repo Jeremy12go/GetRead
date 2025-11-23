@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Historial.css";
 import { getProfile, getOrdersByIds, getStoreById } from '../API/APIGateway';
-import { arrayBufferToBase64 } from '../base64';
 
 function formatearFecha(fechaFormat) {
   const fecha = new Date(fechaFormat);
@@ -80,9 +79,7 @@ function Historial({ volver, verPedido }) {
               >
                 <img
                   src={
-                    tienda && tienda.logo && tienda.logo.data
-                      ? `data:${tienda.logo.contentType};base64,${arrayBufferToBase64(tienda.logo.data.data)}`
-                      : "./logo.png"
+                    tienda && tienda.logo
                   }
                   alt="logo tienda"
                   className="historial-logo"
