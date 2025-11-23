@@ -1,8 +1,8 @@
 import '../styles/register.css'
 import '../styles/styles.css';
 import { useState } from 'react';
-import { registerAccount } from '../API/APIGateway';
 import { useNavigate } from 'react-router-dom';
+import { registerBuyer, registerSeller } from '../API/APIGateway';
 
 
 function Register() {
@@ -13,6 +13,7 @@ function Register() {
     const [ name, setName ] = useState('');
     const [ phoneNumber, setPhoneNumber ] = useState('');
     const [ address, setAddress ] = useState('');
+    const [role, setRole] = useState('buyer');
     const [ errorRegistro, setErrorRegistro] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -22,7 +23,12 @@ function Register() {
             return;
         }
     try {
-        const res = await registerAccount(email, password, name, phoneNumber, address);
+        let res;
+        if (role === 'buyer') {
+            res = await registerBuyer(email, password, name, phoneNumber, address);
+        } else {
+            res = await registerSeller(email, password, name, phoneNumber, address);
+        }
         console.log('Cuenta creada:', res.data);
         navigate('/homepostlogin');
 
@@ -69,9 +75,27 @@ function Register() {
                         value={password} onChange={ (e) => setPassword(e.target.value) }
                         className="input-text" />
 
-                    <p className="text-common">
-                        Se creara un perfil automaticamente asociado a tu dirección de correo.
-                    </p>
+                    <p className="text-common">Tipo de perfil*</p>
+                        <div className="role-options">
+                            <label>
+                            <input
+                                type="radio"
+                                value="buyer"
+                                checked={role === 'buyer'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            Comprador
+                            </label>
+                            <label>
+                            <input
+                                type="radio"
+                                value="seller"
+                                checked={role === 'seller'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            Vendedor
+                            </label>
+                        </div>
                 </div>
             </div>
             <div>

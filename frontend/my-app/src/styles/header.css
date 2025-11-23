@@ -30,6 +30,7 @@
 }
 
 .login-container {
+  top: 5px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -42,7 +43,7 @@
 }
 
 .usuario {
-  width: auto;
+  width: 40px;
   height: 40px;
   object-fit: contain;
   border-radius: 50%;
@@ -57,6 +58,7 @@
   padding: 0;
   margin: 0;
   font-size: 16px;
+  font-weight: bold;
 }
 
 .BinicioSesion:hover {
@@ -93,5 +95,29 @@
   justify-content: center;
 }
 
+/* billetera */
+nav a:hover {
+    text-decoration: underline;
+}
 
+.billetera {
+  right: 250px;
+  width: 40px;
+  object-fit: contain;
+}
 
+.billetera-container {
+  position: relative;
+  top: 5px;
+  right: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 5px;
+}
+
+.saldo-billetera {
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+}

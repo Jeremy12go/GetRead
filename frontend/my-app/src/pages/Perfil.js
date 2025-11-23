@@ -30,7 +30,9 @@ export default function Perfil({ setStateLogin, setName }) {
             const freshProfile = {
               ...response.data.profile,
               email: response.data.account?.email || savedAccount.email,
-              profileImage: response.data.account?.profileImage
+              profileImage: response.data.account?.profileImage,
+              profilebuyer: response.data.account?.profilebuyer,
+              profileseller: response.data.account?.profileseller
             };
             
             setPerfil(freshProfile);
@@ -165,10 +167,51 @@ export default function Perfil({ setStateLogin, setName }) {
           </div>
 
           <div className="perfil-botones">
-            <button className="btn verde">Ver Historial Pedidos</button>
-            <button className="btn negro" onClick={() => navigate('/editar')}>Editar Perfil</button>
-            <button className="btn rojo" onClick={handleLogout}>Cerrar Sesión</button>
-            <button className="btn azul">Ver libros Adquiridos</button>
+            {/* Bloque Buyer */}
+            {perfil.profilebuyer && (
+              <>
+                <button className="btn verde" onClick={() => navigate('/historial-pedidos')}>
+                  Historial de pedidos
+                </button>
+                <button className="btn azul">Libros adquiridos</button>
+              </>
+            )}
+
+            {/* Bloque Seller */}
+            {perfil.profileseller && (
+              <>
+                <button className="btn verde" onClick={() => navigate('/historial-publicaciones')}>
+                  Historial de publicaciones
+                </button>
+                <button className="btn azul" onClick={() => navigate('/publicar')}>
+                  Publicar libro
+                </button>
+              </>
+            )}
+
+            {/* Botones comunes */}
+            <button className="btn negro" onClick={() => navigate('/editar')}>
+              Editar perfil
+            </button>
+            <button className="btn rojo" onClick={handleLogout}>
+              Cerrar sesión
+            </button>
+          </div>
+
+          <div className="perfil-reviews">
+            {perfil.profilebuyer ? (
+              <>
+                <h2>Mis Reseñas</h2>
+                {/* Aquí renderizas lista de reseñas del buyer */}
+              </>
+            ) : perfil.profileseller ? (
+              <>
+                <h2>Mis Publicaciones</h2>
+                {/* Aquí renderizas lista de publicaciones del seller */}
+              </>
+            ) : (
+              <p>Este perfil no tiene tipo definido</p>
+            )}
           </div>
         </div>
       ) : (

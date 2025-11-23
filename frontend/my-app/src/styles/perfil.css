@@ -176,3 +176,10 @@ html, body {
 .image-upload-label:active .profile-image {
   transform: scale(0.98);
 }
+
+.perfil-reviews {
+  border-top:#000000 2px solid;
+  width: 100%;
+  margin-top: 30px;
+  padding-left: 0px;
+}

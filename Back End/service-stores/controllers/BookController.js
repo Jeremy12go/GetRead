@@ -197,10 +197,7 @@ exports.createbook = async (req, res) => {
 
     const image = req.file.path;
 
-    const parsedGenre = typeof genre === 'string'
-      ? JSON.parse(genre)
-        : genre;
-
+    const parsedGenre = typeof genre === 'string' ? JSON.parse(genre) : genre;
 
     const book = await Book.create({
       idseller,
@@ -218,7 +215,7 @@ exports.createbook = async (req, res) => {
     res.status(201).json(book);
 
     //se usa axios para vincular con el servicio de cuentas para añadir el libro al vendedor :D
-    axios.put(`${process.env.ACCOUNTS_SERVICE_URL}/${idseller}/addbook`, {
+    axios.put(`${process.env.ACCOUNTS_SERVICE_URL}/accounts/${idseller}/addbook`, {
       bookId: book._id
     }).catch(err => {
       console.error('Error al vincular libro con vendedor:', err.message);

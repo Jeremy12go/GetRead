@@ -2,12 +2,15 @@ import '../styles/home.css';
 import '../styles/styles.css';
 import { useRef, useState, useEffect} from "react";
 import ico_addCarrito from '../assets/anadirCarro.png';
+import { useNavigate } from 'react-router-dom';
 
 function Home({ stateLogin, search }){
 
     const [ books, setBooks ] = useState([]);
     const [ genreFilter, setGenreFilter ] = useState("all");
     const [ ageFilter, setAgeFilter ] = useState("all");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("http://localhost:3004/stores")
@@ -50,7 +53,8 @@ function Home({ stateLogin, search }){
                     <div className="hero-content">
                         <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
                         <p>Disfruta de un sinfín de libros para ti...</p>
-                        <button className='button-generic'>Quiero leer</button>
+                        <button className='button-generic' 
+                            onClick={ () => navigate('/register') }>Quiero leer</button>
                     </div>
                 </div>
             ):(

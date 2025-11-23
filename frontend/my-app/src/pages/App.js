@@ -7,6 +7,7 @@ import Header from "../incluides/header.js";
 import Perfil from "./Perfil.js";
 import Editar from "./Editar.js";
 import ResetPassword from "../pages/ResetPassword";
+import PublicarLibro from "../pages/Publicar.js"
 import { useState, useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -16,6 +17,7 @@ function App() {
     const [ name, setName ] = useState('');
     const [ profileImage, setProfileImage ] = useState(null);
     const [ search, setSearch ] = useState('');
+    const [ saldoBilletera, setSaldoBilletera ] = useState(0);
 
     useEffect(() => {
         const loadProfileImage = () => {
@@ -46,33 +48,45 @@ function App() {
 
     return(
         <Router>
+
             <Header stateLogin={ stateLogin } setStateLogin={ setStateLogin } name={ name }
-            setName={ setName } profileImage={ profileImage } search={ search } setSearch={ setSearch } />
+            setName={ setName } profileImage={ profileImage } search={ search } setSearch={ setSearch } 
+            saldoBilletera={ saldoBilletera } />
+
             <Routes>
                 <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } /> } />
 
                 {/*Pagina principal*/}
-                <Route path="/" element={ <Home stateLogin={stateLogin} search={ search } />} />
+                <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } /> } />
 
                 {/*Login*/}
-                <Route path="/login" element={<Login setStateLogin={setStateLogin} name={name} setName={setName} setProfileImage={setProfileImage} />} />
+                <Route path="/login" element={ <Login setStateLogin={ setStateLogin } name={ name }
+                setName={ setName } setProfileImage={ setProfileImage } />} />
 
                 {/* Reset de la contraseña */}
-                <Route path="/reset-password/:token" element={<ResetPassword />} />
+                <Route path="/reset-password/:token" element={ <ResetPassword/> } />
 
                 {/*Registro*/}
-                <Route path="/register" element={<Register />} />
+                <Route path="/register" element={ <Register/> } />
 
                 {/*Home post login*/}
-                <Route path="/homepostlogin" element={stateLogin ? <HomePostLogin setStateLogin={setStateLogin} /> : <Navigate to="/login" replace/>} />
+                <Route path="/homepostlogin" element={ stateLogin 
+                    ? <HomePostLogin setStateLogin={setStateLogin} /> 
+                    : <Navigate to="/login" replace/> } />
 
                 {/*Carrito*/}
-                <Route path="/carrito" element={stateLogin ? <Carrito /> : <Navigate to="/login" replace />} />
+                <Route path="/carrito" element={ stateLogin
+                    ? <Carrito /> 
+                    : <Navigate to="/login" replace />} />
 
                 {/*Perfil*/}
-                <Route path="/perfil" element={stateLogin ? <Perfil setStateLogin={setStateLogin} setName={setName} /> : <Navigate to="/home" replace />} />
-                <Route path="/editar" element={stateLogin ? <Editar setName={setName} /> : <Navigate to="/login" replace />} />
-
+                <Route path="/perfil" element={ stateLogin
+                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } /> 
+                    : <Navigate to="/home" replace /> } />
+                <Route path="/editar" element={ stateLogin 
+                    ? <Editar setName={ setName } /> 
+                    : <Navigate to="/login" replace /> } />
+                <Route path="/publicar" element={ <PublicarLibro/> } />
             </Routes>
         </Router>
     );

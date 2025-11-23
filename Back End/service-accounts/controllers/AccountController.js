@@ -18,6 +18,11 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
+    if (!account.billetera) {
+      account.billetera = { saldo: 0 };
+      await account.save();
+    }
+    
     let profile = null;
 
     if (account.profilebuyer) {
@@ -36,6 +41,7 @@ exports.login = async (req, res) => {
       account: {
         _id: account._id,
         email: account.email,
+        billetera: account.billetera,
         profilebuyer: account.profilebuyer,
         profileseller: account.profileseller,
         profileImage: account.profileImage
@@ -62,7 +68,7 @@ exports.create = async (req, res) => {
     const { email, password, name, phoneNumber, address } = req.body;
 
     const profile = await Profilebuyer.create({
-      name: name,  
+      name: name,
       phoneNumber: phoneNumber,
       address: address
     });
@@ -326,5 +332,100 @@ exports.createSellerFromExistentAccount = async (req, res) => {
 
   } catch (e) {
     res.status(400).json({ error: 'Datos inválidos', detalle: e.message });
+  }
+};
+
+exports.getBilletera = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const account = await Account.findById(id);
+    if (!account) return res.status(404).json({ error: 'Cuenta no encontrada' });
+
+    res.json({
+      saldo: account.billetera?.saldo ?? 0
+    });
+
+  } catch (e) {
+    res.status(500).json({ error: 'Error al obtener billetera', detalle: e.message });
+  }
+};
+
+exports.createBilletera = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const account = await Account.findById(id);
+    if (!account) return res.status(404).json({ error: 'Cuenta no encontrada' });
+
+    account.billetera = { saldo: 0 };
+    await account.save();
+
+    res.json({ message: "Billetera creada", billetera: account.billetera });
+
+  } catch (e) {
+    res.status(500).json({ error: 'Error al crear billetera', detalle: e.message });
+  }
+};
+
+exports.agregarFondos = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { monto } = req.body;
+
+    if (monto <= 0) {
+      return res.status(400).json({ error: "El monto debe ser mayor a 0" });
+    }
+
+    const account = await Account.findById(id);
+    if (!account) return res.status(404).json({ error: "Cuenta no encontrada" });
+
+    if (!account.billetera) {
+      account.billetera = { saldo: 0 };
+    }
+
+    account.billetera.saldo += monto;
+    await account.save();
+
+    res.json({
+      message: "Fondos agregados correctamente",
+      saldo: account.billetera.saldo
+    });
+
+  } catch (e) {
+    res.status(500).json({ error: "Error al agregar fondos", detalle: e.message });
+  }
+};
+
+exports.restarFondos = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { monto } = req.body;
+
+    if (monto <= 0) {
+      return res.status(400).json({ error: "El monto debe ser mayor a 0" });
+    }
+
+    const account = await Account.findById(id);
+    if (!account) return res.status(404).json({ error: "Cuenta no encontrada" });
+
+    if (!account.billetera) {
+      return res.status(400).json({ error: "La cuenta no tiene billetera creada" });
+    }
+
+    if (account.billetera.saldo < monto) {
+      return res.status(400).json({ error: "Fondos insuficientes" });
+    }
+
+    account.billetera.saldo -= monto;
+    await account.save();
+
+    res.json({
+      message: "Fondos descontados correctamente",
+      saldo: account.billetera.saldo
+    });
+
+  } catch (e) {
+    res.status(500).json({ error: "Error al descontar fondos", detalle: e.message });
   }
 };

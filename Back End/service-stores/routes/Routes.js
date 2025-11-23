@@ -2,10 +2,6 @@ const express = require('express');
 const router = express.Router();
 const BookController = require('../controllers/BookController');
 const multer = require('multer');
-
-//configuracion para guardar la imagen en memoria
-//const storage = multer.memoryStorage();
-//const upload = multer({ storage });
 const upload = require('../db/cloudinary.js');
 
 router.get('/', BookController.getAllBooks);
@@ -16,4 +12,5 @@ router.get('/:id/image', BookController.getImage);
 router.put('/:id', BookController.update);
 router.delete('/:id', BookController.remove);
 router.patch('/:id/stock', BookController.modifystock);
+
 module.exports = router;
