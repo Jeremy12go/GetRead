@@ -1,6 +1,5 @@
 const Account = require('../models/Account');
 const Profilebuyer = require('../models/ProfileBuyer');
-//Cambios
 const Profileseller = require('../models/Profileseller');
 const path = require('path');
 const fs = require('fs');
@@ -78,7 +77,7 @@ exports.create = async (req, res) => {
     res.status(400).json({error: 'Datos inválidos', detalle: e.message });
   }
 };
-//cambio en este metodo
+
 exports.createseller = async (req, res) => {
   try {
     const { email, password, name, phoneNumber, address } = req.body;
@@ -87,7 +86,6 @@ exports.createseller = async (req, res) => {
       name: name,
       phoneNumber: phoneNumber,
       address: address,
-      //cambio aqui
       avgRating: 0
     });
 
