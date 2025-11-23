@@ -5,10 +5,37 @@ const API_URL = 'http://localhost:3004'
 export const registerAccount = (email, password, name, phoneNumber, address) => axios
     .post(`${API_URL}/accounts`, { email, password, name, phoneNumber, address });
 
+export const registerBuyer = (email, password, name, phoneNumber, address) => {
+  return axios.post(`${API_URL}/accounts/`, {
+    email, password, name, phoneNumber, address
+  });
+};
+
+export const registerSeller = (email, password, name, phoneNumber, address) => {
+  return axios.post(`${API_URL}/accounts/createseller`, {
+    email, password, name, phoneNumber, address
+  });
+};
+
 export const loginAccount = (email, password) => axios.post(`${API_URL}/accounts/login`,
      { email, password });
 
 export const getProfile = (accountId) => axios.get(`${API_URL}/accounts/profile/${accountId}`);
+
+
+//LIBROS
+export const createBook = (bookData) => {
+  return axios.post(`${API_URL}/books`, bookData);
+};
+
+export const uploadBookImage = (bookId, file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  return axios.post(`${API_URL}/books/${bookId}/upload-image`, formData, {
+    headers: { "Content-Type": "multipart/form-data" }
+  });
+};
 
 //export const updateProfile = (idProfile, data) => axios.put(`${API_URL}/accounts/profileB/${idProfile}`, data);
 

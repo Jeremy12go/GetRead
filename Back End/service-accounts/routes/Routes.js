@@ -35,6 +35,11 @@ router.patch('/seller/:idSeller/updaterating', controllerProfileSeller.updateRat
 router.get('/profile/:id', controllerAccount.getProfile);
 router.put('/profile/:id', controllerAccount.updateProfile);
 
+router.post('/:id/billetera', controllerAccount.createBilletera);
+router.get('/:id/billetera', controllerAccount.getBilletera);
+router.put('/:id/billetera/agregar', controllerAccount.agregarFondos);
+router.put('/:id/billetera/restar', controllerAccount.restarFondos);
+
 router.post('/:id/upload-image', upload.single('profileImage'), controllerAccount.uploadAccountImage);
 
 module.exports = router;

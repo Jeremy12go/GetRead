@@ -9,6 +9,9 @@ const accountSchema = new mongoose.Schema({
   profileseller: {type: String, required: true}
    */
   profileImage: { type: String, default: null },
+  billetera: {
+    saldo: { type: Number, default: 0 },
+  },
   profileseller: { type: mongoose.Schema.Types.ObjectId, ref: 'ProfileSeller' },
   profilebuyer: { type: mongoose.Schema.Types.ObjectId, ref: 'ProfileBuyer' }
 });

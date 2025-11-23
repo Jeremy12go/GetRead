@@ -2,12 +2,13 @@ import '../styles/header.css'
 import '../styles/styles.css'
 import logo from '../assets/logBackgroundWhite.png'
 import lg_carrito from '../assets/carrito.png'
+import lg_billetera from '../assets/billetera.png'
 import usuario from '../assets/usuario.png'
 import lupa from '../assets/lupa.png'
 import { useNavigate } from 'react-router-dom';
 
 
-function Header({ stateLogin, name , profileImage }) {
+function Header({ stateLogin, name , profileImage, saldoBilletera }) {
 
     const navigate = useNavigate();
     
@@ -16,6 +17,13 @@ function Header({ stateLogin, name , profileImage }) {
     const displayImage = profileImage 
         ? `${API_URL}${profileImage}` 
         : usuario;
+
+    const formatSaldo = (saldo) => {
+        return new Intl.NumberFormat('es-CL', {
+            style: 'currency',
+            currency: 'CLP'
+        }).format(saldo || 0);
+    };
 
     return(
         <div className="general">
@@ -32,6 +40,19 @@ function Header({ stateLogin, name , profileImage }) {
                      ? navigate('/carrito')
                      : navigate('/homePostLogin')
                 } />
+
+                {/* Billetera */}
+                {stateLogin && (
+                    <div className="billetera-container">
+                        <img 
+                            className="billetera" 
+                            src={lg_billetera}
+                        />
+                        <span className="saldo-billetera">
+                            {formatSaldo(saldoBilletera)}
+                        </span>
+                    </div>
+                )}
 
                 {/* Perfil */}
                 <div className="login-container"

@@ -19,6 +19,12 @@ app.use('/stores', createProxyMiddleware({
   changeOrigin: true,
 }));
 
+//Proxy para Books
+app.use('/books', createProxyMiddleware({
+  target: 'http://localhost:3001/books',
+  changeOrigin: true,
+}));
+
 // Proxy para Orders
 app.use('/orders', createProxyMiddleware({
   target: 'http://localhost:3002/orders',

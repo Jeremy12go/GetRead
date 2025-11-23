@@ -11,6 +11,7 @@ import Carrito from "./Carrito.js";
 import Header from "../incluides/header.js";
 import Perfil from "./Perfil.js";
 import Editar from "./Editar.js";
+import Publicar from "./Publicar.js";
 
 import img_1 from '../assets/PortadasLibros/Harry.jpg';
 import img_2 from '../assets/PortadasLibros/Juego.jpg';
@@ -81,6 +82,7 @@ function App() {
     const [ stateLogin, setStateLogin ] = useState(false);
     const [ name, setName ] = useState('');
     const [ profileImage, setProfileImage ] = useState(null);
+    const [saldoBilletera, setSaldoBilletera] = useState(0);
 
     useEffect(() => {
         const loadProfileImage = () => {
@@ -94,9 +96,19 @@ function App() {
             } else {
                 setProfileImage(null);
         }
+
+            if (savedProfile?.billetera) {
+                setSaldoBilletera(savedProfile.billetera.saldo || 0);
+            }
+
+            if (savedProfile && savedAccount) {
+                setName(savedProfile.name);
+                setStateLogin(true);
+            }
+
         };
 
-        // loadProfileImage();
+        loadProfileImage();
 
         const handleProfileUpdate = () => {
             loadProfileImage();
@@ -111,7 +123,7 @@ function App() {
 
     return(
         <Router>
-            <Header stateLogin={stateLogin} setStateLogin={setStateLogin} name={name} setName={setName} profileImage={profileImage} />
+            <Header stateLogin={stateLogin} setStateLogin={setStateLogin} name={name} setName={setName} profileImage={profileImage} saldoBilletera={saldoBilletera} />
             <Routes>
                 <Route path="/home" element={<Home stateLogin={stateLogin} />} />
 
@@ -133,6 +145,9 @@ function App() {
                 {/*Perfil*/}
                 <Route path="/perfil" element={stateLogin ? <Perfil setStateLogin={setStateLogin} setName={setName} /> : <Navigate to="/home" replace />} />
                 <Route path="/editar" element={stateLogin ? <Editar setName={setName} /> : <Navigate to="/login" replace />} />
+
+                {/* publicar libro */}
+                <Route path="/publicar" element={stateLogin ? <Publicar /> : <Navigate to="/login" replace />} />
 
             </Routes>
         </Router>

@@ -27,7 +27,8 @@ function Login({ setStateLogin, setName, setProfileImage }) {
             localStorage.setItem('profile', JSON.stringify({
                 ...profile,
                 email: account.email,
-                profileImage: account.profileImage
+                profileImage: account.profileImage,
+                billetera: account.billetera
             }));
 
             if (profile?.profileImage) {
