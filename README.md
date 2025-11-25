@@ -82,7 +82,7 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 ```
 - En la ruta del servicio accounts
 ```bash
-    npm i multer dotenv passport passport-google-oauth20 jsonwebtoken cookie-parser google-auth-library @sendinblue/client
+    npm i multer dotenv passport passport-google-oauth20 jsonwebtoken cookie-parser google-auth-library @sendinblue/client cloudinary multer-storage-cloudinary
 
 ```
 - En la ruta del servicio stores

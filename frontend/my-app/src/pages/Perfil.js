@@ -1,45 +1,37 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile, uploadAccountImage } from '../API/APIGateway.js';
+import { getAccount, uploadAccountImage } from '../API/APIGateway.js';
 import "../styles/perfil.css";
-
 import usuarioDefault from '../assets/usuario.png'
 
-export default function Perfil({ setStateLogin, setName }) {
-  const [perfil, setPerfil] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [uploadingImage, setUploadingImage] = useState(false);
+export default function Perfil({ setStateLogin, setName, objectAccount }) {
+  const [ perfil, setPerfil ] = useState(null);
+  const [ loading, setLoading ] = useState(true);
+  const [ uploadingImage, setUploadingImage ] = useState(false);
   const navigate = useNavigate();
 
   const API_URL = 'http://localhost:3000';
 
   useEffect(() => {
     const loadProfile = async () => {
+      console.log(objectAccount);
       try {
-        const savedProfile = JSON.parse(localStorage.getItem('profile'));
-        const savedAccount = JSON.parse(localStorage.getItem('account'));
         
-        if (savedProfile) {
-          setPerfil(savedProfile);
-        }
-
-        if (savedAccount?._id) {
-          const response = await getProfile(savedAccount._id);
-          
-          if (response.data && response.data.profile) {
-            const freshProfile = {
-              ...response.data.profile,
-              email: response.data.account?.email || savedAccount.email,
-              profileImage: response.data.account?.profileImage,
-              profilebuyer: response.data.account?.profilebuyer,
-              profileseller: response.data.account?.profileseller
-            };
-            
-            setPerfil(freshProfile);
-            localStorage.setItem('profile', JSON.stringify(freshProfile));
-          }
-        }
+        const res = await getAccount(objectAccount?.account._id);
+        const account = res.data.account;
+        const profile = res.data.profile;
         
+        if (account !== undefined) {
+          const freshProfile = {
+            ...profile,
+            email: account.email,
+            profileImage: account.profileImage,
+            profilebuyer: account.profilebuyer,
+            profileseller: account.profileseller
+          };
+          console.log("Contenido Profile:"+perfil)
+          setPerfil(freshProfile);
+        }
       } catch (error) {
         console.error('Error al cargar perfil:', error);
       } finally {
@@ -68,9 +60,8 @@ export default function Perfil({ setStateLogin, setName }) {
 
     try {
       setUploadingImage(true);
-      
-      const savedAccount = JSON.parse(localStorage.getItem('account'));
-      const response = await uploadAccountImage(savedAccount._id, file);
+      // Se esta usando la id del perfil no la de la cuenta, es necesaria la de la cuenta
+      const response = await uploadAccountImage(perfil._id, file);
 
       // Actualizar tanto perfil como account
       const updatedProfile = {
@@ -78,14 +69,7 @@ export default function Perfil({ setStateLogin, setName }) {
         profileImage: response.data.profileImage
       };
       
-      const updatedAccount = {
-        ...savedAccount,
-        profileImage: response.data.profileImage
-      };
-      
       setPerfil(updatedProfile);
-      localStorage.setItem('profile', JSON.stringify(updatedProfile));
-      localStorage.setItem('account', JSON.stringify(updatedAccount));
 
       window.dispatchEvent(new Event('profileUpdated'));
 
@@ -139,7 +123,7 @@ export default function Perfil({ setStateLogin, setName }) {
                     />
                     <div className="image-overlay">
                       <span className="overlay-text">
-                        {uploadingImage ? 'Actualizando...' : 'Cambiar Imagen'}
+                        { uploadingImage ? 'Actualizando...' : 'Cambiar Imagen'}
                       </span>
                     </div>
                   </label>
@@ -148,9 +132,9 @@ export default function Perfil({ setStateLogin, setName }) {
                     id="profile-image-input"
                     type="file"
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={ handleImageChange }
                     style={{ display: 'none' }}
-                    disabled={uploadingImage}
+                    disabled={ uploadingImage }
                   />
                 </div>
               </div>

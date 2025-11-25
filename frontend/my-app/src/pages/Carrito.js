@@ -2,7 +2,7 @@ import '../styles/carrito.css';
 import '../styles/styles.css';
 
 import { useState } from "react";
-import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
+import { createOrder, getAccount, updateProfile } from '../API/APIGateway.js';
 
 
 function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, logoTienda, setIdTiendaACalificar, setIdOrdenACalificar }) {
@@ -38,7 +38,7 @@ function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, 
       const res = await createOrder(idProfile, ids, total, infoTienda.id);
       const orderId = res.data.id;
 
-      const profileRes = await getProfile(idProfile);
+      const profileRes = await getAccount(idProfile); // Considerar la estructura que retorna
       const orders = profileRes.data.orders || [];
 
       await updateProfile(idProfile, { orders: [...orders, orderId] });

@@ -1,5 +1,5 @@
 import '../styles/register.css'
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/styles.css';
 import { updateProfile } from '../API/APIGateway'; 
 import { useNavigate } from 'react-router-dom';
@@ -8,12 +8,12 @@ function Editar({ setName }) {
 
     const navigate = useNavigate();
     
-    const [email, setEmail] = useState('');
-    const [name, setNameLocal] = useState('');
-    const [address, setAddress] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorRegistro, setErrorRegistro] = useState(false);
+    const [ email, setEmail ] = useState('');
+    const [ name, setNameLocal ] = useState('');
+    const [ address, setAddress ] = useState('');
+    const [ phoneNumber, setPhoneNumber ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ errorRegistro, setErrorRegistro ] = useState(false);
 
     // Cargar datos actuales del perfil
     useEffect(() => {
@@ -119,7 +119,7 @@ function Editar({ setName }) {
             </div>
 
             <div>
-                <button className="button-generic" onClick={handleSubmit}>
+                <button className="button-generic" onClick={ handleSubmit }>
                     Confirmar
                 </button>
 

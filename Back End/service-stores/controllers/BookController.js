@@ -107,7 +107,6 @@ exports.createbook = async (req, res) => {
 //version nueva
 
 const mongoose = require('mongoose');
-//const Book = require('../models/Book')(mongoose);
 const axios = require('axios');
 
 exports.getAllBooks = async (req, res) => {
@@ -214,7 +213,6 @@ exports.createbook = async (req, res) => {
 
     res.status(201).json(book);
 
-    //se usa axios para vincular con el servicio de cuentas para añadir el libro al vendedor :D
     axios.put(`${process.env.ACCOUNTS_SERVICE_URL}/accounts/${idseller}/addbook`, {
       bookId: book._id
     }).catch(err => {

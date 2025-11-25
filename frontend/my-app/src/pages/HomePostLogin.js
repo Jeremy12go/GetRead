@@ -13,8 +13,7 @@ import historialImg from '../assets/historial.png';
 import lupaImg from '../assets/lupa.png';
 import usuarioImg from '../assets/usuario.png';
 */
-import { storeByCity, getProfile, getProductsByStore, getRatingsByStore } from '../API/APIGateway.js';
-
+import { storeByCity, getAccount, getProductsByStore, getRatingsByStore } from '../API/APIGateway.js';
 
 function calcularAverageRating(ratings) {
     if (!Array.isArray(ratings) || ratings.length === 0) return "N/A";
@@ -46,7 +45,7 @@ function HomePostLogin({ setStateLogin }) {
         const cargarTiendas = async () => {
         try {
             const idProfile = localStorage.getItem('idProfile');
-            const profile = await getProfile(idProfile);
+            const profile = await getAccount(idProfile); // Considerar la estructura que retorna
             setPerfil(profile.data);
             const city = profile.data.address.split(' ')[0].toLowerCase();
             const stores_ = await storeByCity(city);

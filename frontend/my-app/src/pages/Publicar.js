@@ -70,18 +70,7 @@ function PublicarLibro() {
       formData.append("image", imageFile);
 
       await createBook(formData);
-
-      /*
-      console.log("Libro completo devuelto por el backend:", res.data);
-      const bookId = res.data._id;
       
-
-      if (imageFile) {
-        setUploadingImage(true);
-        await uploadBookImage(bookId, imageFile);
-        setUploadingImage(false);
-      }
-      */
       alert("Libro publicado correctamente");
       navigate("/home");
     } catch (err) {

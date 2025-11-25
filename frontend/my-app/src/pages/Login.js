@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from "@react-oauth/google";
 import axios from 'axios';
  
-function Login({ setStateLogin, setName, setProfileImage }) {
+function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
 
     const navigate = useNavigate();
     
@@ -19,31 +19,22 @@ function Login({ setStateLogin, setName, setProfileImage }) {
         setErrorLogin('');
 
         try {
-            localStorage.clear();
             const res = await loginAccount(email, password);
 
             const account = res.data.account;
             const profile = res.data.profile;
+            
+            setObjectAccount(res.data);
 
-            localStorage.setItem('account', JSON.stringify(account));
-            localStorage.setItem('profile', JSON.stringify({
-                ...profile,
-                email: account.email,
-                profileImage: account.profileImage,
-                billetera: account.billetera
-            }));
-
-            if (profile?.profileImage) {
-                setProfileImage(profile.profileImage);
-            } else if (account?.profileImage) {
+            if (account?.profileImage) {
                 setProfileImage(account.profileImage);
             }
 
             window.dispatchEvent(new Event('profileUpdated'));
 
-            setName(profile.name.split(" ")[0]);
+            setName(profile?.name.split(" ")[0]);
             setStateLogin(true);
-            navigate('/home');
+            navigate('/perfil');
 
         } catch (e) {
             if (e.response?.data?.error) {
@@ -65,14 +56,6 @@ function Login({ setStateLogin, setName, setProfileImage }) {
 
             const account = res.data.account;
             const profile = res.data.profile;
-
-            // Guardar igual que el login normal
-            localStorage.setItem("account", JSON.stringify(account));
-            localStorage.setItem("profile", JSON.stringify({
-                ...profile,
-                email: account.email,
-                profileImage: account.profileImage
-            }));
 
             setProfileImage(account.profileImage);
             setName(profile.name);

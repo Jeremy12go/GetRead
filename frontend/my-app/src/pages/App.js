@@ -14,6 +14,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 function App() {
 
     const [ stateLogin, setStateLogin ] = useState(false);
+    const [ objectAccount, setObjectAccount ] = useState('');
     const [ name, setName ] = useState('');
     const [ profileImage, setProfileImage ] = useState(null);
     const [ search, setSearch ] = useState('');
@@ -60,8 +61,8 @@ function App() {
                 <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } /> } />
 
                 {/*Login*/}
-                <Route path="/login" element={ <Login setStateLogin={ setStateLogin } name={ name }
-                setName={ setName } setProfileImage={ setProfileImage } />} />
+                <Route path="/login" element={ <Login setStateLogin={ setStateLogin }
+                setName={ setName } setProfileImage={ setProfileImage } setObjectAccount={ setObjectAccount } />} />
 
                 {/* Reset de la contraseña */}
                 <Route path="/reset-password/:token" element={ <ResetPassword/> } />
@@ -78,10 +79,9 @@ function App() {
                 <Route path="/carrito" element={ stateLogin
                     ? <Carrito /> 
                     : <Navigate to="/login" replace />} />
-
                 {/*Perfil*/}
                 <Route path="/perfil" element={ stateLogin
-                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } /> 
+                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } objectAccount={ objectAccount } /> 
                     : <Navigate to="/home" replace /> } />
                 <Route path="/editar" element={ stateLogin 
                     ? <Editar setName={ setName } /> 
