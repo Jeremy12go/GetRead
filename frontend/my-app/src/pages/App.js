@@ -16,36 +16,9 @@ function App() {
     const [ stateLogin, setStateLogin ] = useState(false);
     const [ objectAccount, setObjectAccount ] = useState('');
     const [ name, setName ] = useState('');
-    const [ profileImage, setProfileImage ] = useState(null);
+    const [ profileImage, setProfileImage ] = useState('');
     const [ search, setSearch ] = useState('');
     const [ saldoBilletera, setSaldoBilletera ] = useState(0);
-
-    useEffect(() => {
-        const loadProfileImage = () => {
-            const savedProfile = JSON.parse(localStorage.getItem('profile'));
-            const savedAccount = JSON.parse(localStorage.getItem('account'));
-            
-            if (savedProfile?.profileImage) {
-                setProfileImage(savedProfile.profileImage);
-            } else if (savedAccount?.profileImage) {
-                setProfileImage(savedAccount.profileImage);
-            } else {
-                setProfileImage(null);
-        }
-        };
-
-        // loadProfileImage();
-
-        const handleProfileUpdate = () => {
-            loadProfileImage();
-        };
-
-        window.addEventListener('profileUpdated', handleProfileUpdate);
-        
-        return () => {
-            window.removeEventListener('profileUpdated', handleProfileUpdate);
-        };
-    }, []);
 
     return(
         <Router>

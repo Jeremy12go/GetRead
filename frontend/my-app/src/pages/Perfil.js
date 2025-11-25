@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAccount, uploadAccountImage } from '../API/APIGateway.js';
+import { uploadAccountImage } from '../API/APIGateway.js';
 import "../styles/perfil.css";
 import usuarioDefault from '../assets/usuario.png'
 
@@ -10,8 +10,6 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
   const [ loading, setLoading ] = useState(true);
   const [ uploadingImage, setUploadingImage ] = useState(false);
   const navigate = useNavigate();
-
-  const API_URL = 'http://localhost:3000';
 
   useEffect(() => {
     const loadProfile = async () => {

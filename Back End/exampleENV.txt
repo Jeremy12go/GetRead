@@ -14,6 +14,7 @@ API_ENVIRONMENT_VARIABLE=<CODE>
 
 Para el servicio de stores, se necesitan las siguientes credenciales:
 
+ACCOUNTS_SERVICE_URL=<CODE>
 CLOUD_NAME=<CODE>
 API_KEY=<CODE>
 API_SECRET=<CODE>

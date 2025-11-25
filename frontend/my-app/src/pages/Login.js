@@ -26,7 +26,7 @@ function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
             
             setObjectAccount(res.data);
 
-            if (account?.profileImage) {
+            if (account?.profileImage !== undefined) {
                 setProfileImage(account.profileImage);
             }
 

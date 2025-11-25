@@ -10,12 +10,8 @@ import { useNavigate } from 'react-router-dom';
 function Header({ stateLogin, name , profileImage, search, setSearch, saldoBilletera }) {
 
     const navigate = useNavigate();
-    
-    const API_URL = 'http://localhost:3000';
 
-    const displayImage = profileImage 
-        ? `${API_URL}${profileImage}` 
-        : usuario;
+    const displayImage = profileImage ? profileImage : usuario;
 
     const formatSaldo = (saldo) => {
         return new Intl.NumberFormat('es-CL', {
