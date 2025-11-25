@@ -6,12 +6,11 @@ import usuario from '../assets/usuario.png'
 import lupa from '../assets/lupa.png'
 import { useNavigate } from 'react-router-dom';
 
-
 function Header({ stateLogin, name , profileImage, search, setSearch, saldoBilletera }) {
 
     const navigate = useNavigate();
 
-    const displayImage = profileImage ? profileImage : usuario;
+    const displayImage = profileImage && stateLogin ? profileImage : usuario;
 
     const formatSaldo = (saldo) => {
         return new Intl.NumberFormat('es-CL', {

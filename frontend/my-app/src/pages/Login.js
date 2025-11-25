@@ -101,8 +101,8 @@ function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
                     />
                 </div>
             </div>
-            <div>
-                <button onClick={ handleSubmit } className="button-generic" >
+            <div className="buttons-login">
+                <button onClick={ handleSubmit } className="button-login" >
                     Iniciar Sesión
                 </button>
                 {errorLogin && (
@@ -110,6 +110,9 @@ function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
                         {errorLogin}
                     </p>
                 )}
+
+                <div className="separator"></div>
+
                 <GoogleLogin
                     onSuccess={ handleGoogleLogin }
                     onError={() => setErrorLogin("Error al iniciar sesión con Google")}
