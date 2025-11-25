@@ -4,10 +4,12 @@ import lg_carrito from '../assets/carrito.png'
 import lg_billetera from '../assets/billetera.png'
 import usuario from '../assets/usuario.png'
 import lupa from '../assets/lupa.png'
+import mundo from '../assets/mundo.png'
 import { useNavigate } from 'react-router-dom';
+import { translations } from '../components/translations';
 
 
-function Header({ stateLogin, name , profileImage, search, setSearch, saldoBilletera }) {
+function Header({ stateLogin, name , profileImage, search, setSearch, saldoBilletera, language, setLanguage }) {
 
     const navigate = useNavigate();
     
@@ -24,6 +26,10 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
         }).format(saldo || 0);
     };
 
+    const handleLanguageChange = (e) => {
+        setLanguage(e.target.value);
+    };
+
     return(
         <div className="general">
             {/* Logo */}
@@ -32,10 +38,35 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
             </div>
 
             {/* Barra de búsqueda */}
-            <div className="search-container">
-                <input type="text" placeholder="Buscar..." value={ search }
-                    onChange={ (e) => setSearch(e.target.value) } />
-                <img className="lupa" src={lupa} />
+                <div className="search-container">
+                    <input 
+                        type="text" 
+                        placeholder={translations[language].search} 
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)} 
+                    />
+                    <img className="lupa" src={lupa} />
+                </div>
+
+            {/* Selección de idioma */}
+            <div className='lenguage-select-wrapper'>
+                <div className="language-icon-fixed">
+                    <img className="mundo" src={mundo} />
+                </div>
+                <div className='lenguage-select'>
+                    <button 
+                        className={`language-btn ${language === 'es' ? 'active' : ''}`}
+                        onClick={() => handleLanguageChange({ target: { value: 'es' } })}
+                    >
+                        ES
+                    </button>
+                    <button 
+                        className={`language-btn ${language === 'en' ? 'active' : ''}`}
+                        onClick={() => handleLanguageChange({ target: { value: 'en' } })}
+                    >
+                        EN
+                    </button>
+                </div>
             </div>
 
             <div className="right">
@@ -70,7 +101,7 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
                     <img className="usuario" src={ displayImage } onError={ (e) => e.target.src = usuario } />
                     {   stateLogin
                         ? <button className="BinicioSesion" >{ name }</button>
-                        : <button className="BinicioSesion" >Perfil</button>
+                        : <button className="BinicioSesion" >{translations[language].profile}</button>
                     }
 
                 </div>

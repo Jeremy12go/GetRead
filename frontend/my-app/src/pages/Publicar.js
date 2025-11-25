@@ -4,18 +4,19 @@ import { createBook } from "../API/APIGateway";
 import "../styles/register.css";
 import "../styles/styles.css";
 import "../styles/publicar.css";
+import { translations } from '../components/translations.js';
 
 const GENRES = [
-  'Novela','Cuento','Fabula','Poesia','Comedia','Drama','Filosofico','Cientifico',
-  'Fantasia','Ciencia Ficción','Terror','Misterio','Suspenso','Romance','Aventura',
-  'Biografia','Historia','Ciencia','Filosofia','Psicologia','Autoayuda','Politica',
-  'Economia','Educación','Arte','Musica','Cine','Tecnologia','Turismo','Gastronomia',
+  'Novela','Cuento','Fabula','Poesía','Comedia','Drama','Filosófico','Científico',
+  'Fantasía','Ciencia Ficción','Terror','Misterio','Suspenso','Romance','Aventura',
+  'Biografía','Historia','Ciencia','Filosofía','Psicología','Autoayuda','Política',
+  'Economía','Educación','Arte','Música','Cine','Tecnología','Turismo','Gastronomía',
   'Espiritualidad','Religión'
 ];
 
-const PUBLIC_RANGE = ['Infantil','Juvenil','Adulto','Todo Publico'];
+const PUBLIC_RANGE = ['Infantil','Juvenil','Adulto','Todo Público'];
 
-function PublicarLibro() {
+function PublicarLibro( { language, setLanguage } ) {
   const navigate = useNavigate();
 
   const [ name, setName ] = useState('');
@@ -36,7 +37,7 @@ function PublicarLibro() {
     e.preventDefault();
 
     if (!isbn || !name || !author || !description || !price || !stock || genre.length === 0) {
-      setErrorForm("Debes completar todos los campos.");
+      setErrorForm(translations[language].publicar_alert);
       return;
     }
 
@@ -82,7 +83,7 @@ function PublicarLibro() {
         setUploadingImage(false);
       }
       */
-      alert("Libro publicado correctamente");
+      alert(translations[language].publicar_alert2);
       navigate("/home");
     } catch (err) {
       console.error("Error al publicar libro:", err.response?.data || err.message || err);
@@ -97,13 +98,13 @@ function PublicarLibro() {
 
   return (
     <div className="container-libros">
-        <p className="text-titulos2">Publicar Libro</p>
+        <p className="text-titulos2">{translations[language].publicar}</p>
       <form className="form-row" onSubmit={handleSubmit}>
         
 
         <div className="form-group">
 
-            <label className="text">Título*</label>
+            <label className="text">{translations[language].publicar_titulo}</label>
             <input
             type="text"
             value={ name }
@@ -113,7 +114,7 @@ function PublicarLibro() {
         </div>
 
         <div className="form-group">
-            <label className="text">Autor*</label>
+            <label className="text">{translations[language].publicar_autor}</label>
             <input
             type="text"
             value={ author }
@@ -133,7 +134,7 @@ function PublicarLibro() {
         </div>
 
         <div className="form-group">
-        <label className="text">Descripción*</label>
+        <label className="text">{translations[language].publicar_descripcion}</label>
         <textarea
           value={ description }
           onChange={(e) => setDescription(e.target.value)}
@@ -143,7 +144,7 @@ function PublicarLibro() {
         </div>
 
         <div className="form-group">
-        <label className="text">Precio*</label>
+        <label className="text">{translations[language].publicar_precio}</label>
         <input
           type="number"
           value={ price }
@@ -153,7 +154,7 @@ function PublicarLibro() {
         </div>
 
         <div className="form-group">
-        <label className="text">Stock*</label>
+        <label className="text">{translations[language].publicar_cantidad}</label>
         <input
           type="number"
           value={ stock }
@@ -163,14 +164,14 @@ function PublicarLibro() {
         </div>
 
         <div className="form-group">
-        <label className="text">Géneros*</label>
+        <label className="text">{translations[language].publicar_genero}</label>
         <div className="genre-dropdown" ref={ genreDropdownRef }>
           <button
             type="button"
             className="genre-dropdown-btn"
             onClick={() => setGenreDropdownOpen(!genreDropdownOpen)}
           >
-            {genre.length === 0 ? "Selecciona géneros..." : `${genre.length} seleccionados`}
+            {genre.length === 0 ? translations[language].publicar_generos : `${genre.length} ${translations[language].publicar_generos_seleccionados}`}
             <span className={`dropdown-arrow ${genreDropdownOpen ? "open" : ""}`}>▼</span>
           </button>
 
@@ -199,12 +200,12 @@ function PublicarLibro() {
 
         {genre.length > 0 && (
           <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>
-            Seleccionados: {genre.join(", ")}
+            {translations[language].publicar_seleccionados} {genre.join(", ")}
           </p>
         )}
 
         <div className="form-group">
-        <label className="text">Rango de público*</label>
+        <label className="text">{translations[language].publicar_rango}</label>
         <select 
           className="input" 
           value={publicRange} 
@@ -215,7 +216,7 @@ function PublicarLibro() {
         </div>
 
         <div className="form-group">
-        <label className="text">Imagen del libro</label>
+        <label className="text">{translations[language].publicar_imagen}</label>
         <input
           type="file"
           accept="image/*"
@@ -225,7 +226,7 @@ function PublicarLibro() {
         </div>
 
         <button className="button" type="submit" disabled={ uploadingImage }>
-          { uploadingImage ? "Subiendo imagen..." : "Publicar"}
+          { uploadingImage ? "Subiendo imagen..." : translations[language].publicar_btn }
         </button>
 
         {errorForm && <p style={{ color: "red" }}>{errorForm}</p>}

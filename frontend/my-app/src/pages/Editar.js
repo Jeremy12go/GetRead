@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import '../styles/styles.css';
 import { updateProfile } from '../API/APIGateway'; 
 import { useNavigate } from 'react-router-dom';
+import { translations } from '../components/translations.js';
 
-function Editar({ setName }) {
+function Editar({ setName, language, setLanguage }) {
 
     const navigate = useNavigate();
     
@@ -69,9 +70,9 @@ function Editar({ setName }) {
     return (
         <div className="App">
             <div>
-                <p className="text-titulos">Editar información</p>
+                <p className="text-titulos">{translations[language].perfil_editar_info}</p>
 
-                <p className="text-common">Correo registrado</p>
+                <p className="text-common">{translations[language].perfil_correo}</p>
                 <input
                     type="email"
                     value={email}
@@ -81,7 +82,7 @@ function Editar({ setName }) {
                     style={{ backgroundColor: "#eaeaea", cursor: "not-allowed" }}
                 />
 
-                <p className="text-common">Nombre de usuario*</p>
+                <p className="text-common">{translations[language].txt_usr_name}</p>
                 <input
                     type="text"
                     placeholder="Usuario"
@@ -90,7 +91,7 @@ function Editar({ setName }) {
                     className="input-text"
                 />
 
-                <p className="text-common">Teléfono*</p>
+                <p className="text-common">{translations[language].txt_telefono}</p>
                 <input
                     type="text"
                     placeholder="911111111"
@@ -99,7 +100,7 @@ function Editar({ setName }) {
                     className="input-text"
                 />
 
-                <p className="text-common">Dirección*</p>
+                <p className="text-common">{translations[language].txt_direccion}</p>
                 <input
                     type="text"
                     placeholder="Dirección"
@@ -108,10 +109,10 @@ function Editar({ setName }) {
                     className="input-text"
                 />
 
-                <p className="text-common">Contraseña*</p>
+                <p className="text-common">{translations[language].txt_pwd1}</p>
                 <input
                     type="password"
-                    placeholder="Contraseña"
+                    placeholder={translations[language].txt_pwd2}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="input-text"
@@ -120,7 +121,7 @@ function Editar({ setName }) {
 
             <div>
                 <button className="button-generic" onClick={handleSubmit}>
-                    Confirmar
+                    {translations[language].perfil_confirmar}
                 </button>
 
                 {errorRegistro && (

@@ -3,9 +3,10 @@ import '../styles/styles.css';
 
 import { useState } from "react";
 import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
+import { translations } from '../components/translations.js';
 
 
-function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, logoTienda, setIdTiendaACalificar, setIdOrdenACalificar }) {
+function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, logoTienda, setIdTiendaACalificar, setIdOrdenACalificar, language, setLanguage }) {
   const [enviando, setEnviando] = useState(false);
 
   const sumar = (id) => { // para sumar cantidad
@@ -57,11 +58,11 @@ function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, 
 
   return (
     <div className="carrito-container">
-      <h2>Carrito</h2>
+      <h2>{translations[language].carrito}</h2>
       {carrito.length === 0 ? (
         <div className="carrito-tienda-info">
           <div className="carrito-tienda-datos">
-            <div className="carrito-tienda-nombre">Carrito vacío</div>
+            <div className="carrito-tienda-nombre">{translations[language].carrito_vacio}</div>
           </div>
         </div>
       ) : (
@@ -76,7 +77,7 @@ function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, 
         )
       )}
       {carrito.length === 0 ? (
-        <p>El carrito está vacío.</p>
+        <p>{translations[language].carrito_vacio2}</p>
       ) : (
         carrito.map(item => (
           <div key={item.id} className="carrito-item">
@@ -95,16 +96,16 @@ function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, 
         ))
       )}
       <div className="carrito-total">
-        Total: ${total}
+        {translations[language].carrito_total} ${total}
       </div>
       <div className="carrito-botones">
-        <button onClick={volver} className="button-generic">Volver</button>
+        <button onClick={volver} className="button-generic">{translations[language].btn_volver}</button>
         <button
           onClick={handleGuardarPedido}
           disabled={carrito.length === 0 || enviando}
           className="button-generic"
         >
-          {enviando ? "Enviando pedido..." : "Realizar pedido"}
+          {enviando ? "Enviando pedido..." : translations[language].btn_realizar}
         </button>
       </div>
     </div>

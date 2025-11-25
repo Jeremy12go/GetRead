@@ -18,6 +18,7 @@ function App() {
     const [ profileImage, setProfileImage ] = useState(null);
     const [ search, setSearch ] = useState('');
     const [ saldoBilletera, setSaldoBilletera ] = useState(0);
+    const [language, setLanguage] = useState('es');
 
     useEffect(() => {
         const loadProfileImage = () => {
@@ -51,23 +52,23 @@ function App() {
 
             <Header stateLogin={ stateLogin } setStateLogin={ setStateLogin } name={ name }
             setName={ setName } profileImage={ profileImage } search={ search } setSearch={ setSearch } 
-            saldoBilletera={ saldoBilletera } />
+            saldoBilletera={ saldoBilletera } language={ language } setLanguage={ setLanguage } />
 
             <Routes>
-                <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } /> } />
+                <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } language={ language } setLanguage={ setLanguage } /> } />
 
                 {/*Pagina principal*/}
-                <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } /> } />
+                <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } language={ language } setLanguage={ setLanguage } />} />
 
                 {/*Login*/}
                 <Route path="/login" element={ <Login setStateLogin={ setStateLogin } name={ name }
-                setName={ setName } setProfileImage={ setProfileImage } />} />
+                setName={ setName } setProfileImage={ setProfileImage } language={ language } setLanguage={ setLanguage } />} />
 
                 {/* Reset de la contraseña */}
                 <Route path="/reset-password/:token" element={ <ResetPassword/> } />
 
                 {/*Registro*/}
-                <Route path="/register" element={ <Register/> } />
+                <Route path="/register" element={ <Register language={ language } setLanguage={ setLanguage } />} />
 
                 {/*Home post login*/}
                 <Route path="/homepostlogin" element={ stateLogin 
@@ -76,17 +77,17 @@ function App() {
 
                 {/*Carrito*/}
                 <Route path="/carrito" element={ stateLogin
-                    ? <Carrito /> 
+                    ? <Carrito language={ language } setLanguage={ setLanguage } /> 
                     : <Navigate to="/login" replace />} />
 
                 {/*Perfil*/}
                 <Route path="/perfil" element={ stateLogin
-                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } /> 
+                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } language={ language } setLanguage={ setLanguage } /> 
                     : <Navigate to="/home" replace /> } />
                 <Route path="/editar" element={ stateLogin 
-                    ? <Editar setName={ setName } /> 
+                    ? <Editar setName={ setName } language={ language } setLanguage={ setLanguage } /> 
                     : <Navigate to="/login" replace /> } />
-                <Route path="/publicar" element={ <PublicarLibro/> } />
+                <Route path="/publicar" element={ <PublicarLibro language={ language } setLanguage={ setLanguage } /> } />
             </Routes>
         </Router>
     );
