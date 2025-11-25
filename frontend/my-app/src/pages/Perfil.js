@@ -5,7 +5,8 @@ import "../styles/perfil.css";
 import usuarioDefault from '../assets/usuario.png'
 
 export default function Perfil({ setStateLogin, setName, objectAccount }) {
-  const [ perfil, setPerfil ] = useState(null);
+  const [ profile, setProfile ] = useState(null);
+  const [ account, setAccount ] = useState(null);
   const [ loading, setLoading ] = useState(true);
   const [ uploadingImage, setUploadingImage ] = useState(false);
   const navigate = useNavigate();
@@ -14,24 +15,16 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
 
   useEffect(() => {
     const loadProfile = async () => {
-      console.log(objectAccount);
+
       try {
-        
-        const res = await getAccount(objectAccount?.account._id);
-        const account = res.data.account;
-        const profile = res.data.profile;
-        
-        if (account !== undefined) {
-          const freshProfile = {
-            ...profile,
-            email: account.email,
-            profileImage: account.profileImage,
-            profilebuyer: account.profilebuyer,
-            profileseller: account.profileseller
-          };
-          console.log("Contenido Profile:"+perfil)
-          setPerfil(freshProfile);
-        }
+        const account = objectAccount?.account;
+        const profile = objectAccount?.profile;
+        console.log(account);
+        console.log(profile);
+    
+        setAccount(account);
+        setProfile(profile);
+  
       } catch (error) {
         console.error('Error al cargar perfil:', error);
       } finally {
@@ -60,16 +53,16 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
 
     try {
       setUploadingImage(true);
-      // Se esta usando la id del perfil no la de la cuenta, es necesaria la de la cuenta
-      const response = await uploadAccountImage(perfil._id, file);
+    
+      const response = await uploadAccountImage(account._id, file);
 
-      // Actualizar tanto perfil como account
-      const updatedProfile = {
-        ...perfil,
+      // Actualizar el perfil manejado
+      const updatedAccount = {
+        ...account,
         profileImage: response.data.profileImage
       };
       
-      setPerfil(updatedProfile);
+      setAccount(updatedAccount);
 
       window.dispatchEvent(new Event('profileUpdated'));
 
@@ -84,15 +77,15 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
     setStateLogin(false);
     setName('');
-    setPerfil(null);
+    setProfile(null);
+    setAccount(null);
     window.dispatchEvent(new Event('profileUpdated'));
     navigate('/home');
   };
 
-  if (loading) {
+  if ( loading ) {
     return (
       <div className="perfil-page">
         <p>Cargando perfil...</p>
@@ -100,13 +93,9 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
     );
   }
 
-  const imageUrl = perfil?.profileImage 
-    ? `${API_URL}${perfil.profileImage}` 
-    : usuarioDefault;
-
   return (
     <div className="perfil-page">
-      {perfil ? (
+      {profile ? (
         <div className="perfil-container">
           <div className="perfil-header">
             <div className="perfil-content">
@@ -116,7 +105,7 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
                 <div className="profile-image-container">
                   <label htmlFor="profile-image-input" className="image-upload-label">
                     <img 
-                      src={imageUrl} 
+                      src={account.profileImage} 
                       alt="Perfil" 
                       className="profile-image"
                       onError={(e) => e.target.src = usuarioDefault}
@@ -142,17 +131,17 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
 
             <div className="perfil-details">
               <h1>Detalles:</h1>
-              <p><strong>Nombre:</strong> {perfil.name}</p>
-              <p><strong>Dirección:</strong> {perfil.address}</p>
-              <p><strong>Correo:</strong> {perfil.email}</p>
-              <p><strong>ID Perfil:</strong> {perfil._id}</p>
-              <p><strong>Teléfono:</strong> {perfil.phoneNumber}</p>
+              <p><strong>Nombre:</strong> { profile.name }</p>
+              <p><strong>Dirección:</strong> { profile.address }</p>
+              <p><strong>Correo:</strong> { account.email }</p>
+              <p><strong>ID Perfil:</strong> { profile._id }</p>
+              <p><strong>Teléfono:</strong> { profile.phoneNumber }</p>
             </div>
           </div>
 
           <div className="perfil-botones">
             {/* Bloque Buyer */}
-            {perfil.profilebuyer && (
+            {account.profilebuyer && (
               <>
                 <button className="btn verde" onClick={() => navigate('/historial-pedidos')}>
                   Historial de pedidos
@@ -162,7 +151,7 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
             )}
 
             {/* Bloque Seller */}
-            {perfil.profileseller && (
+            {account.profileseller && (
               <>
                 <button className="btn verde" onClick={() => navigate('/historial-publicaciones')}>
                   Historial de publicaciones
@@ -183,12 +172,12 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
           </div>
 
           <div className="perfil-reviews">
-            {perfil.profilebuyer ? (
+            {account.profilebuyer ? (
               <>
                 <h2>Mis Reseñas</h2>
                 {/* Aquí renderizas lista de reseñas del buyer */}
               </>
-            ) : perfil.profileseller ? (
+            ) : account.profileseller ? (
               <>
                 <h2>Mis Publicaciones</h2>
                 {/* Aquí renderizas lista de publicaciones del seller */}
