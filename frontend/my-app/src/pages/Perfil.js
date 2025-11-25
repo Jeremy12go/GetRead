@@ -4,7 +4,7 @@ import { uploadAccountImage } from '../API/APIGateway.js';
 import "../styles/perfil.css";
 import usuarioDefault from '../assets/usuario.png'
 
-export default function Perfil({ setStateLogin, setName, objectAccount }) {
+export default function Perfil({ setStateLogin, setName, setObjectAccount, objectAccount }) {
   const [ profile, setProfile ] = useState(null);
   const [ account, setAccount ] = useState(null);
   const [ loading, setLoading ] = useState(true);
@@ -81,6 +81,9 @@ export default function Perfil({ setStateLogin, setName, objectAccount }) {
     setAccount(null);
     window.dispatchEvent(new Event('profileUpdated'));
     navigate('/home');
+    localStorage.removeItem("token");
+    localStorage.removeItem("objectAccount");
+    setObjectAccount({});
   };
 
   if ( loading ) {

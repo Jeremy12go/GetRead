@@ -26,6 +26,9 @@ function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
             
             setObjectAccount(res.data);
 
+            localStorage.setItem("objectAccount", JSON.stringify(res.data));
+            localStorage.setItem("token", res.data.token);
+
             if (account?.profileImage !== undefined) {
                 setProfileImage(account.profileImage);
             }
@@ -34,7 +37,7 @@ function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
 
             setName(profile?.name.split(" ")[0]);
             setStateLogin(true);
-            navigate('/perfil');
+            navigate('/home');
 
         } catch (e) {
             if (e.response?.data?.error) {

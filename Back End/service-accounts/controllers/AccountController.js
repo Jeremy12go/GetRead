@@ -4,6 +4,9 @@ const Profileseller = require('../models/Profileseller');
 const path = require('path');
 const fs = require('fs');
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+
+require('dotenv').config();
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -37,6 +40,15 @@ exports.login = async (req, res) => {
     if (!profile) {
       return res.status(404).json({ error: 'Perfil asociado no encontrado' });
     }
+
+    const token = jwt.sign(
+      {
+        id: account._id,
+        email: account.email
+      },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "24h" }
+    );
 
     res.json({
       account: {

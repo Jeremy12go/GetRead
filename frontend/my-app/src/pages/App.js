@@ -10,6 +10,7 @@ import ResetPassword from "../pages/ResetPassword";
 import PublicarLibro from "../pages/Publicar.js"
 import { useState, useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { set } from "mongoose";
 
 function App() {
 
@@ -20,11 +21,22 @@ function App() {
     const [ search, setSearch ] = useState('');
     const [ saldoBilletera, setSaldoBilletera ] = useState(0);
 
+    useEffect(() => {
+        const savedToken = localStorage.getItem("token");
+        const savedData = JSON.parse(localStorage.getItem("objectAccount"));
+
+        if (savedToken && savedData) {
+            setObjectAccount(savedData);
+            setProfileImage(savedData.account?.profileImage);
+            setName(savedData.profile?.name.split(" ")[0]);
+            setStateLogin(true);
+        }
+    }, []);
+
     return(
         <Router>
 
-            <Header stateLogin={ stateLogin } setStateLogin={ setStateLogin } name={ name }
-            setName={ setName } profileImage={ profileImage } search={ search } setSearch={ setSearch } 
+            <Header stateLogin={ stateLogin } name={ name } profileImage={ profileImage } search={ search } setSearch={ setSearch } 
             saldoBilletera={ saldoBilletera } />
 
             <Routes>
@@ -54,7 +66,7 @@ function App() {
                     : <Navigate to="/login" replace />} />
                 {/*Perfil*/}
                 <Route path="/perfil" element={ stateLogin
-                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } objectAccount={ objectAccount } /> 
+                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } setObjectAccount={ setObjectAccount } objectAccount={ objectAccount } /> 
                     : <Navigate to="/home" replace /> } />
                 <Route path="/editar" element={ stateLogin 
                     ? <Editar setName={ setName } /> 

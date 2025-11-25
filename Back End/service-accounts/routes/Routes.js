@@ -10,6 +10,9 @@ const Profilebuyer = require('../models/ProfileBuyer');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.ID_CLIENTE);
 const { sendPasswordResetEmail } = require('../utils/sendMail');
+const verifyToken = require("../config/verifyToken");
+// TODO: proteger las rutas con verifyToken Ej. router.post("/:id/upload-image", verifyToken, upload.single("profileImage"), uploadAccountImage);
+
 
 // ----------------------------Account----------------------------
 router.post('/login', controllerAccount.login);
@@ -32,7 +35,7 @@ router.put('/:id/billetera/agregar', controllerAccount.agregarFondos);
 router.put('/:id/billetera/restar', controllerAccount.restarFondos);
 
 // Cambiar imagen de perfil
-router.post('/:id/upload-image', upload.single('profileImage'), controllerAccount.uploadAccountImage);
+router.post('/:id/upload-image', verifyToken, upload.single('profileImage'), controllerAccount.uploadAccountImage);
 
 
 // ----------------------------ProfileBuyer----------------------------

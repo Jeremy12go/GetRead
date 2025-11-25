@@ -21,11 +21,13 @@ export const loginAccount = (email, password) => axios.post(`${API_URL}/accounts
      { email, password });
 
 export const uploadAccountImage = async (accountId, imageFile) => {
+  const token = localStorage.getItem("token");
   const formData = new FormData();
   formData.append('profileImage', imageFile);
 
   return await axios.post(`${API_URL}/accounts/${accountId}/upload-image`, formData, {
     headers: {
+      "Authorization": `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
   });
@@ -70,8 +72,10 @@ export const getImageProduct = (id) => axios.get(`${API_URL}/stores/product/${id
 
 // Agregar/Publicar Libros
 export const createBook = (bookData) => {
+  const token = localStorage.getItem("token");
   return axios.post(`${API_URL}/stores`, bookData, {
     headers: {
+      "Authorization": `Bearer ${token}`,
       "Content-Type": "multipart/form-data"
     }
   });
