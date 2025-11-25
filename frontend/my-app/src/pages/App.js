@@ -10,7 +10,6 @@ import ResetPassword from "../pages/ResetPassword";
 import PublicarLibro from "../pages/Publicar.js"
 import { useState, useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { set } from "mongoose";
 
 function App() {
 
@@ -20,6 +19,56 @@ function App() {
     const [ profileImage, setProfileImage ] = useState('');
     const [ search, setSearch ] = useState('');
     const [ saldoBilletera, setSaldoBilletera ] = useState(0);
+    const [ cart, setCart ] = useState([]);
+
+    useEffect(() => {
+        const savedCart = JSON.parse(localStorage.getItem("cart"));
+        if (savedCart) setCart(savedCart);
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }, [cart]);
+
+    
+    const addToCart = (book) => {
+        setCart(prev => {
+            const exists = prev.find(item => item.id === book.id);
+
+            if (exists) {
+                
+                return prev.map(item =>
+                    item.id === book.id
+                        ? { ...item, cantidad: item.cantidad + 1 }
+                        : item
+                );
+            }
+
+            return [...prev, { ...book, cantidad: 1 }];
+        });
+    };
+
+    const aumentar = (id) => {
+        setCart(prev =>
+            prev.map(item =>
+                item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
+            )
+        );
+    };
+
+    const disminuir = (id) => {
+        setCart(prev =>
+            prev
+                .map(item =>
+                    item.id === id ? { ...item, cantidad: item.cantidad - 1 } : item
+                )
+                .filter(item => item.cantidad > 0)
+        );
+    };
+
+    const eliminar = (id) => {
+        setCart(prev => prev.filter(item => item.id !== id));
+    };
 
     useEffect(() => {
         const savedToken = localStorage.getItem("token");
@@ -37,13 +86,13 @@ function App() {
         <Router>
 
             <Header stateLogin={ stateLogin } name={ name } profileImage={ profileImage } search={ search } setSearch={ setSearch } 
-            saldoBilletera={ saldoBilletera } />
+            saldoBilletera={ saldoBilletera } /*Agregar la cantidad de items en el carrito cerca del logo de carrito*/ /> 
 
             <Routes>
-                <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } /> } />
+                <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } /> } />
 
                 {/*Pagina principal*/}
-                <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } /> } />
+                <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } /> } />
 
                 {/*Login*/}
                 <Route path="/login" element={ <Login setStateLogin={ setStateLogin }
@@ -57,13 +106,14 @@ function App() {
 
                 {/*Home post login*/}
                 <Route path="/homepostlogin" element={ stateLogin 
-                    ? <HomePostLogin setStateLogin={setStateLogin} /> 
+                    ? <HomePostLogin setStateLogin={ setStateLogin } /> 
                     : <Navigate to="/login" replace/> } />
 
                 {/*Carrito*/}
                 <Route path="/carrito" element={ stateLogin
-                    ? <Carrito /> 
+                    ? <Carrito cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar }/> 
                     : <Navigate to="/login" replace />} />
+
                 {/*Perfil*/}
                 <Route path="/perfil" element={ stateLogin
                     ? <Perfil setStateLogin={ setStateLogin } setName={ setName } setObjectAccount={ setObjectAccount } objectAccount={ objectAccount } /> 
