@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Book = require('../models/Book')(mongoose);
 const axios = require('axios');
 
+const getBookModel = (req) => require('../models/Book')(req.app.locals.mainDB);
 //version antigua//
 /*
 exports.getById = async (req, res) => {
@@ -108,14 +109,15 @@ exports.createbook = async (req, res) => {
  */
 
 //version nueva
-
 exports.getById = async (req, res) => {
   try {
-    const Book = require('../models/Book')(req.app.locals.mainDB);
+    const Book = getBookModel(req);
     const book = await Book.findById(req.params.id);
+
     if (!book) {
       return res.status(404).json({ error: 'Libro no encontrado' });
     }
+
     res.json(book);
   } catch (e) {
     res.status(500).json({ error: 'Error al obtener libro', detalle: e.message });
@@ -124,10 +126,13 @@ exports.getById = async (req, res) => {
 
 exports.getByIdSeller = async (req, res) => {
   try {
+    const Book = getBookModel(req);
     const books = await Book.find({ idseller: req.params.idseller });
+
     if (books.length === 0) {
       return res.status(404).json({ error: 'Libros no encontrados' });
     }
+
     res.json(books);
   } catch (e) {
     res.status(500).json({ error: 'Error al obtener libros', detalle: e.message });
@@ -136,12 +141,16 @@ exports.getByIdSeller = async (req, res) => {
 
 exports.getImage = async (req, res) => {
   try {
+    const Book = getBookModel(req);
     const book = await Book.findById(req.params.id);
+
     if (!book || !book.image) {
       return res.status(404).send('Imagen no encontrada');
     }
+
     res.contentType(book.image.contentType);
     res.send(book.image.data);
+
   } catch (e) {
     res.status(500).json({ error: 'Error al obtener imagen', detalle: e.message });
   }
@@ -149,15 +158,20 @@ exports.getImage = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    const Book = getBookModel(req);
+
     const book = await Book.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true, runValidators: true }
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
     );
+
     if (!book) {
       return res.status(404).json({ error: 'Libro no encontrado' });
     }
+
     res.json(book);
+
   } catch (e) {
     res.status(400).json({ error: 'Error al actualizar', detalle: e.message });
   }
@@ -165,11 +179,16 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    const Book = getBookModel(req);
+
     const removedBook = await Book.findByIdAndDelete(req.params.id);
+
     if (!removedBook) {
       return res.status(404).json({ error: 'Libro no encontrado' });
     }
+
     res.status(204).end();
+
   } catch (e) {
     res.status(500).json({ error: 'Error al eliminar libro', detalle: e.message });
   }
@@ -177,18 +196,15 @@ exports.remove = async (req, res) => {
 
 exports.createbook = async (req, res) => {
   try {
-    const Book = require('../models/Book')(req.app.locals.mainDB);
+    const Book = getBookModel(req);
 
     const { idseller, isbn, author, name, price, stock, description, genre, public_range } = req.body;
 
     const image = req.file
-        ? { data: req.file.buffer, contentType: req.file.mimetype }
-        : undefined;
+      ? { data: req.file.buffer, contentType: req.file.mimetype }
+      : undefined;
 
-    const parsedGenre = typeof genre === 'string'
-      ? JSON.parse(genre)
-        : genre;
-
+    const parsedGenre = typeof genre === 'string' ? JSON.parse(genre) : genre;
 
     const book = await Book.create({
       idseller,
@@ -205,7 +221,6 @@ exports.createbook = async (req, res) => {
 
     res.status(201).json(book);
 
-    //se usa axios para vincular con el servicio de cuentas para añadir el libro al vendedor :D
     axios.put(`${process.env.ACCOUNTS_SERVICE_URL}/${idseller}/addbook`, {
       bookId: book._id
     }).catch(err => {
@@ -218,16 +233,22 @@ exports.createbook = async (req, res) => {
   }
 };
 
-exports.modifystock = async(req, res) =>{
+exports.modifystock = async (req, res) => {
   try {
-    const Book = require('../models/Book')(req.app.locals.mainDB);
+    const Book = getBookModel(req);
+
     const book = await Book.findByIdAndUpdate(
-        req.params.id,
-        { stock: req.body.stock },
-        { new: true }
+      req.params.id,
+      { stock: req.body.stock },
+      { new: true }
     );
-    if (!book) return res.status(404).json({ error: 'Libro no encontrado' });
+
+    if (!book) {
+      return res.status(404).json({ error: 'Libro no encontrado' });
+    }
+
     res.json(book);
+
   } catch (e) {
     res.status(500).json({ error: 'Error al actualizar stock', detalle: e.message });
   }

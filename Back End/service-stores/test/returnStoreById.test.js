@@ -1,16 +1,17 @@
 const StoreController = require('../controllers/StoreController');
 
 describe('StoreController.getById', () => {
-
   let mockReq, mockRes, mockStoreModel;
 
   beforeEach(() => {
+    // Mock del modelo Store
     mockStoreModel = {
-      findOne: jest.fn()
+      findById: jest.fn()
     };
 
+    // Mock de req con base de datos inyectada
     mockReq = {
-      params: { id: 'STORE001' },
+      params: { id: 'STORE123' },
       app: {
         locals: {
           supportDB: {
@@ -20,32 +21,32 @@ describe('StoreController.getById', () => {
       }
     };
 
+    // Mock de res
     mockRes = {
-      status: jest.fn(),
+      status: jest.fn(() => mockRes),
       json: jest.fn()
     };
 
-    mockRes.status.mockReturnValue(mockRes);
     jest.clearAllMocks();
   });
 
-  test('Debe retornar la tienda cuando existe', async () => {
+  test('Debe retornar la tienda si existe', async () => {
     const fakeStore = {
-      id: 'STORE001',
+      id: 'STORE123',
       name: 'Librería Central',
-      phoneNumber: '987654321'
+      city: 'Santiago'
     };
 
-    mockStoreModel.findOne.mockResolvedValue(fakeStore);
+    mockStoreModel.findById.mockResolvedValue(fakeStore);
 
     await StoreController.getById(mockReq, mockRes);
 
-    expect(mockStoreModel.findOne).toHaveBeenCalledWith({ id: 'STORE001' });
+    expect(mockStoreModel.findById).toHaveBeenCalledWith('STORE123');
     expect(mockRes.json).toHaveBeenCalledWith(fakeStore);
   });
 
   test('Debe retornar 404 si la tienda no existe', async () => {
-    mockStoreModel.findOne.mockResolvedValue(null);
+    mockStoreModel.findById.mockResolvedValue(null);
 
     await StoreController.getById(mockReq, mockRes);
 
@@ -56,7 +57,7 @@ describe('StoreController.getById', () => {
   });
 
   test('Debe retornar 500 si ocurre un error interno', async () => {
-    mockStoreModel.findOne.mockRejectedValue(new Error('DB error'));
+    mockStoreModel.findById.mockRejectedValue(new Error('DB error'));
 
     await StoreController.getById(mockReq, mockRes);
 
@@ -66,5 +67,4 @@ describe('StoreController.getById', () => {
       detalle: 'DB error'
     });
   });
-
 });

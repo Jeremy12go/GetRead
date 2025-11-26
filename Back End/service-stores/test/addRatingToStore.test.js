@@ -1,17 +1,18 @@
 const StoreController = require('../controllers/StoreController');
-const mongoose = require('mongoose');
 
 describe('StoreController.addRating', () => {
   let mockReq, mockRes, mockStoreModel;
 
   beforeEach(() => {
+    // Mock del modelo Store
     mockStoreModel = {
-      findOneAndUpdate: jest.fn()
+      findByIdAndUpdate: jest.fn()
     };
 
+    // Mock de req con DB inyectada
     mockReq = {
-      params: { id: '123' },
-      body: { ratingId: 'R001' },
+      params: { id: 'STORE123' },
+      body: { ratingId: 'RATING001' },
       app: {
         locals: {
           supportDB: {
@@ -21,38 +22,39 @@ describe('StoreController.addRating', () => {
       }
     };
 
+    // Mock de res
     mockRes = {
-      status: jest.fn(),
+      status: jest.fn(() => mockRes),
       json: jest.fn()
     };
-
-    mockRes.status.mockReturnValue(mockRes);
 
     jest.clearAllMocks();
   });
 
-  test('Debe agregar un rating correctamente y retornar la tienda actualizada', async () => {
-    const fakeStore = {
-      id: '123',
+  test('Debe agregar un rating a la tienda y devolver la tienda actualizada', async () => {
+    const fakeUpdatedStore = {
+      id: 'STORE123',
       name: 'Librería Central',
-      ratings: ['R001']
+      ratings: ['RATING001']
     };
 
-    mockStoreModel.findOneAndUpdate.mockResolvedValue(fakeStore);
+    mockStoreModel.findByIdAndUpdate.mockResolvedValue(fakeUpdatedStore);
 
     await StoreController.addRating(mockReq, mockRes);
 
-    expect(mockStoreModel.findOneAndUpdate).toHaveBeenCalledWith(
-      { id: '123' },
-      { $push: { ratings: 'R001' } },
+    // Verificar que se llamó correctamente
+    expect(mockStoreModel.findByIdAndUpdate).toHaveBeenCalledWith(
+      'STORE123',
+      { $push: { ratings: 'RATING001' } },
       { new: true }
     );
 
-    expect(mockRes.json).toHaveBeenCalledWith(fakeStore);
+    // Respuesta correcta
+    expect(mockRes.json).toHaveBeenCalledWith(fakeUpdatedStore);
   });
 
-  test('Debe retornar 404 cuando la tienda no existe', async () => {
-    mockStoreModel.findOneAndUpdate.mockResolvedValue(null);
+  test('Debe retornar 404 si la tienda no existe', async () => {
+    mockStoreModel.findByIdAndUpdate.mockResolvedValue(null);
 
     await StoreController.addRating(mockReq, mockRes);
 
@@ -62,8 +64,8 @@ describe('StoreController.addRating', () => {
     });
   });
 
-  test('Debe retornar 400 cuando ocurre un error', async () => {
-    mockStoreModel.findOneAndUpdate.mockRejectedValue(new Error('DB error'));
+  test('Debe retornar 400 si ocurre un error en la BD', async () => {
+    mockStoreModel.findByIdAndUpdate.mockRejectedValue(new Error('DB error'));
 
     await StoreController.addRating(mockReq, mockRes);
 
@@ -73,4 +75,5 @@ describe('StoreController.addRating', () => {
       detalle: 'DB error'
     });
   });
+
 });

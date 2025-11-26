@@ -1,17 +1,18 @@
 const StoreController = require('../controllers/StoreController');
 
 describe('StoreController.update', () => {
-
   let mockReq, mockRes, mockStoreModel;
 
   beforeEach(() => {
+    // Mock del modelo Store
     mockStoreModel = {
-      findOneAndUpdate: jest.fn()
+      findByIdAndUpdate: jest.fn()
     };
 
+    // Mock de req con la DB inyectada
     mockReq = {
       params: { id: 'STORE123' },
-      body: { name: 'Nueva Librería', phoneNumber: '123456789' },
+      body: { name: 'Nueva Librería', phoneNumber: '987654321' },
       app: {
         locals: {
           supportDB: {
@@ -21,12 +22,12 @@ describe('StoreController.update', () => {
       }
     };
 
+    // Mock de res
     mockRes = {
-      status: jest.fn(),
+      status: jest.fn(() => mockRes),
       json: jest.fn()
     };
 
-    mockRes.status.mockReturnValue(mockRes);
     jest.clearAllMocks();
   });
 
@@ -34,24 +35,26 @@ describe('StoreController.update', () => {
     const fakeStore = {
       id: 'STORE123',
       name: 'Nueva Librería',
-      phoneNumber: '123456789'
+      phoneNumber: '987654321'
     };
 
-    mockStoreModel.findOneAndUpdate.mockResolvedValue(fakeStore);
+    mockStoreModel.findByIdAndUpdate.mockResolvedValue(fakeStore);
 
     await StoreController.update(mockReq, mockRes);
 
-    expect(mockStoreModel.findOneAndUpdate).toHaveBeenCalledWith(
-      { id: 'STORE123' },
-      { name: 'Nueva Librería', phoneNumber: '123456789' },
+    // Verificar que se llamó correctamente
+    expect(mockStoreModel.findByIdAndUpdate).toHaveBeenCalledWith(
+      'STORE123',
+      { name: 'Nueva Librería', phoneNumber: '987654321' },
       { new: true, runValidators: true }
     );
 
+    // Respuesta esperada
     expect(mockRes.json).toHaveBeenCalledWith(fakeStore);
   });
 
-  test('Debe retornar 404 si la tienda no existe', async () => {
-    mockStoreModel.findOneAndUpdate.mockResolvedValue(null);
+  test('Debe retornar 404 cuando la tienda no existe', async () => {
+    mockStoreModel.findByIdAndUpdate.mockResolvedValue(null);
 
     await StoreController.update(mockReq, mockRes);
 
@@ -61,8 +64,8 @@ describe('StoreController.update', () => {
     });
   });
 
-  test('Debe retornar 400 si hay error al actualizar', async () => {
-    mockStoreModel.findOneAndUpdate.mockRejectedValue(new Error('DB error'));
+  test('Debe retornar 400 cuando ocurre un error en la actualización', async () => {
+    mockStoreModel.findByIdAndUpdate.mockRejectedValue(new Error('DB error'));
 
     await StoreController.update(mockReq, mockRes);
 
@@ -72,5 +75,4 @@ describe('StoreController.update', () => {
       detalle: 'DB error'
     });
   });
-
 });

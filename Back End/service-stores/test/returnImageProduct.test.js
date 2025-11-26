@@ -1,28 +1,32 @@
-let mockBookModel; // declarar primero
+const BookController = require('../controllers/BookController');
+require('../models/Book')(req.app.locals.mainDB)
 
 jest.mock('../models/Book', () => {
-  return () => mockBookModel; // retornar mockBookModel correctamente
+  return jest.fn(() => mockBookModel);
 });
 
-const BookController = require('../controllers/BookController');
+let mockBookModel;
 
 describe('BookController.getImage', () => {
   let mockReq, mockRes;
 
   beforeEach(() => {
+    // Mock del modelo Book
     mockBookModel = {
-      findById: jest.fn(),
+      findById: jest.fn()
     };
 
+    // Mock del request con la BD inyectada
     mockReq = {
       params: { id: 'BOOK123' },
       app: {
         locals: {
-          mainDB: {} 
+          mainDB: {}   // la conexión no importa para el test
         }
       }
     };
 
+    // Mock del response
     mockRes = {
       status: jest.fn(() => mockRes),
       send: jest.fn(),
@@ -60,7 +64,7 @@ describe('BookController.getImage', () => {
     expect(mockRes.send).toHaveBeenCalledWith('Imagen no encontrada');
   });
 
-  test('Debe retornar 404 si el libro existe pero no tiene imagen', async () => {
+  test('Debe retornar 404 si el libro existe pero NO tiene imagen', async () => {
     mockBookModel.findById.mockResolvedValue({
       id: 'BOOK123',
       image: null
