@@ -12,12 +12,8 @@ import { translations } from '../components/translations';
 function Header({ stateLogin, name , profileImage, search, setSearch, saldoBilletera, language, setLanguage }) {
 
     const navigate = useNavigate();
-    
-    const API_URL = 'http://localhost:3000';
 
-    const displayImage = profileImage 
-        ? `${API_URL}${profileImage}` 
-        : usuario;
+    const displayImage = profileImage && stateLogin ? profileImage : usuario;
 
     const formatSaldo = (saldo) => {
         return new Intl.NumberFormat('es-CL', {

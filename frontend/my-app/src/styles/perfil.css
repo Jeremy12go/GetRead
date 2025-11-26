@@ -60,13 +60,12 @@ html, body {
 
 }
 
-
 .perfil-botones {
   display: flex;
   flex-wrap: nowrap;
   gap: 10px;
   margin-top: 20px;
-  justify-content: flex-start; /* o center si querés centrados */
+  justify-content: flex-start;
 }
 
 .perfil-botones .btn {

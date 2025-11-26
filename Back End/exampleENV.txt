@@ -6,10 +6,18 @@ MONGO_URL=mongodb+srv://get_read_db:<db_password>@cluster0.wjmk0oe.mongodb.net/D
 Para el servicio de accounts, se necesitan las siguientes credenciales:
 ID_CLIENTE=<CODE>
 SECRETO_CLIENTE=<CODE>
-
-Para el servicio de stores, se necesitan las siguientes credenciales:
-
+BREVO_KEY=<CODE>
 CLOUD_NAME=<CODE>
 API_KEY=<CODE>
 API_SECRET=<CODE>
 API_ENVIRONMENT_VARIABLE=<CODE>
+JWT_SECRET_KEY=<KEY>
+
+Para el servicio de stores, se necesitan las siguientes credenciales:
+
+ACCOUNTS_SERVICE_URL=<CODE>
+CLOUD_NAME=<CODE>
+API_KEY=<CODE>
+API_SECRET=<CODE>
+API_ENVIRONMENT_VARIABLE=<CODE>
+JWT_SECRET_KEY=<KEY>

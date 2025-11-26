@@ -5,7 +5,7 @@ import ico_addCarrito from '../assets/anadirCarro.png';
 import { useNavigate } from 'react-router-dom';
 import { translations } from '../components/translations.js';
 
-function Home({ stateLogin, search, language, setLanguage }){
+function Home({ stateLogin, search, addToCart, language, setLanguage }){
 
     const [ books, setBooks ] = useState([]);
     const [ genreFilter, setGenreFilter ] = useState("all");
@@ -125,7 +125,13 @@ function Home({ stateLogin, search, language, setLanguage }){
                         <img className="card-image" src={book.image} alt={book.title} />
 
                         <div className="bottom-bar">
-                            <img src={ico_addCarrito} className="bar-btn"/>
+                            <img src={ico_addCarrito} className="bar-btn"
+                                onClick={() => addToCart({
+                                        id: book._id,
+                                        nombre: book.name,
+                                        precio: book.price,
+                                        imagen: book.image
+                                    })}/>
                         </div>
                     </div>
                 ))}

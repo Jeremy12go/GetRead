@@ -1,46 +1,28 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile, uploadAccountImage } from '../API/APIGateway.js';
+import { uploadAccountImage } from '../API/APIGateway.js';
 import "../styles/perfil.css";
 import { translations } from '../components/translations.js';
 
 import usuarioDefault from '../assets/usuario.png'
 
-export default function Perfil({ setStateLogin, setName, language, setLanguage }) {
-  const [perfil, setPerfil] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [uploadingImage, setUploadingImage] = useState(false);
+export default function Perfil({ setStateLogin, setName, setObjectAccount, objectAccount, language, setLanguage }) {
+  const [ profile, setProfile ] = useState(null);
+  const [ account, setAccount ] = useState(null);
+  const [ loading, setLoading ] = useState(true);
+  const [ uploadingImage, setUploadingImage ] = useState(false);
   const navigate = useNavigate();
-
-  const API_URL = 'http://localhost:3000';
 
   useEffect(() => {
     const loadProfile = async () => {
-      try {
-        const savedProfile = JSON.parse(localStorage.getItem('profile'));
-        const savedAccount = JSON.parse(localStorage.getItem('account'));
-        
-        if (savedProfile) {
-          setPerfil(savedProfile);
-        }
 
-        if (savedAccount?._id) {
-          const response = await getProfile(savedAccount._id);
-          
-          if (response.data && response.data.profile) {
-            const freshProfile = {
-              ...response.data.profile,
-              email: response.data.account?.email || savedAccount.email,
-              profileImage: response.data.account?.profileImage,
-              profilebuyer: response.data.account?.profilebuyer,
-              profileseller: response.data.account?.profileseller
-            };
-            
-            setPerfil(freshProfile);
-            localStorage.setItem('profile', JSON.stringify(freshProfile));
-          }
-        }
-        
+      try {
+        const account = objectAccount?.account;
+        const profile = objectAccount?.profile;
+    
+        setAccount(account);
+        setProfile(profile);
+  
       } catch (error) {
         console.error('Error al cargar perfil:', error);
       } finally {
@@ -69,24 +51,16 @@ export default function Perfil({ setStateLogin, setName, language, setLanguage }
 
     try {
       setUploadingImage(true);
-      
-      const savedAccount = JSON.parse(localStorage.getItem('account'));
-      const response = await uploadAccountImage(savedAccount._id, file);
+    
+      const response = await uploadAccountImage(account._id, file);
 
-      // Actualizar tanto perfil como account
-      const updatedProfile = {
-        ...perfil,
-        profileImage: response.data.profileImage
-      };
-      
+      // Actualizar el perfil manejado
       const updatedAccount = {
-        ...savedAccount,
+        ...account,
         profileImage: response.data.profileImage
       };
       
-      setPerfil(updatedProfile);
-      localStorage.setItem('profile', JSON.stringify(updatedProfile));
-      localStorage.setItem('account', JSON.stringify(updatedAccount));
+      setAccount(updatedAccount);
 
       window.dispatchEvent(new Event('profileUpdated'));
 
@@ -101,15 +75,18 @@ export default function Perfil({ setStateLogin, setName, language, setLanguage }
   };
 
   const handleLogout = () => {
-    localStorage.clear();
     setStateLogin(false);
     setName('');
-    setPerfil(null);
+    setProfile(null);
+    setAccount(null);
     window.dispatchEvent(new Event('profileUpdated'));
     navigate('/home');
+    localStorage.removeItem("token");
+    localStorage.removeItem("objectAccount");
+    setObjectAccount({});
   };
 
-  if (loading) {
+  if ( loading ) {
     return (
       <div className="perfil-page">
         <p>{translations[language].perfil_cargando}</p>
@@ -117,13 +94,9 @@ export default function Perfil({ setStateLogin, setName, language, setLanguage }
     );
   }
 
-  const imageUrl = perfil?.profileImage 
-    ? `${API_URL}${perfil.profileImage}` 
-    : usuarioDefault;
-
   return (
     <div className="perfil-page">
-      {perfil ? (
+      {profile ? (
         <div className="perfil-container">
           <div className="perfil-header">
             <div className="perfil-content">
@@ -133,7 +106,7 @@ export default function Perfil({ setStateLogin, setName, language, setLanguage }
                 <div className="profile-image-container">
                   <label htmlFor="profile-image-input" className="image-upload-label">
                     <img 
-                      src={imageUrl} 
+                      src={account.profileImage} 
                       alt="Perfil" 
                       className="profile-image"
                       onError={(e) => e.target.src = usuarioDefault}
@@ -149,9 +122,9 @@ export default function Perfil({ setStateLogin, setName, language, setLanguage }
                     id="profile-image-input"
                     type="file"
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={ handleImageChange }
                     style={{ display: 'none' }}
-                    disabled={uploadingImage}
+                    disabled={ uploadingImage }
                   />
                 </div>
               </div>
@@ -169,7 +142,7 @@ export default function Perfil({ setStateLogin, setName, language, setLanguage }
 
           <div className="perfil-botones">
             {/* Bloque Buyer */}
-            {perfil.profilebuyer && (
+            {account.profilebuyer && (
               <>
                 <button className="btn verde" onClick={() => navigate('/historial-pedidos')}>
                   {translations[language].btn_pedidos}
@@ -179,7 +152,7 @@ export default function Perfil({ setStateLogin, setName, language, setLanguage }
             )}
 
             {/* Bloque Seller */}
-            {perfil.profileseller && (
+            {account.profileseller && (
               <>
                 <button className="btn verde" onClick={() => navigate('/historial-publicaciones')}>
                   {translations[language].perfil_publicaciones2}
@@ -200,12 +173,12 @@ export default function Perfil({ setStateLogin, setName, language, setLanguage }
           </div>
 
           <div className="perfil-reviews">
-            {perfil.profilebuyer ? (
+            {account.profilebuyer ? (
               <>
                 <h2>{translations[language].perfil_resenas}</h2>
                 {/* Aquí renderizas lista de reseñas del buyer */}
               </>
-            ) : perfil.profileseller ? (
+            ) : account.profileseller ? (
               <>
                 <h2>{translations[language].perfil_publicaciones2}</h2>
                 {/* Aquí renderizas lista de publicaciones del seller */}

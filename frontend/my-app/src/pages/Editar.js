@@ -1,7 +1,7 @@
 import '../styles/register.css'
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/styles.css';
-import { updateProfile } from '../API/APIGateway'; 
+import { updateAccount } from '../API/APIGateway'; 
 import { useNavigate } from 'react-router-dom';
 import { translations } from '../components/translations.js';
 
@@ -9,12 +9,12 @@ function Editar({ setName, language, setLanguage }) {
 
     const navigate = useNavigate();
     
-    const [email, setEmail] = useState('');
-    const [name, setNameLocal] = useState('');
-    const [address, setAddress] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorRegistro, setErrorRegistro] = useState(false);
+    const [ email, setEmail ] = useState('');
+    const [ name, setNameLocal ] = useState('');
+    const [ address, setAddress ] = useState('');
+    const [ phoneNumber, setPhoneNumber ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ errorRegistro, setErrorRegistro ] = useState(false);
 
     // Cargar datos actuales del perfil
     useEffect(() => {
@@ -42,7 +42,7 @@ function Editar({ setName, language, setLanguage }) {
         try {
             const savedAccount = JSON.parse(localStorage.getItem("account"));
 
-            const res = await updateProfile(savedAccount._id, { name, phoneNumber, password, address });
+            const res = await updateAccount(savedAccount._id, { name, phoneNumber, password, address });
 
             const updatedProfile = {
                 ...res.data.profile,

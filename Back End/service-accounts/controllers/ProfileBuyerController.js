@@ -1,8 +1,8 @@
-const Profile = require('../models/ProfileBuyer');
+const ProfileBuyer = require('../models/ProfileBuyer');
 
 exports.getById = async (req, res) => {
   try {
-    const profile = await Profile.findById(req.params.buyerId); // usa buyerId
+    const profile = await ProfileBuyer.findById(req.params.id); // Es el buyerId
     if (!profile) {
       return res.status(404).json({ error: 'Perfil no encontrado' });
     }
@@ -15,32 +15,31 @@ exports.getById = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const updatedProfile = await Profile.findOneAndUpdate(
-      { id: req.params._id },
-      req.body,
+    const updatedProfile = await ProfileBuyer.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
       { new: true, runValidators: true }
     );
-    if (!updatedProfile) 
-      return res.status(404).json({ error: `Perfil ${req.params.name} no encontrado` });
     
+    if (!updatedProfile) {
+      return res.status(404).json({ error: `Perfil no encontrado` });
+    }
     res.json(updatedProfile);
   } catch (e) {
     res.status(400).json({ error: 'Error al actualizar profile', detalle: e.message });
   }
 };
 
-//para añadir cosas al carrito (PATCH)
 exports.addToCart = async (req, res) => {
   try {
     const { buyerId } = req.params;
     const { bookId, quantity } = req.body;
 
-    const buyer = await Profile.findById(buyerId);
+    const buyer = await ProfileBuyer.findById(buyerId);
     if (!buyer) {
       return res.status(404).json({ error: 'Comprador no encontrado' });
     }
 
-    //si el libro ya está en el carrito
     const existingItem = buyer.cart.find(item => item.book.toString() === bookId);
     if (existingItem) {
       existingItem.quantity += quantity;
@@ -58,7 +57,7 @@ exports.addToCart = async (req, res) => {
 // Vaciar carrito del comprador
 exports.clearCart = async (req, res) => {
   try {
-    const buyer = await Profile.findByIdAndUpdate(
+    const buyer = await ProfileBuyer.findByIdAndUpdate(
         req.params.buyerId,
         { cart: [] },
         { new: true }
@@ -75,7 +74,7 @@ exports.clearCart = async (req, res) => {
 // Vincular orden al comprador
 exports.addOrder = async (req, res) => {
   try {
-    const buyer = await Profile.findByIdAndUpdate(
+    const buyer = await ProfileBuyer.findByIdAndUpdate(
         req.params.buyerId,
         { $push: { orders: req.body.orderId } },
         { new: true }
@@ -93,7 +92,7 @@ exports.addBooks = async (req, res) => {
   try {
     const { books } = req.body;
 
-    const buyer = await Profile.findById(req.params.buyerId);
+    const buyer = await ProfileBuyer.findById(req.params.buyerId);
     if (!buyer) return res.status(404).json({ error: 'Comprador no encontrado' });
 
     books.forEach(nuevoLibro => {

@@ -71,10 +71,6 @@ function PublicarLibro( { language, setLanguage } ) {
       formData.append("image", imageFile);
 
       await createBook(formData);
-
-      /*
-      console.log("Libro completo devuelto por el backend:", res.data);
-      const bookId = res.data._id;
       
 
       if (imageFile) {
@@ -82,7 +78,6 @@ function PublicarLibro( { language, setLanguage } ) {
         await uploadBookImage(bookId, imageFile);
         setUploadingImage(false);
       }
-      */
       alert(translations[language].publicar_alert2);
       navigate("/home");
     } catch (err) {

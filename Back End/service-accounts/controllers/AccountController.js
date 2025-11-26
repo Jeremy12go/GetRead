@@ -3,6 +3,10 @@ const Profilebuyer = require('../models/ProfileBuyer');
 const Profileseller = require('../models/Profileseller');
 const path = require('path');
 const fs = require('fs');
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+
+require('dotenv').config();
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -37,6 +41,15 @@ exports.login = async (req, res) => {
       return res.status(404).json({ error: 'Perfil asociado no encontrado' });
     }
 
+    const token = jwt.sign(
+      {
+        id: account._id,
+        email: account.email
+      },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "2h" }
+    );
+
     res.json({
       account: {
         _id: account._id,
@@ -50,7 +63,10 @@ exports.login = async (req, res) => {
         _id: profile._id,
         name: profile.name,
         phoneNumber: profile.phoneNumber,
-        address: profile.address
+        address: profile.address,
+        orders: profile.orders,
+        cart: profile.cart,
+        books: profile.books
       }
     });
 
@@ -106,7 +122,7 @@ exports.createseller = async (req, res) => {
   }
 }
 
-exports.updateProfile = async (req, res) => {
+exports.updateAccount = async (req, res) => {
   try {
     console.log("Fase1 - inicio updateProfile");
 
@@ -169,7 +185,7 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-exports.getProfile = async (req, res) => {
+exports.getAccount = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -226,25 +242,25 @@ exports.remove = async (req, res) => {
 
 exports.uploadAccountImage = async (req, res) => {
   try {
-    const { id } = req.params; // ID de la Account
+    const { id } = req.params;
 
     if (!req.file) {
       return res.status(400).json({ error: 'No se proporcionó ninguna imagen' });
     }
 
-    const account = await Account.findById(id);
+    console.log("ID recibido:", id);
+
+    const account = await Account.findById(new mongoose.Types.ObjectId(id));
+
+    console.log("Resultado findById:", account);
+    console.log("Tipo de ID:", typeof id);
+    console.log("Es ObjectId válido:", mongoose.isValidObjectId(id));
+
+
     if (!account) return res.status(404).json({ error: 'Cuenta no encontrada' });
 
-    // Eliminar imagen anterior si existe
-    if (account.profileImage) {
-      const oldImagePath = path.join(__dirname, '..', account.profileImage.replace(/^\//, ''));
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath);
-      }
-    }
-
     // Guardar ruta de la nueva imagen
-    account.profileImage = `/uploads/profiles/${req.file.filename}`;
+    account.profileImage = req.file.path;
     await account.save();
 
     res.json({

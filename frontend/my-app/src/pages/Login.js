@@ -7,7 +7,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import axios from 'axios';
 import { translations } from '../components/translations.js'; 
 
-function Login({ setStateLogin, setName, setProfileImage, language, setLanguage }) {
+function Login({ setStateLogin, setName, setProfileImage, language, setLanguage, setObjectAccount }) {
 
     const navigate = useNavigate();
     
@@ -20,29 +20,24 @@ function Login({ setStateLogin, setName, setProfileImage, language, setLanguage 
         setErrorLogin('');
 
         try {
-            localStorage.clear();
             const res = await loginAccount(email, password);
 
             const account = res.data.account;
             const profile = res.data.profile;
+            
+            setObjectAccount(res.data);
+            console.log(res.data);
 
-            localStorage.setItem('account', JSON.stringify(account));
-            localStorage.setItem('profile', JSON.stringify({
-                ...profile,
-                email: account.email,
-                profileImage: account.profileImage,
-                billetera: account.billetera
-            }));
+            localStorage.setItem("objectAccount", JSON.stringify(res.data));
+            localStorage.setItem("token", res.data.token);
 
-            if (profile?.profileImage) {
-                setProfileImage(profile.profileImage);
-            } else if (account?.profileImage) {
+            if (account?.profileImage !== undefined) {
                 setProfileImage(account.profileImage);
             }
 
             window.dispatchEvent(new Event('profileUpdated'));
 
-            setName(profile.name.split(" ")[0]);
+            setName(profile?.name.split(" ")[0]);
             setStateLogin(true);
             navigate('/home');
 
@@ -66,14 +61,6 @@ function Login({ setStateLogin, setName, setProfileImage, language, setLanguage 
 
             const account = res.data.account;
             const profile = res.data.profile;
-
-            // Guardar igual que el login normal
-            localStorage.setItem("account", JSON.stringify(account));
-            localStorage.setItem("profile", JSON.stringify({
-                ...profile,
-                email: account.email,
-                profileImage: account.profileImage
-            }));
 
             setProfileImage(account.profileImage);
             setName(profile.name);
@@ -128,6 +115,9 @@ function Login({ setStateLogin, setName, setProfileImage, language, setLanguage 
                         {errorLogin}
                     </p>
                 )}
+
+                <div className="separator"></div>
+
                 <GoogleLogin
                     onSuccess={ handleGoogleLogin }
                     onError={() => setErrorLogin("Error al iniciar sesión con Google")}

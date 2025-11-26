@@ -1,113 +1,97 @@
 import '../styles/carrito.css';
 import '../styles/styles.css';
-
-import { useState } from "react";
 import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
-import { translations } from '../components/translations.js';
+import { useEffect } from 'react';
 
+function Carrito({ cart, setCart, aumentar, disminuir, eliminar }) {
 
-function Carrito({ infoTienda, carrito=[], setCarrito, volver, irAConfirmacion, logoTienda, setIdTiendaACalificar, setIdOrdenACalificar, language, setLanguage }) {
-  const [enviando, setEnviando] = useState(false);
+  const total = cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
-  const sumar = (id) => { // para sumar cantidad
-    setCarrito(carrito.map(item =>
-      item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
-    ));
-  };
+  const handleMakePurchase = async () => {
+  
+    const objAccount = localStorage.getItem("objectAccount");
+    const profile = objAccount.profile;
+    const idsToBooks = cart.flatMap(item => Array(item.cantidad).fill(item.id));
 
-  const restar = (id) => { // para restar cantidad (si llega a 0 se elimina)
-    setCarrito(carrito =>
-      carrito
-        .map(item =>
-          item.id === id ? { ...item, cantidad: item.cantidad - 1 } : item
-        )
-        .filter(item => item.cantidad > 0)
-    );
-  };
-
-  const eliminar = (id) => { // para quitar de carrito
-    setCarrito(carrito.filter(item => item.id !== id));
-  };
-
-  const total = (carrito || []).reduce((acc, item) => acc + item.precio * item.cantidad, 0);
-
-   const handleGuardarPedido = async () => {
-    setEnviando(true);
-    const idProfile = localStorage.getItem('idProfile');
-    const ids = carrito.flatMap(item => Array(item.cantidad).fill(item.id));
     try {
-      const res = await createOrder(idProfile, ids, total, infoTienda.id);
+      const res = await createOrder(profile?.id, idsToBooks, total);
       const orderId = res.data.id;
 
-      const profileRes = await getProfile(idProfile);
-      const orders = profileRes.data.orders || [];
+      const orders = profile?.orders;
+      await updateProfile(profile?.id, { orders: [...orders, orderId] });
 
-      await updateProfile(idProfile, { orders: [...orders, orderId] });
-
-      setEnviando(false);
-      setCarrito([]);
-      setIdTiendaACalificar(infoTienda.id); // <--- Aquí
-      setIdOrdenACalificar(orderId); 
-      irAConfirmacion();
+      //setCart([]);
+      //setIdTiendaACalificar(infoTienda.id);
+      //setIdOrdenACalificar(orderId);
+      //irAConfirmacion();
     } catch (e) {
-      setEnviando(false);
       alert('Error al guardar el pedido');
     }
-
   };
+
+  useEffect(() => {
+    const saved = localStorage.getItem("objectAccount");
+    if (!saved) return;
+
+    const parsed = JSON.parse(saved);
+
+    getProfile(parsed.profile._id)
+      .then(async (res) => {
+        console.log("Respuesta de getProfile:", res.data);
+
+        const cartFromServer = res.data.cart || [];
+        console.log("Carro cargado del BackEnd:", cartFromServer);
+
+        const transformedCart = await Promise.all(
+          cartFromServer.map(async (item) => {
+            const bookDetails = await fetch(`http://localhost:3004/stores/${item.book}`)
+              .then(r => r.json());
+
+            return {
+              id: item.book,
+              cantidad: item.quantity,
+              nombre: bookDetails.name,
+              precio: bookDetails.price,
+              imagen: bookDetails.image
+            };
+          })
+        );
+
+        setCart(transformedCart);
+      })
+      .catch(err => console.error("Error cargando perfil:", err));
+  }, []);
 
   return (
     <div className="carrito-container">
-      <h2>{translations[language].carrito}</h2>
-      {carrito.length === 0 ? (
-        <div className="carrito-tienda-info">
-          <div className="carrito-tienda-datos">
-            <div className="carrito-tienda-nombre">{translations[language].carrito_vacio}</div>
+
+      <h2>Carrito</h2>
+
+      {cart.length === 0 && <p>Tu carrito está vacío</p>}
+
+      {cart.map(item => (
+        <div key={item.id} className="carrito-item">
+
+          <img src={item.imagen} className="carrito-img" />
+
+          <div className="carrito-info">
+            <h3>{item.nombre}</h3>
+            <p>${item.precio}</p>
+
+            <div className="carrito-controls">
+              <button onClick={() => disminuir(item.id)}>-</button>
+              <span>{item.cantidad}</span>
+              <button onClick={() => aumentar(item.id)}>+</button>
+              <button onClick={() => eliminar(item.id)}>Eliminar</button>
+            </div>
           </div>
+
+          <p className="carrito-subtotal">${item.precio * item.cantidad}</p>
+
         </div>
-      ) : (
-        infoTienda && (
-          <div className="carrito-tienda-info">
-            <img src={logoTienda} alt="logo tienda" className="carrito-tienda-logo" />
-            <div className="carrito-tienda-datos">
-              <div className="carrito-tienda-nombre">{infoTienda.name}</div>
-              <div className="carrito-tienda-calificacion">Calificación: {infoTienda.average_rating} ⭐</div>
-            </div>
-          </div>
-        )
-      )}
-      {carrito.length === 0 ? (
-        <p>{translations[language].carrito_vacio2}</p>
-      ) : (
-        carrito.map(item => (
-          <div key={item.id} className="carrito-item">
-            <img src={item.imagen} alt={item.nombre} className="carrito-item-img" />
-            <div className="carrito-item-info">
-              <div className="carrito-item-nombre">{item.nombre}</div>
-              <div>
-                <button onClick={() => restar(item.id)} className="carrito-btn-cantidad">-</button>
-                <span className="carrito-item-cantidad">{item.cantidad}</span>
-                <button onClick={() => sumar(item.id)} className="carrito-btn-cantidad">+</button>
-                <button onClick={() => eliminar(item.id)} className="carrito-btn-eliminar">Eliminar</button>
-              </div>
-            </div>
-            <div className="carrito-item-precio">${item.precio * item.cantidad}</div>
-          </div>
-        ))
-      )}
-      <div className="carrito-total">
-        {translations[language].carrito_total} ${total}
-      </div>
-      <div className="carrito-botones">
-        <button onClick={volver} className="button-generic">{translations[language].btn_volver}</button>
-        <button
-          onClick={handleGuardarPedido}
-          disabled={carrito.length === 0 || enviando}
-          className="button-generic"
-        >
-          {enviando ? "Enviando pedido..." : translations[language].btn_realizar}
-        </button>
-      </div>
+      ))}
+
+      <h3>Total: ${total}</h3>
     </div>
   );
 }
