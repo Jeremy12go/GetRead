@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
         email: account.email
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "24h" }
+      { expiresIn: "2h" }
     );
 
     res.json({
@@ -63,7 +63,10 @@ exports.login = async (req, res) => {
         _id: profile._id,
         name: profile.name,
         phoneNumber: profile.phoneNumber,
-        address: profile.address
+        address: profile.address,
+        orders: profile.orders,
+        cart: profile.cart,
+        books: profile.books
       }
     });
 
@@ -119,7 +122,7 @@ exports.createseller = async (req, res) => {
   }
 }
 
-exports.updateProfile = async (req, res) => {
+exports.updateAccount = async (req, res) => {
   try {
     console.log("Fase1 - inicio updateProfile");
 

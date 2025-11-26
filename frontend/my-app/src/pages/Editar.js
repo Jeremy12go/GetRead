@@ -1,7 +1,7 @@
 import '../styles/register.css'
 import { useState, useEffect } from 'react';
 import '../styles/styles.css';
-import { updateProfile } from '../API/APIGateway'; 
+import { updateAccount } from '../API/APIGateway'; 
 import { useNavigate } from 'react-router-dom';
 
 function Editar({ setName }) {
@@ -41,7 +41,7 @@ function Editar({ setName }) {
         try {
             const savedAccount = JSON.parse(localStorage.getItem("account"));
 
-            const res = await updateProfile(savedAccount._id, { name, phoneNumber, password, address });
+            const res = await updateAccount(savedAccount._id, { name, phoneNumber, password, address });
 
             const updatedProfile = {
                 ...res.data.profile,

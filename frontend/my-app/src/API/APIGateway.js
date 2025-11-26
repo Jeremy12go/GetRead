@@ -17,8 +17,7 @@ export const registerSeller = (email, password, name, phoneNumber, address) => {
   });
 };
 
-export const loginAccount = (email, password) => axios.post(`${API_URL}/accounts/login`,
-     { email, password });
+export const loginAccount = (email, password) => axios.post(`${API_URL}/accounts/login`, { email, password });
 
 export const uploadAccountImage = async (accountId, imageFile) => {
   const token = localStorage.getItem("token");
@@ -33,12 +32,13 @@ export const uploadAccountImage = async (accountId, imageFile) => {
   });
 };
 
-
 export const getAccount = (accountId) => axios.get(`${API_URL}/accounts/${accountId}`);
 
-export const updateProfile = (idProfile, data) => axios.put(`${API_URL}/accounts/profile/${idProfile}`, data);
+export const getProfile = (profileId) => axios.get(`${API_URL}/accounts/buyer/${profileId}`);
 
-//export const updateProfile = (idProfile, data) => axios.put(`${API_URL}/accounts/profileB/${idProfile}`, data);
+export const updateAccount = (idProfile, data) => axios.put(`${API_URL}/accounts/account/${idProfile}`, data);
+
+export const updateProfile = (idProfile, data) => axios.put(`${API_URL}/accounts/buyer/${idProfile}`, data);
 
 
 // ----------------------------Service-Order----------------------------

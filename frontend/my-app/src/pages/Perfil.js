@@ -17,8 +17,6 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
       try {
         const account = objectAccount?.account;
         const profile = objectAccount?.profile;
-        console.log(account);
-        console.log(profile);
     
         setAccount(account);
         setProfile(profile);

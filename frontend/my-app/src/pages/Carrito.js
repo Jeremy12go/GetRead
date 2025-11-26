@@ -1,35 +1,66 @@
 import '../styles/carrito.css';
 import '../styles/styles.css';
-import { createOrder, getAccount, updateProfile } from '../API/APIGateway.js';
+import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
+import { useEffect } from 'react';
 
-function Carrito({ cart, aumentar, disminuir, eliminar }) {
+function Carrito({ cart, setCart, aumentar, disminuir, eliminar }) {
 
   const total = cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
-  /*
-  const handleGuardarPedido = async () => {
-    setEnviando(true);
-    const idProfile = localStorage.getItem('idProfile');
-    const ids = cart.flatMap(item => Array(item.cantidad).fill(item.id));
+
+  const handleMakePurchase = async () => {
+  
+    const objAccount = localStorage.getItem("objectAccount");
+    const profile = objAccount.profile;
+    const idsToBooks = cart.flatMap(item => Array(item.cantidad).fill(item.id));
 
     try {
-      const res = await createOrder(idProfile, ids, total, infoTienda.id);
+      const res = await createOrder(profile?.id, idsToBooks, total);
       const orderId = res.data.id;
 
-      const profileRes = await getAccount(idProfile);
-      const orders = profileRes.data.orders || [];
+      const orders = profile?.orders;
+      await updateProfile(profile?.id, { orders: [...orders, orderId] });
 
-      await updateProfile(idProfile, { orders: [...orders, orderId] });
-
-      setEnviando(false);
-      setCart([]);
-      setIdTiendaACalificar(infoTienda.id);
-      setIdOrdenACalificar(orderId);
-      irAConfirmacion();
+      //setCart([]);
+      //setIdTiendaACalificar(infoTienda.id);
+      //setIdOrdenACalificar(orderId);
+      //irAConfirmacion();
     } catch (e) {
-      setEnviando(false);
       alert('Error al guardar el pedido');
     }
-  };*/
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem("objectAccount");
+    if (!saved) return;
+
+    const parsed = JSON.parse(saved);
+
+    getProfile(parsed.profile._id)
+      .then(async (res) => {
+        console.log("Respuesta de getProfile:", res.data);
+
+        const cartFromServer = res.data.cart || [];
+        console.log("Carro cargado del BackEnd:", cartFromServer);
+
+        const transformedCart = await Promise.all(
+          cartFromServer.map(async (item) => {
+            const bookDetails = await fetch(`http://localhost:3004/stores/${item.book}`)
+              .then(r => r.json());
+
+            return {
+              id: item.book,
+              cantidad: item.quantity,
+              nombre: bookDetails.name,
+              precio: bookDetails.price,
+              imagen: bookDetails.image
+            };
+          })
+        );
+
+        setCart(transformedCart);
+      })
+      .catch(err => console.error("Error cargando perfil:", err));
+  }, []);
 
   return (
     <div className="carrito-container">

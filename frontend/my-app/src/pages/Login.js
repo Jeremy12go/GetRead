@@ -25,6 +25,7 @@ function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
             const profile = res.data.profile;
             
             setObjectAccount(res.data);
+            console.log(res.data);
 
             localStorage.setItem("objectAccount", JSON.stringify(res.data));
             localStorage.setItem("token", res.data.token);

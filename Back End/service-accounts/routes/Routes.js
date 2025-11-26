@@ -16,8 +16,11 @@ const verifyToken = require("../config/verifyToken");
 
 // ----------------------------Account----------------------------
 router.post('/login', controllerAccount.login);
+
 router.post('/', controllerAccount.create);
+
 router.post('/createseller', controllerAccount.createseller);
+
 router.delete('/:email', controllerAccount.remove);
 
 // Crear un perfil de comprador de parte de una cuenta existente con perfil de vendedor
@@ -27,11 +30,15 @@ router.post('/:accountId/sellercreatebuyer', controllerAccount.createBuyerFromEx
 router.post('/:accountId/buyercreateseller', controllerAccount.createSellerFromExistentAccount);
 
 router.get('/:id', controllerAccount.getAccount);
-router.put('/profile:id', controllerAccount.updateProfile); // Considerar cambiar el nombre
+
+router.put('/account/:id', controllerAccount.updateAccount);
 
 router.post('/:id/billetera', controllerAccount.createBilletera);
+
 router.get('/:id/billetera', controllerAccount.getBilletera);
+
 router.put('/:id/billetera/agregar', controllerAccount.agregarFondos);
+
 router.put('/:id/billetera/restar', controllerAccount.restarFondos);
 
 // Cambiar imagen de perfil
@@ -39,7 +46,8 @@ router.post('/:id/upload-image', verifyToken, upload.single('profileImage'), con
 
 
 // ----------------------------ProfileBuyer----------------------------
-router.get('/buyer/:buyerId', controllerProfileBuyer.getById);
+router.get('/buyer/:id', controllerProfileBuyer.getById);
+
 router.put('/buyer/:id', controllerProfileBuyer.update);
 
 // Agregar un libro al carrito del comprador
@@ -47,18 +55,22 @@ router.patch('/:buyerId/addtocart', controllerProfileBuyer.addToCart);
 
 // Vaciar el carrito
 router.patch('/buyer/:buyerId/clearcart', controllerProfileBuyer.clearCart);
+
 router.put('/buyer/:buyerId/addorder', controllerProfileBuyer.addOrder);
+
 router.put('/buyer/:buyerId/addbooks', controllerProfileBuyer.addBooks);
 
 
 // ----------------------------ProfileSeller----------------------------
 router.get('/seller/:id', controllerProfileSeller.getById);
+
 router.put('/seller/:id', controllerProfileSeller.update);
 
 //Agregar un libro al perfil vendedor
 router.put('/:id/addbook',controllerProfileSeller.addBookToSeller);
 
 router.put('/seller/:sellerId/addorder', controllerProfileSeller.addOrder);
+
 router.patch('/seller/:idSeller/updaterating', controllerProfileSeller.updateRating);
 
 

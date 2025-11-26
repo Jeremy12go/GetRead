@@ -8,6 +8,7 @@ import Perfil from "./Perfil.js";
 import Editar from "./Editar.js";
 import ResetPassword from "../pages/ResetPassword";
 import PublicarLibro from "../pages/Publicar.js"
+import { updateProfile } from "../API/APIGateway"
 import { useState, useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -20,59 +21,20 @@ function App() {
     const [ search, setSearch ] = useState('');
     const [ saldoBilletera, setSaldoBilletera ] = useState(0);
     const [ cart, setCart ] = useState([]);
-
-    useEffect(() => {
-        const savedCart = JSON.parse(localStorage.getItem("cart"));
-        if (savedCart) setCart(savedCart);
-    }, []);
+    const [ loadingSession, setLoadingSession ] = useState(true);
 
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
 
-    
-    const addToCart = (book) => {
-        setCart(prev => {
-            const exists = prev.find(item => item.id === book.id);
-
-            if (exists) {
-                
-                return prev.map(item =>
-                    item.id === book.id
-                        ? { ...item, cantidad: item.cantidad + 1 }
-                        : item
-                );
-            }
-
-            return [...prev, { ...book, cantidad: 1 }];
-        });
-    };
-
-    const aumentar = (id) => {
-        setCart(prev =>
-            prev.map(item =>
-                item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
-            )
-        );
-    };
-
-    const disminuir = (id) => {
-        setCart(prev =>
-            prev
-                .map(item =>
-                    item.id === id ? { ...item, cantidad: item.cantidad - 1 } : item
-                )
-                .filter(item => item.cantidad > 0)
-        );
-    };
-
-    const eliminar = (id) => {
-        setCart(prev => prev.filter(item => item.id !== id));
-    };
-
     useEffect(() => {
         const savedToken = localStorage.getItem("token");
         const savedData = JSON.parse(localStorage.getItem("objectAccount"));
+        const savedCart = JSON.parse(localStorage.getItem("cart"));
+
+        if (savedCart && Array.isArray(savedCart)) {
+            setCart(savedCart);
+        }
 
         if (savedToken && savedData) {
             setObjectAccount(savedData);
@@ -80,7 +42,95 @@ function App() {
             setName(savedData.profile?.name.split(" ")[0]);
             setStateLogin(true);
         }
+
+        setLoadingSession(false);
     }, []);
+
+    const addToCart = (book) => {
+        setCart(prev => {
+            const updated = (() => {
+                const exists = prev.find(item => item.id === book.id);
+                if (exists) {
+                    return prev.map(item =>
+                        item.id === book.id
+                            ? { ...item, quantity: item.quantity + 1 }
+                            : item
+                    );
+                }
+                return [...prev, { ...book, quantity: 1 }];
+            })();
+           
+            const idProfile = objectAccount?.profile._id;
+            const mappedCart = updated.map(item => ({
+                book: item.id,       
+                quantity: item.quantity
+            }));
+
+            updateProfile(idProfile, { cart: mappedCart });
+
+            return updated; 
+        });
+    };
+
+    const aumentar = (id) => {
+        setCart(prev => {
+            const updated = prev.map(item =>
+                item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
+            );
+
+            const idProfile = objectAccount?.profile._id;
+
+            const mappedCart = updated.map(item => ({
+                book: item.id,
+                quantity: item.cantidad
+            }));
+
+            updateProfile(idProfile, { cart: mappedCart });
+
+            return updated;
+        });
+    };
+ 
+
+    const disminuir = (id) => {
+        setCart(prev => {
+            const updated = prev .map(item =>
+                    item.id === id ? { ...item, cantidad: item.cantidad - 1 } : item)
+                    .filter(item => item.cantidad > 0
+                );
+
+            const idProfile = objectAccount?.profile._id;
+            const mappedCart = updated.map(item => ({
+                book: item.id,
+                quantity: item.cantidad
+            }));
+
+            updateProfile(idProfile, { cart: mappedCart } );
+
+            return updated;
+        });
+    };
+
+    const eliminar = (id) => {
+        setCart(prev => {
+            const updated = prev.filter(item => item.id !== id);
+
+            const idProfile = objectAccount?.profile._id;
+
+            const mappedCart = updated.map(item => ({
+                book: item.id,
+                quantity: item.cantidad
+            }));
+
+            updateProfile(idProfile, { cart: mappedCart } );
+
+            return updated;
+        });
+    };
+
+    if (loadingSession) {
+        return <div>Cargando...</div>;
+    }   
 
     return(
         <Router>
@@ -111,7 +161,7 @@ function App() {
 
                 {/*Carrito*/}
                 <Route path="/carrito" element={ stateLogin
-                    ? <Carrito cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar }/> 
+                    ? <Carrito cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar } setCart={ setCart }/> 
                     : <Navigate to="/login" replace />} />
 
                 {/*Perfil*/}
