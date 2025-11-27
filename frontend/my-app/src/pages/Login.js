@@ -5,8 +5,9 @@ import { loginAccount } from '../API/APIGateway.js';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from "@react-oauth/google";
 import axios from 'axios';
- 
-function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
+import { translations } from '../components/translations.js'; 
+
+function Login({ setStateLogin, setName, setProfileImage, language, setLanguage, setObjectAccount }) {
 
     const navigate = useNavigate();
     
@@ -76,11 +77,11 @@ function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
     return (
         <div className="App">
             <div>
-                <p className="text-titulos">Iniciar sesión</p>
+                <p className="text-titulos">{translations[language].txt_login}</p>
                 <p className="text-common">
-                    ¿Primera vez?{' '}
+                    {translations[language].txt_first_time}{' '}
                     <span onClick={ () => navigate('/register') } className="text-subrayado">
-                        Haz click aquí!
+                        {translations[language].txt_create_account}
                     </span>
                 </p>
 
@@ -95,19 +96,19 @@ function Login({ setStateLogin, setName, setProfileImage, setObjectAccount }) {
                         onChange={(e)=> setEmail(e.target.value)
                     }/>
                     {/* password */}
-                    <p className="text-common"> Contraseña* </p>
+                    <p className="text-common"> {translations[language].txt_pwd1} </p>
                     <input
                         type="password"
-                        placeholder="Contraseña"
+                        placeholder={translations[language].txt_pwd2}
                         className="input-text"
                         value={ password }
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
             </div>
-            <div className="buttons-login">
-                <button onClick={ handleSubmit } className="button-login" >
-                    Iniciar Sesión
+            <div>
+                <button onClick={ handleSubmit } className="button-generic" >
+                    {translations[language].txt_login}
                 </button>
                 {errorLogin && (
                     <p className='text-error'>

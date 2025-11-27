@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { uploadAccountImage } from '../API/APIGateway.js';
 import "../styles/perfil.css";
+import { translations } from '../components/translations.js';
+
 import usuarioDefault from '../assets/usuario.png'
 
-export default function Perfil({ setStateLogin, setName, setObjectAccount, objectAccount }) {
+export default function Perfil({ setStateLogin, setName, setObjectAccount, objectAccount, language, setLanguage }) {
   const [ profile, setProfile ] = useState(null);
   const [ account, setAccount ] = useState(null);
   const [ loading, setLoading ] = useState(true);
@@ -62,7 +64,7 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
 
       window.dispatchEvent(new Event('profileUpdated'));
 
-      alert('Imagen actualizada correctamente');
+      alert(translations[language].perfil_alert);
 
     } catch (error) {
       console.error('Error al subir imagen:', error);
@@ -87,7 +89,7 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
   if ( loading ) {
     return (
       <div className="perfil-page">
-        <p>Cargando perfil...</p>
+        <p>{translations[language].perfil_cargando}</p>
       </div>
     );
   }
@@ -99,19 +101,18 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
           <div className="perfil-header">
             <div className="perfil-content">
               <div className="perfil-icon">
-                <h1>Mi Perfil</h1>
+                <h1>{translations[language].perfil}</h1>
                 
                 <div className="profile-image-container">
                   <label htmlFor="profile-image-input" className="image-upload-label">
                     <img 
                       src={account.profileImage} 
-                      alt="Perfil" 
                       className="profile-image"
                       onError={(e) => e.target.src = usuarioDefault}
                     />
                     <div className="image-overlay">
                       <span className="overlay-text">
-                        { uploadingImage ? 'Actualizando...' : 'Cambiar Imagen'}
+                        {uploadingImage ? translations[language].perfil_actualizar : translations[language].perfil_imagen}
                       </span>
                     </div>
                   </label>
@@ -129,12 +130,12 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
             </div>
 
             <div className="perfil-details">
-              <h1>Detalles:</h1>
-              <p><strong>Nombre:</strong> { profile.name }</p>
-              <p><strong>Dirección:</strong> { profile.address }</p>
-              <p><strong>Correo:</strong> { account.email }</p>
-              <p><strong>ID Perfil:</strong> { profile._id }</p>
-              <p><strong>Teléfono:</strong> { profile.phoneNumber }</p>
+              <h1>{translations[language].perfil_detalles}</h1>
+              <p><strong>{translations[language].perfil_nombre}</strong> {profile.name}</p>
+              <p><strong>{translations[language].perfil_direccion}</strong> {profile.address}</p>
+              <p><strong>{translations[language].perfil_correo}</strong> {account.email}</p>
+              <p><strong>{translations[language].perfil_id}</strong> {profile._id}</p>
+              <p><strong>{translations[language].perfil_telefono}</strong> {profile.phoneNumber}</p>
             </div>
           </div>
 
@@ -143,9 +144,9 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
             {account.profilebuyer && (
               <>
                 <button className="btn verde" onClick={() => navigate('/historial-pedidos')}>
-                  Historial de pedidos
+                  {translations[language].btn_pedidos}
                 </button>
-                <button className="btn azul">Libros adquiridos</button>
+                <button className="btn azul">{translations[language].btn_libros}</button>
               </>
             )}
 
@@ -153,32 +154,32 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
             {account.profileseller && (
               <>
                 <button className="btn verde" onClick={() => navigate('/historial-publicaciones')}>
-                  Historial de publicaciones
+                  {translations[language].perfil_publicaciones2}
                 </button>
                 <button className="btn azul" onClick={() => navigate('/publicar')}>
-                  Publicar libro
+                  {translations[language].perfil_publicar}
                 </button>
               </>
             )}
 
             {/* Botones comunes */}
             <button className="btn negro" onClick={() => navigate('/editar')}>
-              Editar perfil
+              {translations[language].btn_editar}
             </button>
             <button className="btn rojo" onClick={handleLogout}>
-              Cerrar sesión
+              {translations[language].btn_cerrar}
             </button>
           </div>
 
           <div className="perfil-reviews">
             {account.profilebuyer ? (
               <>
-                <h2>Mis Reseñas</h2>
+                <h2>{translations[language].perfil_resenas}</h2>
                 {/* Aquí renderizas lista de reseñas del buyer */}
               </>
             ) : account.profileseller ? (
               <>
-                <h2>Mis Publicaciones</h2>
+                <h2>{translations[language].perfil_publicaciones2}</h2>
                 {/* Aquí renderizas lista de publicaciones del seller */}
               </>
             ) : (
