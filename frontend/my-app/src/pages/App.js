@@ -63,23 +63,20 @@ function App() {
                 if (exists) {
                     return prev.map(item =>
                         item._id === book._id
-                            ? { ...item, cantidad: item.cantidad + 1 }
+                            ? { ...item, quantity: item.quantity + 1 }
                             : item
                     );
                 }
-                return [...prev, { ...book, cantidad: 1 }];
+                return [...prev, { ...book, quantity: 1 }];
             })();
             
             const idProfile = objectAccount?.profile._id;
             const mappedCart = updated.map(item => ({
                 book: item._id,       
-                quantity: item.cantidad
+                quantity: item.quantity
             }));
 
-            console.log("se envia:", mappedCart);
-
             updateProfile(idProfile, { cart: mappedCart });
-
             return updated;
         });
     };
@@ -92,17 +89,13 @@ function App() {
                     : item
             );
 
-            console.log("Aumentar:", updated);
-
             const idProfile = objectAccount?.profile._id;
-
             const mappedCart = updated.map(item => ({
                 book: item._id,
                 quantity: item.quantity
             }));
 
             updateProfile(idProfile, { cart: mappedCart });
-
             return updated;
         });
     };
@@ -118,14 +111,12 @@ function App() {
                 .filter(item => item.quantity > 0);
 
             const idProfile = objectAccount?.profile._id;
-
             const mappedCart = updated.map(item => ({
                 book: item._id,
                 quantity: item.quantity
             }));
 
             updateProfile(idProfile, { cart: mappedCart });
-
             return updated;
         });
     };
@@ -135,14 +126,12 @@ function App() {
             const updated = prev.filter(item => item._id !== id);
 
             const idProfile = objectAccount?.profile._id;
-
             const mappedCart = updated.map(item => ({
                 book: item._id,
                 quantity: item.quantity
             }));
 
             updateProfile(idProfile, { cart: mappedCart });
-
             return updated;
         });
     };
