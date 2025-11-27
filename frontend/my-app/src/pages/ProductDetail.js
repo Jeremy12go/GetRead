@@ -6,6 +6,8 @@ export default function ProductDetail({ bookOpen, addToCart, aumentar, disminuir
 
   if (!bookOpen){
     return <p>Cargando...</p>;
+  } else {
+    console.log("ProductDetail Recibio:",bookOpen);
   }
 
   return (
@@ -34,11 +36,7 @@ export default function ProductDetail({ bookOpen, addToCart, aumentar, disminuir
             </select>
 
             <button className="pd-add-btn" 
-              onClick={ () => addToCart({
-                  id: bookOpen._id,
-                  nombre: bookOpen.name,
-                  precio: bookOpen.price,
-                  imagen: bookOpen.image }) }>
+              onClick={ () => addToCart(bookOpen) }>
             Añadir al carro</button>
 
             <div className="pd-quantity-box">

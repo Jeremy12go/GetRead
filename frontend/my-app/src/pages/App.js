@@ -59,40 +59,46 @@ function App() {
     const addToCart = (book) => {
         setCart(prev => {
             const updated = (() => {
-                const exists = prev.find(item => item.id === book.id);
+                const exists = prev.find(item => item._id === book._id);
                 if (exists) {
                     return prev.map(item =>
-                        item.id === book.id
+                        item._id === book._id
                             ? { ...item, cantidad: item.cantidad + 1 }
                             : item
                     );
                 }
                 return [...prev, { ...book, cantidad: 1 }];
             })();
-           
+            
             const idProfile = objectAccount?.profile._id;
             const mappedCart = updated.map(item => ({
-                book: item.id,       
+                book: item._id,       
                 quantity: item.cantidad
             }));
 
+            console.log("se envia:", mappedCart);
+
             updateProfile(idProfile, { cart: mappedCart });
 
-            return updated; 
+            return updated;
         });
     };
 
     const aumentar = (id) => {
         setCart(prev => {
             const updated = prev.map(item =>
-                item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
+                item._id === id
+                    ? { ...item, quantity: item.quantity + 1 }
+                    : item
             );
+
+            console.log("Aumentar:", updated);
 
             const idProfile = objectAccount?.profile._id;
 
             const mappedCart = updated.map(item => ({
-                book: item.id,
-                quantity: item.cantidad
+                book: item._id,
+                quantity: item.quantity
             }));
 
             updateProfile(idProfile, { cart: mappedCart });
@@ -101,21 +107,24 @@ function App() {
         });
     };
  
-
     const disminuir = (id) => {
         setCart(prev => {
-            const updated = prev .map(item =>
-                    item.id === id ? { ...item, cantidad: item.cantidad - 1 } : item)
-                    .filter(item => item.cantidad > 0
-                );
+            const updated = prev
+                .map(item =>
+                    item._id === id
+                        ? { ...item, quantity: item.quantity - 1 }
+                        : item
+                )
+                .filter(item => item.quantity > 0);
 
             const idProfile = objectAccount?.profile._id;
+
             const mappedCart = updated.map(item => ({
-                book: item.id,
-                quantity: item.cantidad
+                book: item._id,
+                quantity: item.quantity
             }));
 
-            updateProfile(idProfile, { cart: mappedCart } );
+            updateProfile(idProfile, { cart: mappedCart });
 
             return updated;
         });
@@ -123,16 +132,16 @@ function App() {
 
     const eliminar = (id) => {
         setCart(prev => {
-            const updated = prev.filter(item => item.id !== id);
+            const updated = prev.filter(item => item._id !== id);
 
             const idProfile = objectAccount?.profile._id;
 
             const mappedCart = updated.map(item => ({
-                book: item.id,
-                quantity: item.cantidad
+                book: item._id,
+                quantity: item.quantity
             }));
 
-            updateProfile(idProfile, { cart: mappedCart } );
+            updateProfile(idProfile, { cart: mappedCart });
 
             return updated;
         });
@@ -173,7 +182,7 @@ function App() {
                 {/*Carrito*/}
                 <Route path="/cart" element={ stateLogin
                     ? <Carrito cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar } setCart={ setCart }
-                    setBookOpen={ setBookOpen }/> 
+                    setBookOpen={ setBookOpen } /> 
                     : <Navigate to="/login" replace />} />
 
                 {/*Perfil*/}

@@ -8,13 +8,13 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen }) 
 
   const navigate = useNavigate();
 
-  const total = cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+  const total = cart.reduce((sum, item) => sum + item.price * item.stock, 0);
 
   const handleMakePurchase = async () => {
   
     const objAccount = localStorage.getItem("objectAccount");
     const profile = objAccount.profile;
-    const idsToBooks = cart.flatMap(item => Array(item.cantidad).fill(item.id));
+    const idsToBooks = cart.flatMap(item => Array(item.stock).fill(item._id));
 
     try {
       const res = await createOrder(profile?.id, idsToBooks, total);
@@ -48,15 +48,22 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen }) 
               .then(r => r.json());
 
             return {
-              id: item.book,
-              cantidad: item.quantity,
-              nombre: bookDetails.name,
-              precio: bookDetails.price,
-              imagen: bookDetails.image
+              _id: item.book,
+              quantity: item.quantity,
+              name: bookDetails.name,
+              price: bookDetails.price,
+              image: bookDetails.image,
+              stock: bookDetails.stock,
+              author: bookDetails.author,
+              description: bookDetails.description,
+              idseller: bookDetails.idseller,
+              isbn: bookDetails.isbn,
+              genre: bookDetails.genre,
+              public_range: bookDetails.public_range
             };
           })
         );
-
+        console.log(transformedCart);
         setCart(transformedCart);
       })
       .catch(err => console.error("Error cargando perfil:", err));
@@ -70,27 +77,28 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen }) 
       {cart.length === 0 && <p>Tu carrito está vacío</p>}
 
       {cart.map(item => (
-        <div key={item.id} className="carrito-item">
+        <div key={item._id} className="carrito-item">
 
-          <img src={item.imagen} className="carrito-img"
+          <img src={item.image} className="carrito-img"
           onClick={ () => {
             setBookOpen(item);
+            console.log("Libro Abierto:",item);
             navigate("/book-detail");
-            } }  />
+            }}  />
 
           <div className="carrito-info">
-            <h3>{item.nombre}</h3>
-            <p>${item.precio}</p>
+            <h3>{item.name}</h3>
+            <p>${item.price}</p>
 
             <div className="carrito-controls">
-              <button onClick={() => disminuir(item.id)}>-</button>
-              <span>{item.cantidad}</span>
-              <button onClick={() => aumentar(item.id)}>+</button>
-              <button onClick={() => eliminar(item.id)}>Eliminar</button>
+              <button onClick={() => disminuir(item._id)}>-</button>
+              <span>{item.quantity}</span>
+              <button onClick={() => aumentar(item._id)}>+</button>
+              <button onClick={() => eliminar(item._id)}>Eliminar</button>
             </div>
           </div>
 
-          <p className="carrito-subtotal">${item.precio * item.cantidad}</p>
+          <p className="carrito-subtotal">${item.price * item.quantity}</p>
 
         </div>
       ))}

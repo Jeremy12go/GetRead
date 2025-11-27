@@ -14,6 +14,7 @@ exports.getById = async (req, res) => {
 
 
 exports.update = async (req, res) => {
+  console.log("Backend Recibe:", req.body);
   try {
     const updatedProfile = await ProfileBuyer.findByIdAndUpdate(
       req.params.id,

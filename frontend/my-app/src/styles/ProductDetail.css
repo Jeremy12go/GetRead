@@ -1,9 +1,16 @@
 /* CONTENEDOR GENERAL */
 .pd-container {
-  width: 100%;
   display: flex;
   justify-content: center;
-  padding: 35px 20px;
+
+  max-width: 1100px;
+  margin: 40px auto 60px auto; 
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.3s ease-in-out;
+  font-family: 'Inter', sans-serif;
 }
 
 .pd-wrapper {
@@ -101,9 +108,13 @@
 
 .pd-quantity-box button {
   background-color: #ddd;
-  padding: 8px 12px;
+  padding: 10px 12px;
   border: none;
   cursor: pointer;
+}
+
+.pd-quantity-box button:hover{
+  background-color: #acacac;
 }
 
 .pd-quantity-box span {

@@ -125,12 +125,9 @@ function Home({ stateLogin, search, addToCart, setBookOpen }){
 
                         <div className="bottom-bar">
                             <img src={ico_addCarrito} className="bar-btn"
-                                onClick={() => addToCart({
-                                        id: book._id,
-                                        nombre: book.name,
-                                        precio: book.price,
-                                        imagen: book.image
-                                    })}/>
+                                onClick={() => {
+                                    console.log("Home llama addToCart:",book);
+                                    addToCart(book);}}/>
                             <button className="detail-btn" onClick={() => {
                                 setBookOpen(book);
                                 navigate("/book-detail");
