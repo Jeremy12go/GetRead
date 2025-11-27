@@ -2,8 +2,11 @@ import '../styles/carrito.css';
 import '../styles/styles.css';
 import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Carrito({ cart, setCart, aumentar, disminuir, eliminar }) {
+function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen }) {
+
+  const navigate = useNavigate();
 
   const total = cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
@@ -37,11 +40,8 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar }) {
 
     getProfile(parsed.profile._id)
       .then(async (res) => {
-        console.log("Respuesta de getProfile:", res.data);
-
+        
         const cartFromServer = res.data.cart || [];
-        console.log("Carro cargado del BackEnd:", cartFromServer);
-
         const transformedCart = await Promise.all(
           cartFromServer.map(async (item) => {
             const bookDetails = await fetch(`http://localhost:3004/stores/${item.book}`)
@@ -72,7 +72,11 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar }) {
       {cart.map(item => (
         <div key={item.id} className="carrito-item">
 
-          <img src={item.imagen} className="carrito-img" />
+          <img src={item.imagen} className="carrito-img"
+          onClick={ () => {
+            setBookOpen(item);
+            navigate("/book-detail");
+            } }  />
 
           <div className="carrito-info">
             <h3>{item.nombre}</h3>

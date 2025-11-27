@@ -39,8 +39,13 @@
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #ddd;
+  cursor: pointer;
+  transition: filter 0.25s ease, opacity 0.25s ease;
 }
 
+.carrito-img:hover {
+  filter: brightness(0.7);
+}
 
 /* INFORMACIÓN DEL PRODUCTO */
 .carrito-info {

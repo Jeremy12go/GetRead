@@ -4,7 +4,7 @@ import { useRef, useState, useEffect} from "react";
 import ico_addCarrito from '../assets/anadirCarro.png';
 import { useNavigate } from 'react-router-dom';
 
-function Home({ stateLogin, search, addToCart }){
+function Home({ stateLogin, search, addToCart, setBookOpen }){
 
     const [ books, setBooks ] = useState([]);
     const [ genreFilter, setGenreFilter ] = useState("all");
@@ -131,6 +131,12 @@ function Home({ stateLogin, search, addToCart }){
                                         precio: book.price,
                                         imagen: book.image
                                     })}/>
+                            <button className="detail-btn" onClick={() => {
+                                setBookOpen(book);
+                                navigate("/book-detail");
+                                }}>
+                            Detalles  
+                            </button>
                         </div>
                     </div>
                 ))}

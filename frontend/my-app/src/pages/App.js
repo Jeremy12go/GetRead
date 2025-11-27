@@ -1,13 +1,13 @@
 import Home from "./Home.js";
 import Login from "./Login";
 import Register from "./Register.js";
-import HomePostLogin from "./HomePostLogin.js";
 import Carrito from "./Carrito.js";
 import Header from "../incluides/header.js";
 import Perfil from "./Perfil.js";
 import Editar from "./Editar.js";
 import ResetPassword from "../pages/ResetPassword";
-import PublicarLibro from "../pages/Publicar.js"
+import PublicarLibro from "../pages/Publicar"
+import ProductDetail from "../pages/ProductDetail";
 import { updateProfile } from "../API/APIGateway"
 import { useState, useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -22,18 +22,28 @@ function App() {
     const [ saldoBilletera, setSaldoBilletera ] = useState(0);
     const [ cart, setCart ] = useState([]);
     const [ loadingSession, setLoadingSession ] = useState(true);
+    const [ bookOpen, setBookOpen ] = useState(null);
 
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
-    }, [cart]);
+        if(bookOpen !== null){
+            localStorage.setItem("bookOpen", JSON.stringify(bookOpen));
+        }
+        
+    }, [cart, bookOpen]);
 
     useEffect(() => {
         const savedToken = localStorage.getItem("token");
         const savedData = JSON.parse(localStorage.getItem("objectAccount"));
         const savedCart = JSON.parse(localStorage.getItem("cart"));
+        const savedBookOpen = JSON.parse(localStorage.getItem("bookOpen"));
 
         if (savedCart && Array.isArray(savedCart)) {
             setCart(savedCart);
+        }
+
+        if (savedBookOpen) {
+            setBookOpen(savedBookOpen);
         }
 
         if (savedToken && savedData) {
@@ -53,17 +63,17 @@ function App() {
                 if (exists) {
                     return prev.map(item =>
                         item.id === book.id
-                            ? { ...item, quantity: item.quantity + 1 }
+                            ? { ...item, cantidad: item.cantidad + 1 }
                             : item
                     );
                 }
-                return [...prev, { ...book, quantity: 1 }];
+                return [...prev, { ...book, cantidad: 1 }];
             })();
            
             const idProfile = objectAccount?.profile._id;
             const mappedCart = updated.map(item => ({
                 book: item.id,       
-                quantity: item.quantity
+                quantity: item.cantidad
             }));
 
             updateProfile(idProfile, { cart: mappedCart });
@@ -139,10 +149,12 @@ function App() {
             saldoBilletera={ saldoBilletera } /*Agregar la cantidad de items en el carrito cerca del logo de carrito*/ /> 
 
             <Routes>
-                <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } /> } />
+                <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } 
+                setBookOpen={ setBookOpen } /> } />
 
                 {/*Pagina principal*/}
-                <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } /> } />
+                <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart }
+                setBookOpen={ setBookOpen } /> } />
 
                 {/*Login*/}
                 <Route path="/login" element={ <Login setStateLogin={ setStateLogin }
@@ -154,14 +166,14 @@ function App() {
                 {/*Registro*/}
                 <Route path="/register" element={ <Register/> } />
 
-                {/*Home post login*/}
-                <Route path="/homepostlogin" element={ stateLogin 
-                    ? <HomePostLogin setStateLogin={ setStateLogin } /> 
-                    : <Navigate to="/login" replace/> } />
+                {/*Detalles del libro*/}
+                <Route path="/book-detail" element={ <ProductDetail bookOpen={ bookOpen } addToCart={ addToCart } 
+                aumentar={ aumentar } disminuir={ disminuir }/> }/>
 
                 {/*Carrito*/}
-                <Route path="/carrito" element={ stateLogin
-                    ? <Carrito cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar } setCart={ setCart }/> 
+                <Route path="/cart" element={ stateLogin
+                    ? <Carrito cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar } setCart={ setCart }
+                    setBookOpen={ setBookOpen }/> 
                     : <Navigate to="/login" replace />} />
 
                 {/*Perfil*/}

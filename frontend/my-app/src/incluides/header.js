@@ -37,7 +37,7 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
                 {/* Carrito de compras*/}
                 <img className="carrito" src={lg_carrito} onClick={() => 
                     stateLogin
-                    ? navigate('/carrito')
+                    ? navigate('/cart')
                     : navigate('/home')
                 } />
 
