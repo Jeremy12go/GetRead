@@ -6,17 +6,7 @@ import "../styles/styles.css";
 import "../styles/publicar.css";
 import { translations } from '../components/translations.js';
 
-const GENRES = [
-  'Novela','Cuento','Fabula','Poesía','Comedia','Drama','Filosófico','Científico',
-  'Fantasía','Ciencia Ficción','Terror','Misterio','Suspenso','Romance','Aventura',
-  'Biografía','Historia','Ciencia','Filosofía','Psicología','Autoayuda','Política',
-  'Economía','Educación','Arte','Música','Cine','Tecnología','Turismo','Gastronomía',
-  'Espiritualidad','Religión'
-];
-
-const PUBLIC_RANGE = ['Infantil','Juvenil','Adulto','Todo Público'];
-
-function PublicarLibro( { language, setLanguage } ) {
+function PublicarLibro({ language }) {
   const navigate = useNavigate();
 
   const [ name, setName ] = useState('');
@@ -72,13 +62,7 @@ function PublicarLibro( { language, setLanguage } ) {
 
       await createBook(formData);
       
-
-      if (imageFile) {
-        setUploadingImage(true);
-        await uploadBookImage(bookId, imageFile);
-        setUploadingImage(false);
-      }
-      alert(translations[language].publicar_alert2);
+      alert("Libro publicado correctamente");
       navigate("/home");
     } catch (err) {
       console.error("Error al publicar libro:", err.response?.data || err.message || err);
@@ -159,55 +143,59 @@ function PublicarLibro( { language, setLanguage } ) {
         </div>
 
         <div className="form-group">
-        <label className="text">{translations[language].publicar_genero}</label>
-        <div className="genre-dropdown" ref={ genreDropdownRef }>
-          <button
-            type="button"
-            className="genre-dropdown-btn"
-            onClick={() => setGenreDropdownOpen(!genreDropdownOpen)}
-          >
-            {genre.length === 0 ? translations[language].publicar_generos : `${genre.length} ${translations[language].publicar_generos_seleccionados}`}
-            <span className={`dropdown-arrow ${genreDropdownOpen ? "open" : ""}`}>▼</span>
-          </button>
+          <label className="text">{translations[language].publicar_genero}</label>
+          <div className="genre-dropdown" ref={genreDropdownRef}>
+            <button
+              type="button"
+              className="genre-dropdown-btn"
+              onClick={() => setGenreDropdownOpen(!genreDropdownOpen)}
+            >
+              {genre.length === 0
+                ? translations[language].publicar_generos
+                : `${genre.length} ${translations[language].publicar_seleccionados}`}
+              <span className={`dropdown-arrow ${genreDropdownOpen ? "open" : ""}`}>▼</span>
+            </button>
 
-          {genreDropdownOpen && (
-            <div className="genre-dropdown-content">
-              {GENRES.map(g => (
-                <label key={g} className="genre-option">
-                  <input
-                    type="checkbox"
-                    checked={genre.includes(g)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setGenre([...genre, g]);
-                      } else {
-                        setGenre(genre.filter(x => x !== g));
-                      }
-                    }}
-                  />
-                  <span>{g}</span>
-                </label>
-              ))}
-            </div>
-          )}
+            {genreDropdownOpen && (
+              <div className="genre-dropdown-content">
+                {Object.keys(translations[language].genreList).map(g => (
+                  <label key={g} className="genre-option">
+                    <input
+                      type="checkbox"
+                      checked={genre.includes(g)}
+                      onChange={(e) => {
+                        if (e.target.checked) setGenre([...genre, g]);
+                        else setGenre(genre.filter(x => x !== g));
+                      }}
+                    />
+                    <span>{translations[language].genreList[g]}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+
         </div>
         </div>
 
         {genre.length > 0 && (
           <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>
-            {translations[language].publicar_seleccionados} {genre.join(", ")}
+            {translations[language].publicar_seleccionados} {genre.map(g => translations[language].genreList[g]).join(", ")}
           </p>
         )}
 
         <div className="form-group">
-        <label className="text">{translations[language].publicar_rango}</label>
-        <select 
-          className="input" 
-          value={publicRange} 
-          onChange={e => setPublicRange(e.target.value)}
-        >
-          {PUBLIC_RANGE.map(r => <option key={r} value={r}>{r}</option>)}
-        </select>
+          <label className="text">{translations[language].publicar_rango}</label>
+          <select 
+            className="input"
+            value={publicRange}
+            onChange={e => setPublicRange(e.target.value)}
+          >
+            {Object.keys(translations[language].publicRangeList).map(r => (
+              <option key={r} value={r}>
+                {translations[language].publicRangeList[r]}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">
@@ -221,7 +209,7 @@ function PublicarLibro( { language, setLanguage } ) {
         </div>
 
         <button className="button" type="submit" disabled={ uploadingImage }>
-          { uploadingImage ? "Subiendo imagen..." : translations[language].publicar_btn }
+          { uploadingImage ? "Subiendo imagen..." : translations[language].publicar_btn}
         </button>
 
         {errorForm && <p style={{ color: "red" }}>{errorForm}</p>}

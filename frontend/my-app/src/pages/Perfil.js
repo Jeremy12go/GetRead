@@ -107,7 +107,6 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
                   <label htmlFor="profile-image-input" className="image-upload-label">
                     <img 
                       src={account.profileImage} 
-                      alt="Perfil" 
                       className="profile-image"
                       onError={(e) => e.target.src = usuarioDefault}
                     />
@@ -132,11 +131,11 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
 
             <div className="perfil-details">
               <h1>{translations[language].perfil_detalles}</h1>
-              <p><strong>{translations[language].perfil_nombre}</strong> {perfil.name}</p>
-              <p><strong>{translations[language].perfil_direccion}</strong> {perfil.address}</p>
-              <p><strong>{translations[language].perfil_correo}</strong> {perfil.email}</p>
-              <p><strong>{translations[language].perfil_id}</strong> {perfil._id}</p>
-              <p><strong>{translations[language].perfil_telefono}</strong> {perfil.phoneNumber}</p>
+              <p><strong>{translations[language].perfil_nombre}</strong> {profile.name}</p>
+              <p><strong>{translations[language].perfil_direccion}</strong> {profile.address}</p>
+              <p><strong>{translations[language].perfil_correo}</strong> {account.email}</p>
+              <p><strong>{translations[language].perfil_id}</strong> {profile._id}</p>
+              <p><strong>{translations[language].perfil_telefono}</strong> {profile.phoneNumber}</p>
             </div>
           </div>
 

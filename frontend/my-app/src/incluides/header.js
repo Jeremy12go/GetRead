@@ -4,7 +4,6 @@ import lg_carrito from '../assets/carrito.png'
 import lg_billetera from '../assets/billetera.png'
 import usuario from '../assets/usuario.png'
 import lupa from '../assets/lupa.png'
-import mundo from '../assets/mundo.png'
 import { useNavigate } from 'react-router-dom';
 import { translations } from '../components/translations';
 
@@ -20,10 +19,6 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
             style: 'currency',
             currency: 'CLP'
         }).format(saldo || 0);
-    };
-
-    const handleLanguageChange = (e) => {
-        setLanguage(e.target.value);
     };
 
     return(
@@ -43,27 +38,6 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
                     />
                     <img className="lupa" src={lupa} />
                 </div>
-
-            {/* Selección de idioma */}
-            <div className='lenguage-select-wrapper'>
-                <div className="language-icon-fixed">
-                    <img className="mundo" src={mundo} />
-                </div>
-                <div className='lenguage-select'>
-                    <button 
-                        className={`language-btn ${language === 'es' ? 'active' : ''}`}
-                        onClick={() => handleLanguageChange({ target: { value: 'es' } })}
-                    >
-                        ES
-                    </button>
-                    <button 
-                        className={`language-btn ${language === 'en' ? 'active' : ''}`}
-                        onClick={() => handleLanguageChange({ target: { value: 'en' } })}
-                    >
-                        EN
-                    </button>
-                </div>
-            </div>
 
             <div className="right">
                 {/* Carrito de compras*/}

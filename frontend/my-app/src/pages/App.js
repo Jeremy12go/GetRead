@@ -25,6 +25,14 @@ function App() {
     const [ loadingSession, setLoadingSession ] = useState(true);
 
     useEffect(() => {
+        const browserLang = navigator.language.split('-')[0];
+        const detectedLang = ['es', 'en'].includes(browserLang) ? browserLang : 'es';
+        setLanguage(detectedLang);
+        document.documentElement.lang = detectedLang;
+    }, []);
+
+
+    useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
 
@@ -137,23 +145,23 @@ function App() {
         <Router>
 
             <Header stateLogin={ stateLogin } name={ name } profileImage={ profileImage } search={ search } setSearch={ setSearch } 
-            saldoBilletera={ saldoBilletera } language={ language } setLanguage={ setLanguage } /*Agregar la cantidad de items en el carrito cerca del logo de carrito*/ /> 
+            saldoBilletera={ saldoBilletera } language={ language } /*Agregar la cantidad de items en el carrito cerca del logo de carrito*/ /> 
 
             <Routes>
-                <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } language={ language } setLanguage={ setLanguage } /> } />
+                <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } language={ language } /> } />
 
                 {/*Pagina principal*/}
-                <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } language={ language } setLanguage={ setLanguage } />} />
+                <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } language={ language } />} />
 
                 {/*Login*/}
                 <Route path="/login" element={ <Login setStateLogin={ setStateLogin }
-                setName={ setName } setProfileImage={ setProfileImage } setObjectAccount={ setObjectAccount } language={ language } setLanguage={ setLanguage } />} />
+                setName={ setName } setProfileImage={ setProfileImage } setObjectAccount={ setObjectAccount } language={ language } />} />
 
                 {/* Reset de la contraseña */}
                 <Route path="/reset-password/:token" element={ <ResetPassword/> } />
 
                 {/*Registro*/}
-                <Route path="/register" element={ <Register language={ language } setLanguage={ setLanguage } />} />
+                <Route path="/register" element={ <Register language={ language } />} />
 
                 {/*Home post login*/}
                 <Route path="/homepostlogin" element={ stateLogin 
@@ -162,17 +170,17 @@ function App() {
 
                 {/*Carrito*/}
                 <Route path="/carrito" element={ stateLogin
-                    ? <Carrito language={ language } setLanguage={ setLanguage } cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar } setCart={ setCart }/> 
+                    ? <Carrito language={ language } cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar } setCart={ setCart }/> 
                     : <Navigate to="/login" replace />} />
 
                 {/*Perfil*/}
                 <Route path="/perfil" element={ stateLogin
-                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } setObjectAccount={ setObjectAccount } objectAccount={ objectAccount } language={ language } setLanguage={ setLanguage } /> 
+                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } setObjectAccount={ setObjectAccount } objectAccount={ objectAccount } language={ language } /> 
                     : <Navigate to="/home" replace /> } />
                 <Route path="/editar" element={ stateLogin 
-                    ? <Editar setName={ setName } language={ language } setLanguage={ setLanguage } /> 
+                    ? <Editar setName={ setName } language={ language } /> 
                     : <Navigate to="/login" replace /> } />
-                <Route path="/publicar" element={ <PublicarLibro language={ language } setLanguage={ setLanguage } /> } />
+                <Route path="/publicar" element={ <PublicarLibro language={ language } /> } />
             </Routes>
         </Router>
     );

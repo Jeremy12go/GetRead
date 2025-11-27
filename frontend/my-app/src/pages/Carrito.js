@@ -2,8 +2,9 @@ import '../styles/carrito.css';
 import '../styles/styles.css';
 import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
 import { useEffect } from 'react';
+import { translations } from '../components/translations.js';
 
-function Carrito({ cart, setCart, aumentar, disminuir, eliminar }) {
+function Carrito({ cart, setCart, aumentar, disminuir, eliminar, language }) {
 
   const total = cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
@@ -65,9 +66,9 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar }) {
   return (
     <div className="carrito-container">
 
-      <h2>Carrito</h2>
+      <h2>{translations[language].carrito}</h2>
 
-      {cart.length === 0 && <p>Tu carrito está vacío</p>}
+      {cart.length === 0 && <p>{translations[language].carrito_vacio2}</p>}
 
       {cart.map(item => (
         <div key={item.id} className="carrito-item">
@@ -82,7 +83,7 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar }) {
               <button onClick={() => disminuir(item.id)}>-</button>
               <span>{item.cantidad}</span>
               <button onClick={() => aumentar(item.id)}>+</button>
-              <button onClick={() => eliminar(item.id)}>Eliminar</button>
+              <button onClick={() => eliminar(item.id)}>{translations[language].carrito_eliminar}</button>
             </div>
           </div>
 
