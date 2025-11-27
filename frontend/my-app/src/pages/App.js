@@ -178,7 +178,7 @@ function App() {
                     ? <Perfil setStateLogin={ setStateLogin } setName={ setName } setObjectAccount={ setObjectAccount } objectAccount={ objectAccount } language={ language } /> 
                     : <Navigate to="/home" replace /> } />
                 <Route path="/editar" element={ stateLogin 
-                    ? <Editar setName={ setName } language={ language } /> 
+                    ? <Editar setName={ setName } language={ language } setObjectAccount={ setObjectAccount } objectAccount={ objectAccount } /> 
                     : <Navigate to="/login" replace /> } />
                 <Route path="/publicar" element={ <PublicarLibro language={ language } /> } />
             </Routes>

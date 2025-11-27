@@ -5,7 +5,7 @@ import { updateAccount } from '../API/APIGateway';
 import { useNavigate } from 'react-router-dom';
 import { translations } from '../components/translations.js';
 
-function Editar({ setName, language, setLanguage }) {
+function Editar({ setName, language, objectAccount }) {
 
     const navigate = useNavigate();
     
@@ -18,18 +18,19 @@ function Editar({ setName, language, setLanguage }) {
 
     // Cargar datos actuales del perfil
     useEffect(() => {
-        const savedProfile = JSON.parse(localStorage.getItem("profile"));
-        const savedAccount = JSON.parse(localStorage.getItem("account"));
+        const account = objectAccount?.account;
+        const profile = objectAccount?.profile;
 
-        if (savedAccount) {
-            setNameLocal(savedProfile.name ?? "");
-            setPhoneNumber(savedProfile.phoneNumber ?? "");
-            setAddress(savedProfile.address ?? "");
+        if (profile) {
+            setNameLocal(profile.name ?? "");
+            setPhoneNumber(profile.phoneNumber ?? "");
+            setAddress(profile.address ?? "");
         }
-        if (savedAccount) {
-            setEmail(savedAccount.email ?? "");
+
+        if (account) {
+            setEmail(account.email ?? "");
         }
-    }, []);
+    }, [objectAccount]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -85,7 +86,7 @@ function Editar({ setName, language, setLanguage }) {
                 <p className="text-common">{translations[language].txt_usr_name}</p>
                 <input
                     type="text"
-                    placeholder="Usuario"
+                    placeholder={translations[language].txt_usr_name2}
                     value={name}
                     onChange={(e) => setNameLocal(e.target.value)}
                     className="input-text"
@@ -103,7 +104,7 @@ function Editar({ setName, language, setLanguage }) {
                 <p className="text-common">{translations[language].txt_direccion}</p>
                 <input
                     type="text"
-                    placeholder="Dirección"
+                    placeholder={translations[language].txt_direccion2}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     className="input-text"
