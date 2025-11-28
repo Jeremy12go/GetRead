@@ -1,43 +1,28 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile, uploadAccountImage } from '../API/APIGateway.js';
+import { uploadAccountImage } from '../API/APIGateway.js';
 import "../styles/perfil.css";
+import { translations } from '../components/translations.js';
 
 import usuarioDefault from '../assets/usuario.png'
 
-export default function Perfil({ setStateLogin, setName }) {
-  const [perfil, setPerfil] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [uploadingImage, setUploadingImage] = useState(false);
+export default function Perfil({ setStateLogin, setName, setObjectAccount, objectAccount, language, setLanguage }) {
+  const [ profile, setProfile ] = useState(null);
+  const [ account, setAccount ] = useState(null);
+  const [ loading, setLoading ] = useState(true);
+  const [ uploadingImage, setUploadingImage ] = useState(false);
   const navigate = useNavigate();
-
-  const API_URL = 'http://localhost:3000';
 
   useEffect(() => {
     const loadProfile = async () => {
-      try {
-        const savedProfile = JSON.parse(localStorage.getItem('profile'));
-        const savedAccount = JSON.parse(localStorage.getItem('account'));
-        
-        if (savedProfile) {
-          setPerfil(savedProfile);
-        }
 
-        if (savedAccount?._id) {
-          const response = await getProfile(savedAccount._id);
-          
-          if (response.data && response.data.profile) {
-            const freshProfile = {
-              ...response.data.profile,
-              email: response.data.account?.email || savedAccount.email,
-              profileImage: response.data.account?.profileImage
-            };
-            
-            setPerfil(freshProfile);
-            localStorage.setItem('profile', JSON.stringify(freshProfile));
-          }
-        }
-        
+      try {
+        const account = objectAccount?.account;
+        const profile = objectAccount?.profile;
+    
+        setAccount(account);
+        setProfile(profile);
+  
       } catch (error) {
         console.error('Error al cargar perfil:', error);
       } finally {
@@ -66,28 +51,20 @@ export default function Perfil({ setStateLogin, setName }) {
 
     try {
       setUploadingImage(true);
-      
-      const savedAccount = JSON.parse(localStorage.getItem('account'));
-      const response = await uploadAccountImage(savedAccount._id, file);
+    
+      const response = await uploadAccountImage(account._id, file);
 
-      // Actualizar tanto perfil como account
-      const updatedProfile = {
-        ...perfil,
-        profileImage: response.data.profileImage
-      };
-      
+      // Actualizar el perfil manejado
       const updatedAccount = {
-        ...savedAccount,
+        ...account,
         profileImage: response.data.profileImage
       };
       
-      setPerfil(updatedProfile);
-      localStorage.setItem('profile', JSON.stringify(updatedProfile));
-      localStorage.setItem('account', JSON.stringify(updatedAccount));
+      setAccount(updatedAccount);
 
       window.dispatchEvent(new Event('profileUpdated'));
 
-      alert('Imagen actualizada correctamente');
+      alert(translations[language].perfil_alert);
 
     } catch (error) {
       console.error('Error al subir imagen:', error);
@@ -98,46 +75,44 @@ export default function Perfil({ setStateLogin, setName }) {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
     setStateLogin(false);
     setName('');
-    setPerfil(null);
+    setProfile(null);
+    setAccount(null);
     window.dispatchEvent(new Event('profileUpdated'));
     navigate('/home');
+    localStorage.removeItem("token");
+    localStorage.removeItem("objectAccount");
+    setObjectAccount({});
   };
 
-  if (loading) {
+  if ( loading ) {
     return (
       <div className="perfil-page">
-        <p>Cargando perfil...</p>
+        <p>{translations[language].perfil_cargando}</p>
       </div>
     );
   }
 
-  const imageUrl = perfil?.profileImage 
-    ? `${API_URL}${perfil.profileImage}` 
-    : usuarioDefault;
-
   return (
     <div className="perfil-page">
-      {perfil ? (
+      {profile ? (
         <div className="perfil-container">
           <div className="perfil-header">
             <div className="perfil-content">
               <div className="perfil-icon">
-                <h1>Mi Perfil</h1>
+                <h1>{translations[language].perfil}</h1>
                 
                 <div className="profile-image-container">
                   <label htmlFor="profile-image-input" className="image-upload-label">
                     <img 
-                      src={imageUrl} 
-                      alt="Perfil" 
+                      src={account.profileImage} 
                       className="profile-image"
                       onError={(e) => e.target.src = usuarioDefault}
                     />
                     <div className="image-overlay">
                       <span className="overlay-text">
-                        {uploadingImage ? 'Actualizando...' : 'Cambiar Imagen'}
+                        {uploadingImage ? translations[language].perfil_actualizar : translations[language].perfil_imagen}
                       </span>
                     </div>
                   </label>
@@ -146,29 +121,70 @@ export default function Perfil({ setStateLogin, setName }) {
                     id="profile-image-input"
                     type="file"
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={ handleImageChange }
                     style={{ display: 'none' }}
-                    disabled={uploadingImage}
+                    disabled={ uploadingImage }
                   />
                 </div>
               </div>
             </div>
 
             <div className="perfil-details">
-              <h1>Detalles:</h1>
-              <p><strong>Nombre:</strong> {perfil.name}</p>
-              <p><strong>Dirección:</strong> {perfil.address}</p>
-              <p><strong>Correo:</strong> {perfil.email}</p>
-              <p><strong>ID Perfil:</strong> {perfil._id}</p>
-              <p><strong>Teléfono:</strong> {perfil.phoneNumber}</p>
+              <h1>{translations[language].perfil_detalles}</h1>
+              <p><strong>{translations[language].perfil_nombre}</strong> {profile.name}</p>
+              <p><strong>{translations[language].perfil_direccion}</strong> {profile.address}</p>
+              <p><strong>{translations[language].perfil_correo}</strong> {account.email}</p>
+              <p><strong>{translations[language].perfil_id}</strong> {profile._id}</p>
+              <p><strong>{translations[language].perfil_telefono}</strong> {profile.phoneNumber}</p>
             </div>
           </div>
 
           <div className="perfil-botones">
-            <button className="btn verde">Ver Historial Pedidos</button>
-            <button className="btn negro" onClick={() => navigate('/editar')}>Editar Perfil</button>
-            <button className="btn rojo" onClick={handleLogout}>Cerrar Sesión</button>
-            <button className="btn azul">Ver libros Adquiridos</button>
+            {/* Bloque Buyer */}
+            {account.profilebuyer && (
+              <>
+                <button className="btn verde" onClick={() => navigate('/historial-pedidos')}>
+                  {translations[language].btn_pedidos}
+                </button>
+                <button className="btn azul">{translations[language].btn_libros}</button>
+              </>
+            )}
+
+            {/* Bloque Seller */}
+            {account.profileseller && (
+              <>
+                <button className="btn verde" onClick={() => navigate('/historial-publicaciones')}>
+                  {translations[language].perfil_publicaciones2}
+                </button>
+                <button className="btn azul" onClick={() => navigate('/publicar')}>
+                  {translations[language].perfil_publicar}
+                </button>
+              </>
+            )}
+
+            {/* Botones comunes */}
+            <button className="btn negro" onClick={() => navigate('/editar')}>
+              {translations[language].btn_editar}
+            </button>
+            <button className="btn rojo" onClick={handleLogout}>
+              {translations[language].btn_cerrar}
+            </button>
+          </div>
+
+          <div className="perfil-reviews">
+            {account.profilebuyer ? (
+              <>
+                <h2>{translations[language].perfil_resenas}</h2>
+                {/* Aquí renderizas lista de reseñas del buyer */}
+              </>
+            ) : account.profileseller ? (
+              <>
+                <h2>{translations[language].perfil_publicaciones2}</h2>
+                {/* Aquí renderizas lista de publicaciones del seller */}
+              </>
+            ) : (
+              <p>Este perfil no tiene tipo definido</p>
+            )}
           </div>
         </div>
       ) : (

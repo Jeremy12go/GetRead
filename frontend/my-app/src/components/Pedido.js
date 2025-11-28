@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Pedido.css";
 import { getProductById, getStoreById } from "../API/APIGateway";
-import { arrayBufferToBase64 } from "../base64";
 
 function Pedido({ volver, pedido }) {
   const [productos, setProductos] = useState([]);
@@ -68,9 +67,7 @@ function Pedido({ volver, pedido }) {
     <div className="pedido-container">
       <h2>Detalle del Pedido</h2>
       <div className="pedido-tienda-info">
-        <img src={tienda && tienda.logo && tienda.logo.data
-            ? `data:${tienda.logo.contentType};base64,${arrayBufferToBase64(tienda.logo.data.data)}`
-            : "./logo.png"} 
+        <img src={tienda && tienda.logo && tienda.logo.data } 
             alt="logo tienda" className="pedido-tienda-logo" 
           />
         <div className="pedido-tienda-datos">
@@ -88,11 +85,7 @@ function Pedido({ volver, pedido }) {
         productos.map(prod => (
           <div key={prod.id} className="pedido-item">
             <img
-              src={
-                prod.image && prod.image.data
-                  ? `data:${prod.image.contentType};base64,${arrayBufferToBase64(prod.image.data.data)}`
-                  : "./logo.png"
-              }
+              src={ prod.image && prod.image.data }
               alt={prod.name}
               className="pedido-item-img"
             />

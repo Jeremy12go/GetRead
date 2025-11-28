@@ -3,8 +3,11 @@ import '../styles/styles.css';
 import { useState } from "react";
 import { loginAccount } from '../API/APIGateway.js';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from "@react-oauth/google";
+import axios from 'axios';
+import { translations } from '../components/translations.js'; 
 
-function Login({ setStateLogin, setName, setProfileImage }) {
+function Login({ setStateLogin, setName, setProfileImage, language, setLanguage, setObjectAccount }) {
 
     const navigate = useNavigate();
     
@@ -17,28 +20,24 @@ function Login({ setStateLogin, setName, setProfileImage }) {
         setErrorLogin('');
 
         try {
-            localStorage.clear();
             const res = await loginAccount(email, password);
 
             const account = res.data.account;
             const profile = res.data.profile;
+            
+            setObjectAccount(res.data);
+            console.log(res.data);
 
-            localStorage.setItem('account', JSON.stringify(account));
-            localStorage.setItem('profile', JSON.stringify({
-                ...profile,
-                email: account.email,
-                profileImage: account.profileImage
-            }));
+            localStorage.setItem("objectAccount", JSON.stringify(res.data));
+            localStorage.setItem("token", res.data.token);
 
-            if (profile?.profileImage) {
-                setProfileImage(profile.profileImage);
-            } else if (account?.profileImage) {
+            if (account?.profileImage !== undefined) {
                 setProfileImage(account.profileImage);
             }
 
             window.dispatchEvent(new Event('profileUpdated'));
 
-            setName(profile.name);
+            setName(profile?.name.split(" ")[0]);
             setStateLogin(true);
             navigate('/home');
 
@@ -52,51 +51,77 @@ function Login({ setStateLogin, setName, setProfileImage }) {
         }
     };
 
+    const handleGoogleLogin = async ( credentialResponse ) => {
+        try {
+            const googleToken = credentialResponse.credential;
+
+            const res = await axios.post("http://localhost:3004/accounts/google/tokenLogin", {
+                token: googleToken
+            });
+
+            const account = res.data.account;
+            const profile = res.data.profile;
+
+            setProfileImage(account.profileImage);
+            setName(profile.name);
+            setStateLogin(true);
+
+            navigate('/home');
+        } 
+        catch (e) {
+            console.error("Error Google Login:", e);
+            setErrorLogin("Error al iniciar sesión con Google");
+        }
+    };
 
     return (
         <div className="App">
             <div>
-                <p className="text-titulos">
-                    Iniciar sesión
-                </p>
-
+                <p className="text-titulos">{translations[language].txt_login}</p>
                 <p className="text-common">
-                    ¿Primera vez?{' '}
-                    <span onClick={() => navigate('/register')} className="text-subrayado">
-                        Haz click aquí!
+                    {translations[language].txt_first_time}{' '}
+                    <span onClick={ () => navigate('/register') } className="text-subrayado">
+                        {translations[language].txt_create_account}
                     </span>
                 </p>
 
                 <div>
+                    {/* mail */}
                     <p className="text-common"> Email* </p>
                     <input
                         type="text"
                         placeholder="Email"
                         className="input-text"
-                        value={email}
+                        value={ email }
                         onChange={(e)=> setEmail(e.target.value)
                     }/>
-
-                    <p className="text-common"> Contraseña* </p>
+                    {/* password */}
+                    <p className="text-common"> {translations[language].txt_pwd1} </p>
                     <input
                         type="password"
-                        placeholder="Contraseña"
+                        placeholder={translations[language].txt_pwd2}
                         className="input-text"
-                        value={password}
+                        value={ password }
                         onChange={(e) => setPassword(e.target.value)}
                     />
-
                 </div>
             </div>
             <div>
-                <button onClick={handleSubmit} className="button-generic" >
-                    Iniciar Sesión
+                <button onClick={ handleSubmit } className="button-generic" >
+                    {translations[language].txt_login}
                 </button>
                 {errorLogin && (
                     <p className='text-error'>
                         {errorLogin}
                     </p>
                 )}
+
+                <div className="separator"></div>
+
+                <GoogleLogin
+                    onSuccess={ handleGoogleLogin }
+                    onError={() => setErrorLogin("Error al iniciar sesión con Google")}
+                />
             </div>
         </div>
     );

@@ -61,8 +61,7 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 #### Instalar dependencias y librerias usadas
 ```bash
     npm i
-    npm i axios
-    npm install react-router-dom
+    npm i axios react-router-dom @react-oauth/google
 ```
 
 #### Iniciamos la aplicación
@@ -83,11 +82,12 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 ```
 - En la ruta del servicio accounts
 ```bash
-    npm install multer
+    npm i multer dotenv passport passport-google-oauth20 jsonwebtoken cookie-parser google-auth-library @sendinblue/client cloudinary multer-storage-cloudinary 
+
 ```
 - En la ruta del servicio stores
 ```bash
-    npm i express mongoose multer dotenv
+    npm i express mongoose multer dotenv cloudinary multer-storage-cloudinary jsonwebtoken
 ```
 - En la ruta del servicio gateway
 ```bash

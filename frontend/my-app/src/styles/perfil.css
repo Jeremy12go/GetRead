@@ -60,13 +60,12 @@ html, body {
 
 }
 
-
 .perfil-botones {
   display: flex;
   flex-wrap: nowrap;
   gap: 10px;
   margin-top: 20px;
-  justify-content: flex-start; /* o center si querés centrados */
+  justify-content: flex-start;
 }
 
 .perfil-botones .btn {
@@ -175,4 +174,11 @@ html, body {
 
 .image-upload-label:active .profile-image {
   transform: scale(0.98);
+}
+
+.perfil-reviews {
+  border-top:#000000 2px solid;
+  width: 100%;
+  margin-top: 30px;
+  padding-left: 0px;
 }

@@ -12,7 +12,7 @@ const bookSchema = new mongoose.Schema({
   isbn: { type: String, required: true },
   author: { type: String, required: true },
   name: { type: String, required: true },
-  image: { data: Buffer, contentType: String },
+  image: { type: String, required: false },
   price: { type: Number, required: true },
   stock: { type: Number, required: true},
   description: { type: String, required: true },
@@ -28,4 +28,6 @@ bookSchema.index({ name: 1 });
 bookSchema.index({ author: 1 });
 bookSchema.index({ genre: 1 });
 
-module.exports = (connection) => connection.model('Book', bookSchema);
+//module.exports = (connection) => connection.model('Book', bookSchema);
+module.exports = mongoose.models.book || mongoose.model('book', bookSchema);
+
