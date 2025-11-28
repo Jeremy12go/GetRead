@@ -3,8 +3,9 @@ import '../styles/styles.css';
 import { useRef, useState, useEffect} from "react";
 import ico_addCarrito from '../assets/anadirCarro.png';
 import { useNavigate } from 'react-router-dom';
+import { translations } from '../components/translations.js';
 
-function Home({ stateLogin, search, addToCart, setBookOpen }){
+function Home({ stateLogin, search, addToCart, language, setLanguage, setBookOpen }){
 
     const [ books, setBooks ] = useState([]);
     const [ genreFilter, setGenreFilter ] = useState("all");
@@ -51,10 +52,10 @@ function Home({ stateLogin, search, addToCart, setBookOpen }){
             {!stateLogin ? (
                 <div className="hero-section">
                     <div className="hero-content">
-                        <h1>Cada libro es una puerta <br/> ¿Cuál abrirás hoy?</h1>
-                        <p>Disfruta de un sinfín de libros para ti...</p>
+                        <h1>{translations[language].txt_home} <br/> {translations[language].txt_open}</h1>
+                        <p>{translations[language].txt_enjoy}</p>
                         <button className='button-generic' 
-                            onClick={ () => navigate('/register') }>Quiero leer</button>
+                            onClick={ () => navigate('/register') }>{translations[language].btn_wtr}</button>
                     </div>
                 </div>
             ):(
@@ -68,54 +69,35 @@ function Home({ stateLogin, search, addToCart, setBookOpen }){
             )}
 
             {/* Filtro */}
-            <div className="filtre" >
-                <label> Filtrar:
-                    <select value={ genreFilter } 
-                        onChange={(e) => setGenreFilter(e.target.value) }  >
 
-                        <option value="all">Todo Genero</option>
-                        <option value="Novela">Novela</option>
-                        <option value="Cuento">Cuento</option>
-                        <option value="Fabula">Fabula</option>
-                        <option value="Comedia">Comedia</option>
-                        <option value="Drama">Drama</option>
-                        <option value="Filosofico">Filosofico</option>
-                        <option value="Cientifico">Cientifico</option>
-                        <option value="Fantasia">Fantasia</option>
-                        <option value="Ciencia Ficción">Ciencia Ficción</option>
-                        <option value="Terror">Terror</option>
-                        <option value="Misterio">Misterio</option>
-                        <option value="Suspenso">Suspenso</option>
-                        <option value="Romance">Romance</option>
-                        <option value="Biografia">Biografia</option>
-                        <option value="Historia">Historia</option>
-                        <option value="Ciencia">Ciencia</option>
-                        <option value="Filosofia">Filosofia</option>
-                        <option value="Psicologia">Psicologia</option>
-                        <option value="Autoayuda">Autoayuda</option>
-                        <option value="Politica">Politica</option>
-                        <option value="Economia">Economia</option>
-                        <option value="Educación">Educación</option>
-                        <option value="Arte">Arte</option>
-                        <option value="Musica">Musica</option>
-                        <option value="Cine">Cine</option>
-                        <option value="Tecnologia">Tecnologia</option>
-                        <option value="Turismo">Turismo</option>
-                        <option value="Gastronomia">Gastronomia</option>
-                        <option value="Espiritualidad">Espiritualidad</option>
-                        <option value="Religión">Religión</option>
-                    </select>
+            <div className="filtre">
+            <label>{translations[language].filter}:</label>
 
-                    <select value={ ageFilter } onChange={ (e) => setAgeFilter(e.target.value) } >
-                        
-                        <option value="all">Todas las Edades</option>
-                        <option value="Infantil">Infantil</option>
-                        <option value="Juvenil">Juvenil</option>
-                        <option value="Adulto">Adulto</option>
-                        <option value="Todo Publico">Todo Publico</option>
-                    </select>
-                </label>
+            <select 
+                value={genreFilter} 
+                onChange={(e) => setGenreFilter(e.target.value)}
+            >
+                <option value="all">{translations[language].filter_all}</option>
+                {Object.keys(translations[language].genreList).map((g) => (
+                <option key={g} value={g}>
+                    {translations[language].genreList[g]}
+                </option>
+                ))}
+            </select>
+
+            <select 
+                value={ageFilter} 
+                onChange={(e) => setAgeFilter(e.target.value)}
+            >
+                <option value="all">{translations[language].filter_all_ages}</option>
+                {Object.keys(translations[language].publicRangeList).map((r) => (
+                <option key={r} value={r}>
+                    {translations[language].publicRangeList[r]}
+                </option>
+                ))}
+            </select>
             </div>
+
             
             {/* Catalogo */}
             <div className="grid-wrap">

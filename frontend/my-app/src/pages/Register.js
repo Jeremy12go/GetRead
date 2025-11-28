@@ -3,9 +3,10 @@ import '../styles/styles.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerBuyer, registerSeller } from '../API/APIGateway';
+import { translations } from '../components/translations.js';
 
 
-function Register() {
+function Register({ language, setLanguage }) {
     
     const navigate = useNavigate();
     const [ email , setEmail ] = useState('');
@@ -41,25 +42,25 @@ function Register() {
         <div class="App">
             <div>
                 <p className="text-titulos">
-                    Registro
+                    {translations[language].txt_registro}
                 </p>
                 <div>
                     
                     <p className="text-common">
-                        Nombre de usuario* </p>
-                    <input type="name" placeholder="Usuario" 
+                        {translations[language].txt_usr_name} </p>
+                    <input type="name" placeholder={translations[language].txt_usr_name2} 
                         value={name} onChange={ (e) => setName(e.target.value) }
                         className="input-text" />   
 
                     <p className="text-common">
-                        Telefono*</p>
-                    <input type="phoneNumber" placeholder="911111111"
+                        {translations[language].txt_telefono}</p>
+                    <input type="phoneNumber" placeholder="+XX 123456789"
                         value={phoneNumber} onChange={ (e) => setPhoneNumber(e.target.value) }
                         className="input-text" />
 
                     <p className="text-common">
-                        Dirección*</p>
-                    <input type="address" placeholder="Ciudad/Calle/Numero"
+                        {translations[language].txt_direccion}</p>
+                    <input type="address" placeholder={translations[language].txt_direccion2}
                         value={address} onChange={ (e) => setAddress(e.target.value) }
                         className="input-text" />
 
@@ -70,12 +71,12 @@ function Register() {
                         className="input-text" />
 
                     <p className="text-common">
-                        Contraseña*</p>
-                    <input type="password" placeholder="Contraseña"
+                        {translations[language].txt_pwd1}</p>
+                    <input type="password" placeholder={translations[language].txt_pwd2}
                         value={password} onChange={ (e) => setPassword(e.target.value) }
                         className="input-text" />
 
-                    <p className="text-common">Tipo de perfil*</p>
+                    <p className="text-common">{translations[language].txt_perfil}</p>
                         <div className="role-options">
                             <label>
                             <input
@@ -84,7 +85,7 @@ function Register() {
                                 checked={role === 'buyer'}
                                 onChange={(e) => setRole(e.target.value)}
                             />
-                            Comprador
+                            {translations[language].perfil_buyer}
                             </label>
                             <label>
                             <input
@@ -93,14 +94,14 @@ function Register() {
                                 checked={role === 'seller'}
                                 onChange={(e) => setRole(e.target.value)}
                             />
-                            Vendedor
+                            {translations[language].perfil_seller}
                             </label>
                         </div>
                 </div>
             </div>
             <div>
                 <button onClick={ handleSubmit } className="button-generic">
-                    Registrar
+                    {translations[language].txt_registro}
                 </button>
                 {errorRegistro && (
                     <p style={{ visibility: errorRegistro ? 'visible' : 'hidden' }}>

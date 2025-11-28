@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "../styles/ProductDetail.css";
+import { translations } from '../components/translations.js';
 
-export default function ProductDetail({ bookOpen, addToCart, aumentar, disminuir }) {
+export default function ProductDetail({ bookOpen, addToCart, aumentar, disminuir, language }) {
   const [ cantidad, setCantidad ] = useState(1);
 
   if (!bookOpen){
@@ -30,31 +31,36 @@ export default function ProductDetail({ bookOpen, addToCart, aumentar, disminuir
           {/* Opciones */}
           <div className="pd-options">
             <select className="pd-select">
-              <option>Tipo de compra</option>
-              <option>Nuevo</option>
-              <option>Usado</option>
+              <option>{translations[language].libro_tipo_compra}</option>
+              <option>{translations[language].libro_nuevo}</option>
+              <option>{translations[language].libro_usado}</option>
             </select>
 
             <button className="pd-add-btn" 
               onClick={ () => addToCart(bookOpen) }>
             Añadir al carro</button>
-
             <div className="pd-quantity-box">
               <button onClick={ () => disminuir(bookOpen._id) }>-</button>
               <span>{cantidad}</span>
               <button onClick={ () => aumentar(bookOpen._id) }>+</button>
             </div>
 
-            <p className="pd-stock">Stock disponible: {bookOpen.stock}</p>
+            <p className="pd-stock">{translations[language].libro_stock_disponible} {bookOpen.stock}</p>
           </div>
 
           {/* Detalles */}
           <div className="pd-details">
-            <h2>Detalles</h2>
-            <p><strong>Vendido Por:</strong> {bookOpen.idseller}</p>
+            <h2>{translations[language].libro_detalles}</h2>
+            <p><strong>{translations[language].libro_vendido_por}</strong> {bookOpen.idseller}</p>
             <p><strong>ISBN:</strong> {bookOpen.isbn}</p>
-            <p><strong>Categoría:</strong> {bookOpen.genre?.join(", ")}</p>
-            <p><strong>Rango Público:</strong> {bookOpen.public_range}</p>
+            <p>
+              <strong>{translations[language].libro_categoria}</strong>{" "}
+              {bookOpen.genre?.map(g => translations[language].genreList[g] || g).join(", ")}
+            </p>
+            <p>
+              <strong>{translations[language].libro_rango_publico}</strong>{" "}
+                {translations[language].publicRangeList[bookOpen.public_range?.replace(" ", "")] || bookOpen.public_range}
+            </p>
           </div>
         </div>
       </div>

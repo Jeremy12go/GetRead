@@ -4,14 +4,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 /* barra de búsqueda */
 .search-container {
   display: flex; 
   justify-content: center;
-  gap: 15px;          
-  width: 100%;
+  position: relative;
 }
 
 .logo {
@@ -79,16 +79,19 @@
 }
 
 .lupa {
-  position: relative;
-  right: 5%;
-  width: 2%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 20px;
+  width: 32px;
+  height: 24px;
   object-fit: contain;
   cursor: text;
 }
 
 .search-container input[type="text"] {
-  width: 50%;        
-  max-width: 400px;   
+  width: 1500px;        
+  max-width: 380px;   
   padding: 10px 15px;
   border: 2px solid #444;
   border-radius: 20px;
@@ -133,4 +136,75 @@ nav a:hover {
   color: black;
   font-weight: bold;
   font-size: 16px;
+}
+
+.lenguage-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.lenguage-select-wrapper:hover {
+  right: 0px; 
+}
+
+.select-lenguage {
+  padding: 15px 15px;
+  border-left: 2px solid #444;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  font-size: 14px;
+  background-color: white;
+  font-weight: 500;
+  display: block;
+}
+
+.language-btn {
+  padding: 10px 20px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: white;
+  transition: background-color 0.2s ease;
+  min-width: 70px;
+  margin: 0;
+}
+
+.language-btn:first-child {
+  border-top: none;
+}
+
+.language-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.language-btn.active {
+  background-color: #e0e0e0;
+  font-weight: 700;
+}
+
+.mundo {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+
+.language-icon-fixed {
+  padding: 5px 5px;
+  background-color: white;
+  border-left: 2px solid #444;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.lenguage-select-wrapper {
+  position: fixed;
+  right: -70px;
+  top: 100px;
+  z-index: 1000;
+  display: flex;
+  align-items: stretch;
+  transition: right 0.3s ease-in-out;
 }

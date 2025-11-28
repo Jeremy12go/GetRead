@@ -2,9 +2,10 @@ import '../styles/carrito.css';
 import '../styles/styles.css';
 import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
 import { useEffect, useState } from 'react';
+import { translations } from '../components/translations.js';
 import { useNavigate } from 'react-router-dom';
 
-function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen }) {
+function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, language }) {
 
   const [ total, setTotal ] = useState(cart.reduce((sum, item) => sum + item.price * item.quantity, 0));
 
@@ -77,9 +78,9 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen }) 
   return (
     <div className="carrito-container">
 
-      <h2>Carrito</h2>
+      <h2>{translations[language].carrito}</h2>
 
-      {cart.length === 0 && <p>Tu carrito está vacío</p>}
+      {cart.length === 0 && <p>{translations[language].carrito_vacio2}</p>}
 
       {cart.map(item => (
         <div key={item._id} className="carrito-item">
