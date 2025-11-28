@@ -140,7 +140,6 @@
   background-color: #434343;
 }
 
-
 .menu-boton {
   height: 100px;
   font-size: 20px;
@@ -223,4 +222,42 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.buttons-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  margin-top: 20px;
+  position: relative;
+}
+
+.separator {
+  height: 1px;
+  background-color: #ccc;
+  margin: 5px 0;
+}
+
+.button-login {
+  width: 75%;
+  padding: 12px 0;
+  font-size: 16px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  background: black;
+  transition: 0.3s;
+  border-radius: 5px;
+}
+
+.button-generic:hover {
+  background-color: #5c8834;
+}
+
+/* Google Login centrado */
+.buttons-login > div {
+  width: 75%;
+  justify-content: center;
 }

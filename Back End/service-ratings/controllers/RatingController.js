@@ -101,3 +101,17 @@ exports.neoCreate = async (req, res) => {
     res.status(400).json({ error: 'Error al crear rating', detalle: e.message });
   }
 };
+
+
+exports.getRatingsByBuyerId = async (req, res) => {
+  try {
+    const buyerId = new mongoose.Types.ObjectId(req.params.idBuyer);
+    const ratings = await Rating.find({ idBuyer: buyerId });
+    if (ratings.length === 0) {
+      return res.status(404).json({ error: `Ratings de comprador ${req.params.idBuyer} no encontrados` });
+    }
+    res.json(ratings);
+  } catch (e) {
+    res.status(500).json({ error: 'Error al obtener Ratings', detalle: e.message });
+  }
+};

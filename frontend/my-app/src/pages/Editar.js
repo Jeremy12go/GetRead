@@ -1,34 +1,36 @@
 import '../styles/register.css'
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/styles.css';
-import { updateProfile } from '../API/APIGateway'; 
+import { updateAccount } from '../API/APIGateway'; 
 import { useNavigate } from 'react-router-dom';
+import { translations } from '../components/translations.js';
 
-function Editar({ setName }) {
+function Editar({ setName, language, objectAccount }) {
 
     const navigate = useNavigate();
     
-    const [email, setEmail] = useState('');
-    const [name, setNameLocal] = useState('');
-    const [address, setAddress] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorRegistro, setErrorRegistro] = useState(false);
+    const [ email, setEmail ] = useState('');
+    const [ name, setNameLocal ] = useState('');
+    const [ address, setAddress ] = useState('');
+    const [ phoneNumber, setPhoneNumber ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ errorRegistro, setErrorRegistro ] = useState(false);
 
     // Cargar datos actuales del perfil
     useEffect(() => {
-        const savedProfile = JSON.parse(localStorage.getItem("profile"));
-        const savedAccount = JSON.parse(localStorage.getItem("account"));
+        const account = objectAccount?.account;
+        const profile = objectAccount?.profile;
 
-        if (savedAccount) {
-            setNameLocal(savedProfile.name ?? "");
-            setPhoneNumber(savedProfile.phoneNumber ?? "");
-            setAddress(savedProfile.address ?? "");
+        if (profile) {
+            setNameLocal(profile.name ?? "");
+            setPhoneNumber(profile.phoneNumber ?? "");
+            setAddress(profile.address ?? "");
         }
-        if (savedAccount) {
-            setEmail(savedAccount.email ?? "");
+
+        if (account) {
+            setEmail(account.email ?? "");
         }
-    }, []);
+    }, [objectAccount]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,7 +43,7 @@ function Editar({ setName }) {
         try {
             const savedAccount = JSON.parse(localStorage.getItem("account"));
 
-            const res = await updateProfile(savedAccount._id, { name, phoneNumber, password, address });
+            const res = await updateAccount(savedAccount._id, { name, phoneNumber, password, address });
 
             const updatedProfile = {
                 ...res.data.profile,
@@ -69,9 +71,9 @@ function Editar({ setName }) {
     return (
         <div className="App">
             <div>
-                <p className="text-titulos">Editar información</p>
+                <p className="text-titulos">{translations[language].perfil_editar_info}</p>
 
-                <p className="text-common">Correo registrado</p>
+                <p className="text-common">{translations[language].perfil_correo}</p>
                 <input
                     type="email"
                     value={email}
@@ -81,16 +83,16 @@ function Editar({ setName }) {
                     style={{ backgroundColor: "#eaeaea", cursor: "not-allowed" }}
                 />
 
-                <p className="text-common">Nombre de usuario*</p>
+                <p className="text-common">{translations[language].txt_usr_name}</p>
                 <input
                     type="text"
-                    placeholder="Usuario"
+                    placeholder={translations[language].txt_usr_name2}
                     value={name}
                     onChange={(e) => setNameLocal(e.target.value)}
                     className="input-text"
                 />
 
-                <p className="text-common">Teléfono*</p>
+                <p className="text-common">{translations[language].txt_telefono}</p>
                 <input
                     type="text"
                     placeholder="911111111"
@@ -99,19 +101,19 @@ function Editar({ setName }) {
                     className="input-text"
                 />
 
-                <p className="text-common">Dirección*</p>
+                <p className="text-common">{translations[language].txt_direccion}</p>
                 <input
                     type="text"
-                    placeholder="Dirección"
+                    placeholder={translations[language].txt_direccion2}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     className="input-text"
                 />
 
-                <p className="text-common">Contraseña*</p>
+                <p className="text-common">{translations[language].txt_pwd1}</p>
                 <input
                     type="password"
-                    placeholder="Contraseña"
+                    placeholder={translations[language].txt_pwd2}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="input-text"
@@ -120,7 +122,7 @@ function Editar({ setName }) {
 
             <div>
                 <button className="button-generic" onClick={handleSubmit}>
-                    Confirmar
+                    {translations[language].perfil_confirmar}
                 </button>
 
                 {errorRegistro && (

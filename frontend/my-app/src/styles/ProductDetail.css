@@ -1,0 +1,153 @@
+/* CONTENEDOR GENERAL */
+.pd-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 35px 20px;
+}
+
+.pd-wrapper {
+  max-width: 1100px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+}
+
+/* IMAGEN */
+.pd-image-box {
+  display: flex;
+  justify-content: center;
+}
+
+.pd-image {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* INFORMACIÓN */
+.pd-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-title {
+  font-size: 26px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.pd-author {
+  font-size: 18px;
+  font-weight: 500;
+  color: #555;
+}
+
+.pd-description {
+  font-size: 16px;
+  color: #444;
+}
+
+.pd-price {
+  position: relative;
+  font-size: 32px;
+  color: #e60000;
+  font-weight: bold;
+  margin-bottom: 1px;
+  top: -25px;
+}
+
+/* OPCIONES DE COMPRA */
+.pd-options {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.pd-select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.pd-add-btn {
+  background-color: #4c8d2b;
+  color: white;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.pd-add-btn:hover {
+  background-color: #3f751f;
+}
+
+/* Cantidad */
+.pd-quantity-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.pd-quantity-box button {
+  background-color: #ddd;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.pd-quantity-box span {
+  padding: 8px 16px;
+  background-color: white;
+  font-size: 16px;
+}
+
+.pd-stock {
+  font-size: 15px;
+  color: #555;
+}
+
+/* DETALLES */
+.pd-details {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #ccc;
+}
+
+.pd-details h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.pd-details p {
+  font-size: 15px;
+  margin: 4px 0;
+  color: #333;
+}
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+  .pd-wrapper {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .pd-options {
+    justify-content: center;
+  }
+
+  .pd-details {
+    text-align: left;
+  }
+}

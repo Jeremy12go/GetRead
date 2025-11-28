@@ -31,5 +31,6 @@ router.post('/', controller.create);
 router.post('/neocreate', controller.neoCreate);
 router.put('/order/:idOrder', controller.update);
 router.delete('/order/:idOrder', controller.remove);
+router.get('/buyer/:idBuyer', controller.getRatingsByBuyerId);
 
 module.exports = router;

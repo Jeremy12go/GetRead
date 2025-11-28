@@ -20,20 +20,19 @@ const express = require('express');
 require('dotenv').config();
 
 const app = express();
-app.use(express.json());
+// Aumentar la capacidad limite de data en el json
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
-const Bookroutes = require('./routes/Routes');
-app.use('/books', Bookroutes);
+const routes = require('./routes/Routes');
+app.use('/stores', routes);
 
 const { mongoConnect } = require('./db/database');
 
 const PORT = process.env.PORT;
 
 mongoConnect()
-  .then(({ storesDB, accountsDB }) => {
-    app.locals.storesDB = storesDB;
-    app.locals.accountsDB = accountsDB;
-
+  .then(() => {
     app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
     });

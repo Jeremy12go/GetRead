@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 
-const StoreSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+const profileSellerSchema = new mongoose.Schema({ 
+  name: { type: String, required: true},
   phoneNumber: { type: String, required: true },
   address: { type: String, required: true },
-  city: { type: String, required: true },     // agregado
-  orders: [{ type: String, ref: 'Order' }],
-  books: [{ type: String, ref: 'Book' }],
-  ratings: [{ type: String, ref: 'Rating' }], // agregado
+  orders: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Order'} ],
+  books: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Book' } ],
+  ratings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Rating' }],
   avgRating: Number,
   logo: { data: Buffer, contentType: String }
 });
@@ -17,41 +16,37 @@ const getStoreModel = (req) =>
 
 exports.getByCity = async (req, res) => {
   try {
-    const Store = getStoreModel(req);
+    const Store = req.app.locals.supportDB.model('profileseller', profileSellerSchema);
 
     const stores = await Store.find({
       city: { $regex: new RegExp(req.params.city, 'i') }
     });
 
     if (stores.length === 0) {
-      return res.status(404).json({ error: 'Tienda no encontrada' });
+      return res.status(404).json({ error: 'Vendedor no encontrado' });
     }
 
     res.json(stores);
-  } catch (e) {
-    res.status(500).json({ error: 'Error al obtener tienda', detalle: e.message });
+  } catch(e){
+    res.status(500).json({error: 'Error al obtener el vendedor', detalle: e.message });
   }
 };
 
 exports.getById = async (req, res) => {
   try {
-    const Store = getStoreModel(req);
-
-    const store = await Store.findById(req.params.id);
-
-    if (!store) {
-      return res.status(404).json({ error: 'Tienda no encontrada' });
-    }
-
+    const Store = req.app.locals.supportDB.model('profileseller', profileSellerSchema);
+    const store = await Store.findOne({ id: req.params.id });
+    if (!store) return res.status(404).json({ error: 'Vendedor no encontrado' });
     res.json(store);
   } catch (e) {
-    res.status(500).json({ error: 'Error al obtener la tienda', detalle: e.message });
+    res.status(500).json({ error: 'Error al obtener el Vendedor', detalle: e.message });
   }
 };
 
 exports.getLogo = async (req, res) => {
   try {
-    const Store = getStoreModel(req);
+    const Store = req.app.locals.supportDB.model('profileseller', profileSellerSchema);
+    const store = await Store.findOne({ id: req.params.id });
 
     const store = await Store.findById(req.params.id);
 
@@ -69,10 +64,9 @@ exports.getLogo = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const Store = getStoreModel(req);
-
-    const store = await Store.findByIdAndUpdate(
-      req.params.id,
+    const Store = req.app.locals.supportDB.model('profileseller', profileSellerSchema);
+    const store = await Store.findOneAndUpdate(
+      { id: req.params.id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -90,10 +84,9 @@ exports.update = async (req, res) => {
 
 exports.addRating = async (req, res) => {
   try {
-    const Store = getStoreModel(req);
-
-    const store = await Store.findByIdAndUpdate(
-      req.params.id,
+    const Store = req.app.locals.supportDB.model('profileseller', profileSellerSchema);
+    const store = await Store.findOneAndUpdate(
+      { id: req.params.id },
       { $push: { ratings: req.body.ratingId } },
       { new: true }
     );
@@ -111,11 +104,9 @@ exports.addRating = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    const Store = getStoreModel(req);
-
-    const removedStore = await Store.findByIdAndDelete(req.params.id);
-
-    if (!removedStore) {
+    const Store = req.app.locals.supportDB.model('profileseller', profileSellerSchema);
+    const removedStore = await Store.findByIdAndDelete({id: req.params.id});
+    if (!removedStore)
       return res.status(404).json({ error: 'Tienda no encontrada' });
     }
 

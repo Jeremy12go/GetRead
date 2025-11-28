@@ -1,11 +1,12 @@
 import '../styles/register.css'
 import '../styles/styles.css';
 import { useState } from 'react';
-import { registerAccount } from '../API/APIGateway';
 import { useNavigate } from 'react-router-dom';
+import { registerBuyer, registerSeller } from '../API/APIGateway';
+import { translations } from '../components/translations.js';
 
 
-function Register() {
+function Register({ language, setLanguage }) {
     
     const navigate = useNavigate();
     const [ email , setEmail ] = useState('');
@@ -13,6 +14,7 @@ function Register() {
     const [ name, setName ] = useState('');
     const [ phoneNumber, setPhoneNumber ] = useState('');
     const [ address, setAddress ] = useState('');
+    const [role, setRole] = useState('buyer');
     const [ errorRegistro, setErrorRegistro] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -22,7 +24,12 @@ function Register() {
             return;
         }
     try {
-        const res = await registerAccount(email, password, name, phoneNumber, address);
+        let res;
+        if (role === 'buyer') {
+            res = await registerBuyer(email, password, name, phoneNumber, address);
+        } else {
+            res = await registerSeller(email, password, name, phoneNumber, address);
+        }
         console.log('Cuenta creada:', res.data);
         navigate('/homepostlogin');
 
@@ -35,25 +42,25 @@ function Register() {
         <div class="App">
             <div>
                 <p className="text-titulos">
-                    Registro
+                    {translations[language].txt_registro}
                 </p>
                 <div>
                     
                     <p className="text-common">
-                        Nombre de usuario* </p>
-                    <input type="name" placeholder="Usuario" 
+                        {translations[language].txt_usr_name} </p>
+                    <input type="name" placeholder={translations[language].txt_usr_name2} 
                         value={name} onChange={ (e) => setName(e.target.value) }
                         className="input-text" />   
 
                     <p className="text-common">
-                        Telefono*</p>
-                    <input type="phoneNumber" placeholder="911111111"
+                        {translations[language].txt_telefono}</p>
+                    <input type="phoneNumber" placeholder="+XX 123456789"
                         value={phoneNumber} onChange={ (e) => setPhoneNumber(e.target.value) }
                         className="input-text" />
 
                     <p className="text-common">
-                        Dirección*</p>
-                    <input type="address" placeholder="Ciudad/Calle/Numero"
+                        {translations[language].txt_direccion}</p>
+                    <input type="address" placeholder={translations[language].txt_direccion2}
                         value={address} onChange={ (e) => setAddress(e.target.value) }
                         className="input-text" />
 
@@ -64,19 +71,37 @@ function Register() {
                         className="input-text" />
 
                     <p className="text-common">
-                        Contraseña*</p>
-                    <input type="password" placeholder="Contraseña"
+                        {translations[language].txt_pwd1}</p>
+                    <input type="password" placeholder={translations[language].txt_pwd2}
                         value={password} onChange={ (e) => setPassword(e.target.value) }
                         className="input-text" />
 
-                    <p className="text-common">
-                        Se creara un perfil automaticamente asociado a tu dirección de correo.
-                    </p>
+                    <p className="text-common">{translations[language].txt_perfil}</p>
+                        <div className="role-options">
+                            <label>
+                            <input
+                                type="radio"
+                                value="buyer"
+                                checked={role === 'buyer'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            {translations[language].perfil_buyer}
+                            </label>
+                            <label>
+                            <input
+                                type="radio"
+                                value="seller"
+                                checked={role === 'seller'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            {translations[language].perfil_seller}
+                            </label>
+                        </div>
                 </div>
             </div>
             <div>
                 <button onClick={ handleSubmit } className="button-generic">
-                    Registrar
+                    {translations[language].txt_registro}
                 </button>
                 {errorRegistro && (
                     <p style={{ visibility: errorRegistro ? 'visible' : 'hidden' }}>
