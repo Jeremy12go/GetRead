@@ -23,13 +23,15 @@ function App() {
     const [ cart, setCart ] = useState([]);
     const [ loadingSession, setLoadingSession ] = useState(true);
     const [ bookOpen, setBookOpen ] = useState(null);
+    const [ valueCart, setValueCart ] = useState(0);
 
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
         if(bookOpen !== null){
             localStorage.setItem("bookOpen", JSON.stringify(bookOpen));
         }
-        
+        calculateValueCart(cart);
+        console.log("value cart APP EFFECT",cart);
     }, [cart, bookOpen]);
 
     useEffect(() => {
@@ -79,6 +81,9 @@ function App() {
             updateProfile(idProfile, { cart: mappedCart });
             return updated;
         });
+
+        calculateValueCart(cart);
+        console.log("value cart APP",cart);
     };
 
     const aumentar = (id) => {
@@ -98,6 +103,8 @@ function App() {
             updateProfile(idProfile, { cart: mappedCart });
             return updated;
         });
+        calculateValueCart(cart);
+        console.log("value cart APP",cart);
     };
  
     const disminuir = (id) => {
@@ -119,6 +126,8 @@ function App() {
             updateProfile(idProfile, { cart: mappedCart });
             return updated;
         });
+        calculateValueCart(cart);
+        console.log("value cart APP",cart);
     };
 
     const eliminar = (id) => {
@@ -134,7 +143,19 @@ function App() {
             updateProfile(idProfile, { cart: mappedCart });
             return updated;
         });
+        calculateValueCart(cart);
+        console.log("value cart APP",cart);
     };
+
+    const calculateValueCart = (cart) => {
+        let value_cart = 0;
+        console.log("In Calculate-largo cart",cart.length);
+        for ( let i = 0; i < cart.length; i++) {
+            value_cart += cart[i].quantity;
+        }
+        console.log("In Calculate-valor cart",value_cart);
+        setValueCart(value_cart);
+    }
 
     if (loadingSession) {
         return <div>Cargando...</div>;
@@ -144,7 +165,7 @@ function App() {
         <Router>
 
             <Header stateLogin={ stateLogin } name={ name } profileImage={ profileImage } search={ search } setSearch={ setSearch } 
-            saldoBilletera={ saldoBilletera } /*Agregar la cantidad de items en el carrito cerca del logo de carrito*/ /> 
+            saldoBilletera={ saldoBilletera } valueCart={ valueCart } /> 
 
             <Routes>
                 <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } 

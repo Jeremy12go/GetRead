@@ -1,12 +1,13 @@
 import '../styles/header.css'
 import logo from '../assets/logBackgroundWhite.png'
 import lg_carrito from '../assets/carrito.png'
+import circle_carrito from '../assets/circulo.png'
 import lg_billetera from '../assets/billetera.png'
 import usuario from '../assets/usuario.png'
 import lupa from '../assets/lupa.png'
 import { useNavigate } from 'react-router-dom';
 
-function Header({ stateLogin, name , profileImage, search, setSearch, saldoBilletera }) {
+function Header({ stateLogin, name , profileImage, search, setSearch, saldoBilletera, valueCart }) {
 
     const navigate = useNavigate();
 
@@ -35,11 +36,20 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
 
             <div className="right">
                 {/* Carrito de compras*/}
-                <img className="carrito" src={lg_carrito} onClick={() => 
+                <div >
+                    <img className="carrito" src={ lg_carrito } onClick={() => 
                     stateLogin
                     ? navigate('/cart')
                     : navigate('/home')
-                } />
+                    } />
+
+                    <img className="circle-cart" src={ circle_carrito } />
+                    <span className="value-cart-circle" >
+                        { valueCart }
+                    </span>
+                    {console.log("value cart HEADER",valueCart)}
+                </div>
+                
 
                 {/* Billetera */}
                 { stateLogin && (

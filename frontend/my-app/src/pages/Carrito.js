@@ -1,14 +1,19 @@
 import '../styles/carrito.css';
 import '../styles/styles.css';
 import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen }) {
 
+  const [ total, setTotal ] = useState(cart.reduce((sum, item) => sum + item.price * item.quantity, 0));
+
   const navigate = useNavigate();
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.stock, 0);
+  useEffect(() => {
+    setTotal(cart.reduce((sum, item) => sum + item.price * item.quantity, 0));
+    console.log("Se activo Effect", total);
+  }, [cart]);
 
   const handleMakePurchase = async () => {
   

@@ -21,8 +21,21 @@
   cursor: pointer;
 }
 
-.carrito {
+.circle-cart {
   position: relative;
+  width: 10%;
+  right: 10px;
+}
+
+.value-cart-circle {
+  position: relative;
+  right: 27px;
+  top: -7px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.carrito {
   right: 50%;
   width: 45px;
   object-fit: contain;
