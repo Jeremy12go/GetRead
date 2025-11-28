@@ -29,15 +29,14 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
             </div>
 
             {/* Barra de búsqueda */}
-                <div className="search-container">
-                    <input 
-                        type="text" 
-                        placeholder={translations[language].search} 
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)} 
-                    />
-                    <img className="lupa" src={lupa} />
-                </div>
+            <div className="search-container">
+                <input type="text" 
+                    placeholder={translations[language].search} 
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)} 
+                />
+                <img className="lupa" src={lupa} />
+            </div>
 
             <div className="right">
                 {/* Carrito de compras*/}

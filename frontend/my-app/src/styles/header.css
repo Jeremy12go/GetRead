@@ -23,14 +23,13 @@
 
 .circle-cart {
   position: relative;
-  width: 10%;
-  right: 10px;
+  width: 14%;
 }
 
 .value-cart-circle {
   position: relative;
-  right: 27px;
-  top: -7px;
+  right: 9%;
+  bottom: 7px;
   font-size: 16px;
   font-weight: bold;
 }
@@ -104,6 +103,7 @@
   align-items: center;
   gap: 15px;
   margin: 0 20px 0 20px;
+  max-width: 300px;
 }
 
 .center {
