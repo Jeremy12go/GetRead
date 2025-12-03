@@ -1,47 +1,73 @@
-//Código de prueba para la creación de una orden en base a OrderController.js
-const { create } = require('../controllers/OrderController');
-const Order = require('../models/Order');
+// Mock axios (aunque esta función no usa axios, OrderController lo importa)
+jest.mock('axios', () => ({
+  get: jest.fn(),
+  post: jest.fn(),
+  put: jest.fn(),
+  patch: jest.fn(),
+}));
 
 // Mock del modelo Order
 jest.mock('../models/Order');
-describe("create controller", () => {
-  let req, res;
+
+const Order = require('../models/Order');
+const OrderController = require('../controllers/OrderController');
+
+describe("OrderController.create", () => {
+
+  let mockReq, mockRes;
+
   beforeEach(() => {
-    req = {
+    mockReq = {
       body: {
+        buyer: "BUYER123",
+        sellers: ["SELLER1", "SELLER2"],
         productList: [
-            { productId: "prod1", quantity: 2, price: 100 },
-            { productId: "prod2", quantity: 1, price: 200 }
-        ],
-        idProfile: "profileId123",
-        idStore: "storeId456",
-        totalPrice: 400
+          { book: "BOOK1", quantity: 1, priceAtPurchase: 10 }
+        ]
       }
     };
-    res = {
+
+    mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn()
     };
+
+    jest.clearAllMocks();
   });
 
-    it("should create order", async () => {
-    const mockOrder = {
-      _id: "orderId789",
-      productList: req.body.productList,
-      idProfile: req.body.idProfile,
-      idStore: req.body.idStore,
-      totalPrice: req.body.totalPrice
+  test("Debe crear una orden correctamente y retornar 201", async () => {
+    const fakeOrder = {
+      _id: "ORDER123",
+      ...mockReq.body,
+      orderDate: new Date(),
+      status: "Pendiente"
     };
-    Order.create.mockResolvedValue(mockOrder);
-    await create(req, res);
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(mockOrder);
+
+    Order.create.mockResolvedValue(fakeOrder);
+
+    await OrderController.create(mockReq, mockRes);
+
+    expect(Order.create).toHaveBeenCalledWith(expect.objectContaining({
+      buyer: "BUYER123",
+      sellers: ["SELLER1", "SELLER2"],
+      productList: mockReq.body.productList,
+      status: "Pendiente"
+    }));
+
+    expect(mockRes.status).toHaveBeenCalledWith(201);
+    expect(mockRes.json).toHaveBeenCalledWith(fakeOrder);
   });
 
-    it("should return 400 if data is invalid", async () => {
-    Order.create.mockImplementation(() => { throw new Error("Invalid data"); });
-    await create(req, res);
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Datos inválidos", detalle: "Invalid data" });
+  test("Debe retornar 400 si ocurre un error al crear la orden", async () => {
+    Order.create.mockRejectedValue(new Error("Invalid data"));
+
+    await OrderController.create(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({
+      error: "Datos inválidos",
+      detalle: "Invalid data"
+    });
   });
+
 });

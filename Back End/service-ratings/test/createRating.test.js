@@ -1,48 +1,58 @@
-// Código de prueba para la creación de una calificación en base a RatingController.js
-const { create } = require('../controllers/RatingController');
-const Rating = require('../models/Rating'); // importa tu modelo
+const Rating = require('../models/Rating');
+const RatingController = require('../controllers/RatingController');
 
-// Mock del modelo Rating
 jest.mock('../models/Rating');
-describe("createRating controller", () => {
-  let req, res;
-    beforeEach(() => {
-    req = { body: {
-      idStore: "storeImaginario1",
-      idOrder: "orderImaginario1",
-        idProfile: "profileImaginario1",
+
+describe('RatingController.create', () => {
+  let mockReq, mockRes;
+
+  beforeEach(() => {
+    mockReq = {
+      body: {
+        idSeller: 'SELLER123',
+        idOrder: 'ORDER123',
+        idBuyer: 'BUYER123',
         stars: 5,
-        comment: "Excelente servicio"
-    } };
-    res = {
+        comment: 'Excelente'
+      }
+    };
+
+    mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn()
     };
+
+    jest.clearAllMocks();
   });
 
-    it("should create and return new rating", async () => {
-    // Fake data
-    const mockRating = {
-      id: "rating1",
-        idStore: "storeImaginario1",
-        idOrder: "orderImaginario1",
-        idProfile: "profileImaginario1",
-        stars: 5,
-        comment: "Excelente servicio"
-    };
-    Rating.create.mockResolvedValue(mockRating);
-    Rating.countDocuments.mockResolvedValue(0);
-    await create(req, res);
+  test('Debe crear un rating y retornar 201', async () => {
+    const fakeRating = { _id: 'ABC', ...mockReq.body };
 
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(mockRating);
+    Rating.create.mockResolvedValue(fakeRating);
+
+    await RatingController.create(mockReq, mockRes);
+
+    expect(Rating.create).toHaveBeenCalledWith({
+      idSeller: 'SELLER123',
+      idOrder: 'ORDER123',
+      idBuyer: 'BUYER123',
+      stars: 5,
+      comment: 'Excelente'
     });
 
-    //Retorna error 400 si los datos son inválidos
-  it("should return 400 on invalid data", async () => {
-    Rating.create.mockRejectedValue(new Error("Datos inválidos"));
-    await create(req, res);
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Datos inválidos", detalle: "Datos inválidos" });
+    expect(mockRes.status).toHaveBeenCalledWith(201);
+    expect(mockRes.json).toHaveBeenCalledWith(fakeRating);
+  });
+
+  test('Debe retornar 400 si ocurre un error al guardar', async () => {
+    Rating.create.mockRejectedValue(new Error('Validation failed'));
+
+    await RatingController.create(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({
+      error: 'Datos inválidos',
+      detalle: 'Validation failed'
+    });
   });
 });

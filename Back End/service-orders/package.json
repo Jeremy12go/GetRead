@@ -15,5 +15,8 @@
     "jest": "^30.2.0",
     "mongoose": "^8.18.3",
     "multer": "^2.0.1"
+  },
+  "devDependencies": {
+    "axios": "^1.13.2"
   }
 }

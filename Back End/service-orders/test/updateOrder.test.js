@@ -1,78 +1,74 @@
+jest.mock('axios'); // por si hubiera llamadas internas
+const OrderController = require('../controllers/OrderController');
 const Order = require('../models/Order');
-const { update } = require('../controllers/OrderController');
 
-// mock del modelo Order
-jest.mock('../models/Order', () => ({
-  findOneAndUpdate: jest.fn()
-}));
+jest.mock('../models/Order');
 
-// helper para mockear res
-const mockResponse = () => {
-  const res = {};
-  res.status = jest.fn().mockReturnValue(res);
-  res.json  = jest.fn().mockReturnValue(res);
-  return res;
-};
+describe("OrderController.update", () => {
 
-describe('OrderController.update', () => {
+  let mockReq, mockRes;
 
-  beforeEach(() => jest.clearAllMocks());
-
-  test('Debe retornar 404 si la orden no existe', async () => {
-    Order.findOneAndUpdate.mockResolvedValue(null);
-
-    const req = {
-      params: { id: 'A001' },
-      body: { product: { title: 'Libro X', qty: 1 } }
+  beforeEach(() => {
+    mockReq = {
+      params: { id: "ORDER123" },
+      body: { product: { book: "BOOK1", quantity: 2 } }
     };
 
-    const res = mockResponse();
+    mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
 
-    await update(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Orden no encontrada' });
+    Order.findByIdAndUpdate.mockReset();
   });
 
-  test('Debe retornar la orden actualizada cuando existe', async () => {
+  // 1️⃣ TEST ÉXITO
+  test("Debe actualizar una orden y devolverla", async () => {
+
     const updatedOrder = {
-      id: 'A001',
+      _id: "ORDER123",
       productList: [
-        { title: 'Libro X', qty: 1 }
+        { book: "BOOK1", quantity: 2 }
       ]
     };
 
-    Order.findOneAndUpdate.mockResolvedValue(updatedOrder);
+    Order.findByIdAndUpdate.mockResolvedValue(updatedOrder);
 
-    const req = {
-      params: { id: 'A001' },
-      body: { product: { title: 'Libro X', qty: 1 } }
-    };
+    await OrderController.update(mockReq, mockRes);
 
-    const res = mockResponse();
+    expect(Order.findByIdAndUpdate).toHaveBeenCalledWith(
+      "ORDER123",
+      { $push: { productList: mockReq.body.product }},
+      { new: true, runValidators: true }
+    );
 
-    await update(req, res);
-
-    expect(res.json).toHaveBeenCalledWith(updatedOrder);
+    expect(mockRes.json).toHaveBeenCalledWith(updatedOrder);
   });
 
-  test('Debe retornar 400 si ocurre un error interno', async () => {
-    Order.findOneAndUpdate.mockRejectedValue(new Error('Mongo error'));
+  // 2️⃣ TEST 404
+  test("Debe retornar 404 si la orden no existe", async () => {
 
-    const req = {
-      params: { id: 'A001' },
-      body: { product: { title: 'Libro X', qty: 1 } }
-    };
+    Order.findByIdAndUpdate.mockResolvedValue(null);
 
-    const res = mockResponse();
+    await OrderController.update(mockReq, mockRes);
 
-    await update(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: 'Error al actualizar',
-      detalle: 'Mongo error'
+    expect(mockRes.status).toHaveBeenCalledWith(404);
+    expect(mockRes.json).toHaveBeenCalledWith({
+      error: 'Orden no encontrada'
     });
   });
 
+  // 3️⃣ TEST ERROR 400
+  test("Debe retornar 400 si ocurre un error en la BD", async () => {
+
+    Order.findByIdAndUpdate.mockRejectedValue(new Error("DB error"));
+
+    await OrderController.update(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({
+      error: 'Error al actualizar',
+      detalle: "DB error"
+    });
+  });
 });

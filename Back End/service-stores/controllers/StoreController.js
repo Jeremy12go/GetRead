@@ -106,7 +106,7 @@ exports.remove = async (req, res) => {
   try {
     const Store = req.app.locals.supportDB.model('profileseller', profileSellerSchema);
     const removedStore = await Store.findByIdAndDelete({id: req.params.id});
-    if (!removedStore)
+    if (!removedStore){
       return res.status(404).json({ error: 'Tienda no encontrada' });
     }
 

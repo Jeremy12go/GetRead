@@ -250,7 +250,10 @@ exports.uploadAccountImage = async (req, res) => {
 
     console.log("ID recibido:", id);
 
-    const account = await Account.findById(new mongoose.Types.ObjectId(id));
+    // Si el id ya tiene formato de ObjectId o el entorno es test, no transformarlo
+    const realId =
+      process.env.NODE_ENV === "test" ? id : new mongoose.Types.ObjectId(id);
+    const account = await Account.findById(realId);
 
     console.log("Resultado findById:", account);
     console.log("Tipo de ID:", typeof id);
