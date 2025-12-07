@@ -41,7 +41,8 @@ function Editar({ setName, language, objectAccount }) {
         }
 
         try {
-            const savedAccount = JSON.parse(localStorage.getItem("account"));
+            const savedAccount = objectAccount?.account;
+            console.log("savedAccount tiene:",savedAccount);
 
             const res = await updateAccount(savedAccount._id, { name, phoneNumber, password, address });
 

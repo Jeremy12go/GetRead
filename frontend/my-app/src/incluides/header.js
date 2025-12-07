@@ -38,54 +38,45 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
                 <img className="lupa" src={lupa} />
             </div>
 
-            <div className="right">
-                {/* Carrito de compras*/}
-                { stateLogin ? (
-                    <div>
-                        <div >
-                            <img className="carrito" src={ lg_carrito } onClick={() => navigate('/cart')}/>
 
-                            <img className="circle-cart" src={ circle_carrito } />
-                            <span className="value-cart-circle" >
-                                { valueCart }
-                            </span>
-                            {console.log("value cart HEADER",valueCart)}
-                        </div>
-                        
+            { stateLogin ? (
+                <div className="right">
+                    <div >
+                        {/* Carrito de compras*/}
+                        <img className="carrito" src={ lg_carrito } onClick={() => navigate('/cart')}/>
 
-                        {/* Billetera */}
-                        { stateLogin && (
-                            <div className="billetera-container">
-                                <img 
-                                    className="billetera" 
-                                    src={lg_billetera}
-                                />
-                                <span className="saldo-billetera">
-                                    { formatSaldo(saldoBilletera) }
-                                </span>
-                            </div>
-                        )}
-                    </div> 
-                ) : (
-                    <div/>
-                )}
-
-                {/* Perfil */}
-                <div className="login-container"
-                    onClick={() => 
-                        stateLogin
-                        ? navigate('/perfil')
-                        : navigate('/login')
-                    }>
+                        <img className="circle-cart" src={ circle_carrito } />
+                        <span className="value-cart-circle" >
+                            { valueCart }
+                        </span>
+                    </div>
                     
-                    <img className="usuario" src={ displayImage } onError={ (e) => e.target.src = usuario } />
-                    {   stateLogin
-                        ? <button className="BinicioSesion" >{ name }</button>
-                        : <button className="BinicioSesion" >{translations[language].login}</button>
-                    }
 
+                    {/* Billetera */}
+                    { stateLogin && (
+                        <div className="billetera-container">
+                            <img 
+                                className="billetera" 
+                                src={lg_billetera}
+                            />
+                            <span className="saldo-billetera">
+                                { formatSaldo(saldoBilletera) }
+                            </span>
+                        </div>
+                    )}
+
+                    {/* Perfil */}
+                    <div className="login-container" onClick={() => navigate('/perfil')}>
+                        <img className="usuario" src={ displayImage } onError={ (e) => e.target.src = usuario } />
+                        <button className="Bperfil" >{ name.split(" ")[0] }</button>
+                    </div>
+                </div> 
+            ) : (
+                <div className="login-container" onClick={() => navigate('/login') }>
+                    <img className="usuario" src={ displayImage } onError={ (e) => e.target.src = usuario } />
+                    <button className="BinicioSesion" >{translations[language].login}</button>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

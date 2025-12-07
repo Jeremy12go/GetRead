@@ -20,7 +20,7 @@ function App() {
     const [ profileImage, setProfileImage ] = useState('');
     const [ search, setSearch ] = useState('');
     const [ saldoBilletera, setSaldoBilletera ] = useState(0);
-    const [language, setLanguage] = useState('es');
+    const [ language, setLanguage ] = useState('es');
     const [ cart, setCart ] = useState([]);
     const [ loadingSession, setLoadingSession ] = useState(true);
 
