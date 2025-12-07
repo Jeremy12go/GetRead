@@ -104,16 +104,24 @@ function Home({ stateLogin, search, addToCart, language, setBookOpen }){
                     <div key={i} className="card-container">
                         <img className="card-image" src={book.image} alt={book.title} />
 
-                        <div className="bottom-bar">
-                            <img src={ico_addCarrito} className="bar-btn"
-                                onClick={() =>  addToCart(book)}/>
-                            <button className="detail-btn" onClick={() => {
-                                setBookOpen(book);
-                                navigate("/book-detail");
-                                }}>
-                            Detalles  
-                            </button>
-                        </div>
+                        { stateLogin ? (
+                            <div className="bottom-bar">
+                                <img src={ico_addCarrito} className="bar-btn"
+                                    onClick={() =>  addToCart(book)}/>
+                                <button className="detail-btn-login" onClick={() => {
+                                setBookOpen(book); navigate("/book-detail"); }}>
+                                Detalles  
+                                </button> 
+                            </div>  
+                        ):(
+                           <div className="bottom-bar">
+                                <button className="detail-btn-Nlogin" onClick={() => {
+                                setBookOpen(book); navigate("/book-detail"); }}>
+                                Detalles  
+                                </button> 
+                            </div> 
+                        )}
+                  
                     </div>
                 ))}
             </div>

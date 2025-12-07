@@ -40,32 +40,34 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
 
             <div className="right">
                 {/* Carrito de compras*/}
-                <div >
-                    <img className="carrito" src={ lg_carrito } onClick={() => 
-                    stateLogin
-                    ? navigate('/cart')
-                    : navigate('/home')
-                    } />
+                { stateLogin ? (
+                    <div>
+                        <div >
+                            <img className="carrito" src={ lg_carrito } onClick={() => navigate('/cart')}/>
 
-                    <img className="circle-cart" src={ circle_carrito } />
-                    <span className="value-cart-circle" >
-                        { valueCart }
-                    </span>
-                    {console.log("value cart HEADER",valueCart)}
-                </div>
-                
+                            <img className="circle-cart" src={ circle_carrito } />
+                            <span className="value-cart-circle" >
+                                { valueCart }
+                            </span>
+                            {console.log("value cart HEADER",valueCart)}
+                        </div>
+                        
 
-                {/* Billetera */}
-                { stateLogin && (
-                    <div className="billetera-container">
-                        <img 
-                            className="billetera" 
-                            src={lg_billetera}
-                        />
-                        <span className="saldo-billetera">
-                            { formatSaldo(saldoBilletera) }
-                        </span>
-                    </div>
+                        {/* Billetera */}
+                        { stateLogin && (
+                            <div className="billetera-container">
+                                <img 
+                                    className="billetera" 
+                                    src={lg_billetera}
+                                />
+                                <span className="saldo-billetera">
+                                    { formatSaldo(saldoBilletera) }
+                                </span>
+                            </div>
+                        )}
+                    </div> 
+                ) : (
+                    <div/>
                 )}
 
                 {/* Perfil */}
@@ -79,7 +81,7 @@ function Header({ stateLogin, name , profileImage, search, setSearch, saldoBille
                     <img className="usuario" src={ displayImage } onError={ (e) => e.target.src = usuario } />
                     {   stateLogin
                         ? <button className="BinicioSesion" >{ name }</button>
-                        : <button className="BinicioSesion" >{translations[language].profile}</button>
+                        : <button className="BinicioSesion" >{translations[language].login}</button>
                     }
 
                 </div>

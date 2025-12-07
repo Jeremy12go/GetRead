@@ -68,7 +68,6 @@ function App() {
     }, []);
 
     const addToCart = (book) => {
-        console.log("Se intento añadir:", book);
         setCart(prev => {
             const updated = (() => {
                 const exists = prev.find(item => item._id === book._id);
@@ -82,7 +81,6 @@ function App() {
                 return [...prev, { ...book, quantity: 1 }];
             })();
             
-            console.log("ObjectAccount:", objectAccount);
             const idProfile = objectAccount?.profile._id;
             const mappedCart = updated.map(item => ({
                 book: item._id,       

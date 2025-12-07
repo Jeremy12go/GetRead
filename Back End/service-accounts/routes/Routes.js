@@ -103,8 +103,6 @@ router.post("/google/tokenLogin", async (req, res) => {
 
   let account = await Account.findOne({ email });
 
-  console.log("La cuenta logeada es:", account);
-
   if (!account) {
     const buyer = await Profilebuyer.create({
       name: payload.name,

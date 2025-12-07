@@ -1,5 +1,6 @@
 export const translations = {
   es: {
+    login: "Iniciar Sesión",
     profile: "Perfil",
     search: "Buscar...",
     btn_wtr: "Quiero leer",
