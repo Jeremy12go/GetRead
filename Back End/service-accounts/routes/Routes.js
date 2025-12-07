@@ -103,6 +103,8 @@ router.post("/google/tokenLogin", async (req, res) => {
 
   let account = await Account.findOne({ email });
 
+  console.log("La cuenta logeada es:", account);
+
   if (!account) {
     const buyer = await Profilebuyer.create({
       name: payload.name,
@@ -121,11 +123,11 @@ router.post("/google/tokenLogin", async (req, res) => {
       profileImage: payload.picture
     });
     resetToken = buyer._id.toString();
+
+    // Solicitar cambio de contraseña, solo la primera vez
+    const resetLink = `http://localhost:3005/reset-password/${resetToken}`;
+    await sendPasswordResetEmail(payload.email, payload.name, resetLink);
   }
-
-  const resetLink = `http://localhost:3005/reset-password/${resetToken}`;
-
-  await sendPasswordResetEmail(payload.email, payload.name, resetLink);
 
   const profile = await Profilebuyer.findById(account.profilebuyer);
   res.json({ account, profile });

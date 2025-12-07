@@ -7,7 +7,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import axios from 'axios';
 import { translations } from '../components/translations.js'; 
 
-function Login({ setStateLogin, setName, setProfileImage, language, setLanguage, setObjectAccount }) {
+function Login({ setStateLogin, setName, setProfileImage, language, setObjectAccount }) {
 
     const navigate = useNavigate();
     
@@ -62,10 +62,19 @@ function Login({ setStateLogin, setName, setProfileImage, language, setLanguage,
             const account = res.data.account;
             const profile = res.data.profile;
 
-            setProfileImage(account.profileImage);
-            setName(profile.name);
-            setStateLogin(true);
+            setObjectAccount(res.data);
 
+            localStorage.setItem("objectAccount", JSON.stringify(res.data));
+            localStorage.setItem("token", res.data.token);
+
+            if (account?.profileImage !== undefined) {
+                setProfileImage(account.profileImage);
+            }
+
+            window.dispatchEvent(new Event('profileUpdated'));
+
+            setName(profile?.name.split(" ")[0]);
+            setStateLogin(true);
             navigate('/home');
         } 
         catch (e) {

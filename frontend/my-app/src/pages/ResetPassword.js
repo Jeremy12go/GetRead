@@ -43,10 +43,10 @@ function ResetPassword() {
                 return;
             }
 
-            setSuccess("¡Contraseña actualizada con éxito! Serás redirigido al login...");
+            setSuccess("¡Contraseña actualizada con éxito!");
             
             setTimeout(() => {
-                navigate("/login");
+                navigate("/home");
             }, 2000);
 
         } catch (err) {
