@@ -1,86 +1,62 @@
-let mockBookModel; // declarar primero
+// test/returnBookByID.test.js
+jest.mock("../models/Book");
+jest.mock("axios", () => ({
+  get: jest.fn(),
+  post: jest.fn(),
+  put: jest.fn(),
+  patch: jest.fn(),
+}));
 
-jest.mock('../models/Book', () => {
-  return () => mockBookModel; // retornar mockBookModel correctamente
-});
+const Book = require("../models/Book");
+const BookController = require("../controllers/BookController");
 
-const BookController = require('../controllers/BookController');
+describe("BookController.getById", () => {
 
-describe('BookController.getImage', () => {
-  let mockReq, mockRes;
+  let mockReq;
+  let mockRes;
 
   beforeEach(() => {
-    mockBookModel = {
-      findById: jest.fn(),
-    };
+    jest.clearAllMocks();
 
-    mockReq = {
-      params: { id: 'BOOK123' },
-      app: {
-        locals: {
-          mainDB: {} 
-        }
-      }
-    };
+    mockReq = { params: { id: "BOOK123" } };
 
     mockRes = {
-      status: jest.fn(() => mockRes),
-      send: jest.fn(),
+      status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-      contentType: jest.fn()
     };
-
-    jest.clearAllMocks();
   });
 
-  test('Debe enviar la imagen cuando existe', async () => {
-    const fakeImage = {
-      contentType: 'image/png',
-      data: Buffer.from('FAKE_IMAGE_DATA')
-    };
+  test("Debe retornar un libro correctamente", async () => {
+    const fakeBook = { _id: "BOOK123", name: "Harry Potter" };
 
-    mockBookModel.findById.mockResolvedValue({
-      id: 'BOOK123',
-      image: fakeImage
-    });
+    Book.findById.mockResolvedValue(fakeBook);
 
-    await BookController.getImage(mockReq, mockRes);
+    await BookController.getById(mockReq, mockRes);
 
-    expect(mockBookModel.findById).toHaveBeenCalledWith('BOOK123');
-    expect(mockRes.contentType).toHaveBeenCalledWith('image/png');
-    expect(mockRes.send).toHaveBeenCalledWith(fakeImage.data);
+    expect(Book.findById).toHaveBeenCalledWith("BOOK123");
+    expect(mockRes.json).toHaveBeenCalledWith(fakeBook);
   });
 
-  test('Debe retornar 404 si el libro no existe', async () => {
-    mockBookModel.findById.mockResolvedValue(null);
+  test("Debe retornar 404 si el libro no existe", async () => {
+    Book.findById.mockResolvedValue(null);
 
-    await BookController.getImage(mockReq, mockRes);
+    await BookController.getById(mockReq, mockRes);
 
     expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.send).toHaveBeenCalledWith('Imagen no encontrada');
-  });
-
-  test('Debe retornar 404 si el libro existe pero no tiene imagen', async () => {
-    mockBookModel.findById.mockResolvedValue({
-      id: 'BOOK123',
-      image: null
+    expect(mockRes.json).toHaveBeenCalledWith({
+      error: "Libro no encontrado",
     });
-
-    await BookController.getImage(mockReq, mockRes);
-
-    expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.send).toHaveBeenCalledWith('Imagen no encontrada');
   });
 
-  test('Debe retornar 500 si ocurre un error interno', async () => {
-    mockBookModel.findById.mockRejectedValue(new Error('DB error'));
+  test("Debe retornar 500 si ocurre un error interno", async () => {
+    Book.findById.mockRejectedValue(new Error("DB error"));
 
-    await BookController.getImage(mockReq, mockRes);
+    await BookController.getById(mockReq, mockRes);
 
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toHaveBeenCalledWith({
-      error: 'Error al obtener imagen',
-      detalle: 'DB error'
+      error: "Error al obtener libro",
+      detalle: "DB error",
     });
   });
 });

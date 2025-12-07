@@ -1,70 +1,75 @@
-const StoreController = require('../controllers/StoreController');
+jest.mock("mongoose", () => {
+  const FakeSchema = function () {};
+  FakeSchema.Types = { ObjectId: jest.fn() };
 
-describe('StoreController.getById', () => {
-  let mockReq, mockRes, mockStoreModel;
+  return { Schema: FakeSchema, Types: { ObjectId: jest.fn() } };
+});
+
+const StoreController = require("../controllers/StoreController");
+
+// Mock dinámico del modelo
+const mockFindById = jest.fn();
+
+jest.mock("../controllers/StoreController", () => ({
+  ...jest.requireActual("../controllers/StoreController"),
+}));
+
+describe("StoreController.getById", () => {
+  let req, res;
 
   beforeEach(() => {
-    // Mock del modelo Store
-    mockStoreModel = {
-      findById: jest.fn()
-    };
-
-    // Mock de req con base de datos inyectada
-    mockReq = {
-      params: { id: 'STORE123' },
+    req = {
+      params: { id: "SELLER123" },
       app: {
         locals: {
           supportDB: {
-            model: jest.fn().mockReturnValue(mockStoreModel)
-          }
-        }
-      }
+            model: jest.fn(() => ({
+              findById: mockFindById,
+            })),
+          },
+        },
+      },
     };
 
-    // Mock de res
-    mockRes = {
-      status: jest.fn(() => mockRes),
-      json: jest.fn()
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
     };
 
-    jest.clearAllMocks();
+    mockFindById.mockReset();
   });
 
-  test('Debe retornar la tienda si existe', async () => {
-    const fakeStore = {
-      id: 'STORE123',
-      name: 'Librería Central',
-      city: 'Santiago'
-    };
+  test("Debe retornar el vendedor correctamente por ID", async () => {
+    const fakeStore = { _id: "SELLER123", name: "Store Test" };
 
-    mockStoreModel.findById.mockResolvedValue(fakeStore);
+    mockFindById.mockResolvedValue(fakeStore);
 
-    await StoreController.getById(mockReq, mockRes);
+    await StoreController.getById(req, res);
 
-    expect(mockStoreModel.findById).toHaveBeenCalledWith('STORE123');
-    expect(mockRes.json).toHaveBeenCalledWith(fakeStore);
+    expect(mockFindById).toHaveBeenCalledWith("SELLER123");
+    expect(res.json).toHaveBeenCalledWith(fakeStore);
   });
 
-  test('Debe retornar 404 si la tienda no existe', async () => {
-    mockStoreModel.findById.mockResolvedValue(null);
+  test("Debe retornar 404 si el vendedor no existe", async () => {
+    mockFindById.mockResolvedValue(null);
 
-    await StoreController.getById(mockReq, mockRes);
+    await StoreController.getById(req, res);
 
-    expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: 'Tienda no encontrada'
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Vendedor no encontrado",
     });
   });
 
-  test('Debe retornar 500 si ocurre un error interno', async () => {
-    mockStoreModel.findById.mockRejectedValue(new Error('DB error'));
+  test("Debe retornar 500 si ocurre un error interno", async () => {
+    mockFindById.mockRejectedValue(new Error("DB error"));
 
-    await StoreController.getById(mockReq, mockRes);
+    await StoreController.getById(req, res);
 
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: 'Error al obtener la tienda',
-      detalle: 'DB error'
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Error al obtener el vendedor",
+      detalle: "DB error",
     });
   });
 });

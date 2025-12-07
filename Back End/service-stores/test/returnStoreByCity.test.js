@@ -1,73 +1,88 @@
-const StoreController = require('../controllers/StoreController');
+// test/returnStoreByCity.test.js
 
-describe('StoreController.getByCity', () => {
-  let mockReq, mockRes, mockStoreModel;
+// ---- Mock de mongoose ----
+jest.mock("mongoose", () => {
+  const mockSchema = function () { return {}; };
+  mockSchema.Types = { ObjectId: jest.fn() };
+
+  return {
+    Schema: mockSchema,
+    model: jest.fn()
+  };
+});
+
+// Importamos el controlador DESPUÉS de mockear mongoose
+const StoreController = require("../controllers/StoreController");
+
+// Mock del modelo dinámico con supportDB
+const mockFind = jest.fn();
+
+const mockSupportDB = {
+  model: jest.fn(() => ({
+    find: mockFind
+  }))
+};
+
+describe("StoreController.getByCity", () => {
+  let req, res;
 
   beforeEach(() => {
-    // Mock del modelo Store
-    mockStoreModel = {
-      find: jest.fn()
-    };
+    jest.clearAllMocks();
 
-    // Mock de req con DB inyectada
-    mockReq = {
-      params: { city: 'Santiago' },
+    req = {
+      params: { city: "Santiago" },
       app: {
         locals: {
-          supportDB: {
-            model: jest.fn().mockReturnValue(mockStoreModel)
-          }
+          supportDB: mockSupportDB
         }
       }
     };
 
-    // Mock de res
-    mockRes = {
-      status: jest.fn(() => mockRes),
+    res = {
       json: jest.fn(),
-      send: jest.fn()
+      status: jest.fn().mockReturnThis()
     };
-
-    jest.clearAllMocks();
   });
 
-  test('Debe devolver lista de tiendas cuando existen', async () => {
+  test("Debe retornar las tiendas de la ciudad correctamente", async () => {
     const fakeStores = [
-      { id: '1', name: 'Librería Central', city: 'Santiago' },
-      { id: '2', name: 'Books House', city: 'Santiago' }
+      { _id: "1", name: "Librería Central", city: "Santiago" },
+      { _id: "2", name: "BookStore Chile", city: "Santiago" }
     ];
 
-    mockStoreModel.find.mockResolvedValue(fakeStores);
+    mockFind.mockResolvedValue(fakeStores);
 
-    await StoreController.getByCity(mockReq, mockRes);
+    await StoreController.getByCity(req, res);
 
-    expect(mockStoreModel.find).toHaveBeenCalledWith({
-      city: { $regex: new RegExp('Santiago', 'i') }
+    expect(mockSupportDB.model).toHaveBeenCalledWith("profileseller", expect.any(Object));
+
+    expect(mockFind).toHaveBeenCalledWith({
+      city: { $regex: expect.any(RegExp) }
     });
 
-    expect(mockRes.json).toHaveBeenCalledWith(fakeStores);
+    expect(res.json).toHaveBeenCalledWith(fakeStores);
   });
 
-  test('Debe retornar 404 si no existen tiendas en esa ciudad', async () => {
-    mockStoreModel.find.mockResolvedValue([]);
+  test("Debe retornar 404 si no hay vendedores en esa ciudad", async () => {
+    mockFind.mockResolvedValue([]);
 
-    await StoreController.getByCity(mockReq, mockRes);
+    await StoreController.getByCity(req, res);
 
-    expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: 'Tienda no encontrada'
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Vendedor no encontrado"
     });
   });
 
-  test('Debe retornar 500 si ocurre un error en la base de datos', async () => {
-    mockStoreModel.find.mockRejectedValue(new Error('DB error'));
+  test("Debe retornar 500 si ocurre un error interno", async () => {
+    mockFind.mockRejectedValue(new Error("DB error"));
 
-    await StoreController.getByCity(mockReq, mockRes);
+    await StoreController.getByCity(req, res);
 
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: 'Error al obtener tienda',
-      detalle: 'DB error'
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Error al obtener el vendedor",
+      detalle: "DB error"
     });
   });
 });

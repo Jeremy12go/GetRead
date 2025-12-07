@@ -1,79 +1,96 @@
-const StoreController = require('../controllers/StoreController');
+const StoreController = require("../controllers/StoreController");
 
-describe('StoreController.addRating', () => {
-  let mockReq, mockRes, mockStoreModel;
+// --- MOCK DEL MODELO --- //
+const mockStoreModel = {
+  findByIdAndUpdate: jest.fn()
+};
 
-  beforeEach(() => {
-    // Mock del modelo Store
-    mockStoreModel = {
-      findByIdAndUpdate: jest.fn()
-    };
-
-    // Mock de req con DB inyectada
-    mockReq = {
-      params: { id: 'STORE123' },
-      body: { ratingId: 'RATING001' },
-      app: {
-        locals: {
-          supportDB: {
-            model: jest.fn().mockReturnValue(mockStoreModel)
-          }
+// --- MOCK DE req y res --- //
+const createMockReqRes = () => {
+  const req = {
+    params: { id: "STORE123" },
+    body: { ratingId: "RATING789" },
+    app: {
+      locals: {
+        supportDB: {
+          model: jest.fn(() => mockStoreModel)
         }
       }
-    };
+    }
+  };
 
-    // Mock de res
-    mockRes = {
-      status: jest.fn(() => mockRes),
-      json: jest.fn()
-    };
+  const res = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn()
+  };
 
-    jest.clearAllMocks();
-  });
+  return { req, res };
+};
 
-  test('Debe agregar un rating a la tienda y devolver la tienda actualizada', async () => {
-    const fakeUpdatedStore = {
-      id: 'STORE123',
-      name: 'Librería Central',
-      ratings: ['RATING001']
-    };
+// Limpia mocks antes de cada test
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
-    mockStoreModel.findByIdAndUpdate.mockResolvedValue(fakeUpdatedStore);
+describe("StoreController.addRating", () => {
 
-    await StoreController.addRating(mockReq, mockRes);
+  test("Debe agregar un rating correctamente", async () => {
+    const { req, res } = createMockReqRes();
 
-    // Verificar que se llamó correctamente
+    const updatedStore = { _id: "STORE123", ratings: ["RATING789"] };
+    mockStoreModel.findByIdAndUpdate.mockResolvedValue(updatedStore);
+
+    await StoreController.addRating(req, res);
+
+    expect(req.app.locals.supportDB.model).toHaveBeenCalledWith(
+      "profileseller",
+      expect.any(Object)
+    );
+
     expect(mockStoreModel.findByIdAndUpdate).toHaveBeenCalledWith(
-      'STORE123',
-      { $push: { ratings: 'RATING001' } },
+      "STORE123",
+      { $push: { ratings: "RATING789" } },
       { new: true }
     );
 
-    // Respuesta correcta
-    expect(mockRes.json).toHaveBeenCalledWith(fakeUpdatedStore);
+    expect(res.json).toHaveBeenCalledWith(updatedStore);
   });
 
-  test('Debe retornar 404 si la tienda no existe', async () => {
+  test("Debe retornar 404 si la tienda no existe", async () => {
+    const { req, res } = createMockReqRes();
+
     mockStoreModel.findByIdAndUpdate.mockResolvedValue(null);
 
-    await StoreController.addRating(mockReq, mockRes);
+    await StoreController.addRating(req, res);
 
-    expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: 'Tienda no encontrada'
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Tienda no encontrada"
     });
   });
 
-  test('Debe retornar 400 si ocurre un error en la BD', async () => {
-    mockStoreModel.findByIdAndUpdate.mockRejectedValue(new Error('DB error'));
+  test("Debe retornar 400 si ocurre un error de validación", async () => {
+    const { req, res } = createMockReqRes();
 
-    await StoreController.addRating(mockReq, mockRes);
+    mockStoreModel.findByIdAndUpdate.mockRejectedValue(new Error("Validation error"));
 
-    expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: 'Error al agregar rating',
-      detalle: 'DB error'
+    await StoreController.addRating(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Error al agregar rating",
+      detalle: "Validation error"
     });
   });
 
+  test("Debe retornar 500 si ocurre un error inesperado", async () => {
+    const { req, res } = createMockReqRes();
+    mockStoreModel.findByIdAndUpdate.mockRejectedValue(new Error("Unexpected DB error"));
+    await StoreController.addRating(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Error al agregar rating",
+      detalle: "Unexpected DB error"
+    });
+  });
 });

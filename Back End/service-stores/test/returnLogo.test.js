@@ -1,85 +1,91 @@
-const StoreController = require('../controllers/StoreController');
+const StoreController = require("../controllers/StoreController");
 
-describe('StoreController.getLogo', () => {
-  let mockReq, mockRes, mockStoreModel;
+// Mock del modelo
+const mockFindById = jest.fn();
+
+jest.mock("mongoose", () => {
+  const mockSchema = function () { return {}; };
+  mockSchema.Types = { ObjectId: jest.fn() };
+
+  return {
+    Schema: mockSchema,
+    model: jest.fn()
+  };
+});
+
+describe("StoreController.getLogo", () => {
+  let mockReq, mockRes;
 
   beforeEach(() => {
-    // Mock del modelo Store
-    mockStoreModel = {
-      findById: jest.fn()
-    };
-
-    // Mock de req con base de datos inyectada
     mockReq = {
-      params: { id: 'STORE123' },
+      params: { id: "STORE123" },
       app: {
         locals: {
           supportDB: {
-            model: jest.fn().mockReturnValue(mockStoreModel)
+            model: jest.fn(() => ({
+              findById: mockFindById
+            }))
           }
         }
       }
     };
 
-    // Mock de res
     mockRes = {
-      status: jest.fn(() => mockRes),
-      json: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+      contentType: jest.fn(),
       send: jest.fn(),
-      contentType: jest.fn()
+      json: jest.fn()
     };
 
     jest.clearAllMocks();
   });
 
-  test('Debe retornar la imagen del logo cuando existe', async () => {
-    const fakeLogo = {
-      contentType: 'image/png',
-      data: Buffer.from('FAKE_IMAGE_DATA')
-    };
-
-    mockStoreModel.findById.mockResolvedValue({
-      id: 'STORE123',
-      logo: fakeLogo
+  test("Debe retornar el logo correctamente", async () => {
+    mockFindById.mockResolvedValue({
+      _id: "STORE123",
+      logo: {
+        contentType: "image/png",
+        data: Buffer.from("1234")
+      }
     });
 
     await StoreController.getLogo(mockReq, mockRes);
 
-    expect(mockStoreModel.findById).toHaveBeenCalledWith('STORE123');
-    expect(mockRes.contentType).toHaveBeenCalledWith('image/png');
-    expect(mockRes.send).toHaveBeenCalledWith(fakeLogo.data);
+    expect(mockFindById).toHaveBeenCalledWith("STORE123");
+    expect(mockRes.contentType).toHaveBeenCalledWith("image/png");
+    expect(mockRes.send).toHaveBeenCalledWith(Buffer.from("1234"));
   });
 
-  test('Debe retornar 404 cuando no existe tienda o no tiene logo', async () => {
-    mockStoreModel.findById.mockResolvedValue(null);
+  test("Debe retornar 404 si la tienda no existe", async () => {
+    mockFindById.mockResolvedValue(null);
 
     await StoreController.getLogo(mockReq, mockRes);
 
     expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.send).toHaveBeenCalledWith('Logo no encontrado');
+    expect(mockRes.send).toHaveBeenCalledWith("Logo no encontrado");
   });
 
-  test('Debe retornar 404 cuando la tienda existe pero no tiene logo', async () => {
-    mockStoreModel.findById.mockResolvedValue({
-      id: 'STORE123',
+  test("Debe retornar 404 si la tienda no tiene logo", async () => {
+    mockFindById.mockResolvedValue({
+      _id: "STORE123",
       logo: null
     });
 
     await StoreController.getLogo(mockReq, mockRes);
 
     expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.send).toHaveBeenCalledWith('Logo no encontrado');
+    expect(mockRes.send).toHaveBeenCalledWith("Logo no encontrado");
   });
 
-  test('Debe retornar 500 si ocurre un error interno', async () => {
-    mockStoreModel.findById.mockRejectedValue(new Error('DB error'));
+  test("Debe retornar 500 si ocurre un error interno", async () => {
+    mockFindById.mockRejectedValue(new Error("DB error"));
 
     await StoreController.getLogo(mockReq, mockRes);
 
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toHaveBeenCalledWith({
-      error: 'Error al obtener logo',
-      detalle: 'DB error'
+      error: "Error al obtener logo",
+      detalle: "DB error"
     });
   });
 });
