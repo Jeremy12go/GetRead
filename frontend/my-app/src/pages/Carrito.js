@@ -11,6 +11,13 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
 
   const navigate = useNavigate();
 
+  const getBookText = (item, field) => {
+    if (language === 'en' && item[`${field}_en`]) {
+      return item[`${field}_en`];
+    }
+    return item[field] || item[`${field}_en`] || '';
+  };
+
   useEffect(() => {
     setTotal(cart.reduce((sum, item) => sum + item.price * item.quantity, 0));
     console.log("Se activo Effect", total);
@@ -57,11 +64,13 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
               _id: item.book,
               quantity: item.quantity,
               name: bookDetails.name,
+              name_en: bookDetails.name_en,
               price: bookDetails.price,
               image: bookDetails.image,
               stock: bookDetails.stock,
               author: bookDetails.author,
               description: bookDetails.description,
+              description_en: bookDetails.description_en,
               idseller: bookDetails.idseller,
               isbn: bookDetails.isbn,
               genre: bookDetails.genre,
@@ -93,14 +102,14 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
             }}  />
 
           <div className="carrito-info">
-            <h3>{item.name}</h3>
+            <h3>{getBookText(item, 'name')}</h3>
             <p>${item.price}</p>
 
             <div className="carrito-controls">
               <button onClick={() => disminuir(item._id)}>-</button>
               <span>{item.quantity}</span>
               <button onClick={() => aumentar(item._id)}>+</button>
-              <button onClick={() => eliminar(item._id)}>Eliminar</button>
+              <button onClick={() => eliminar(item._id)}>{translations[language].carrito_eliminar}</button>
             </div>
           </div>
 

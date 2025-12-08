@@ -127,6 +127,7 @@ export const translations = {
 
     },
     en: {
+    login: "Log In",
     profile: "Profile",
     search: "Search...",
     btn_wtr: "I want to read",

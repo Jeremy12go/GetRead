@@ -11,6 +11,13 @@ export default function ProductDetail({ bookOpen, addToCart, aumentar, disminuir
     console.log("ProductDetail Recibio:",bookOpen);
   }
 
+  const getBookText = (field) => {
+    if (language === 'en' && bookOpen[`${field}_en`]) {
+      return bookOpen[`${field}_en`];
+    }
+    return bookOpen[field] || bookOpen[`${field}_en`] || '';
+  };
+
   return (
     
     <div className="pd-container">
@@ -22,10 +29,10 @@ export default function ProductDetail({ bookOpen, addToCart, aumentar, disminuir
 
         {/* Info */}
         <div className="pd-info">
-          <h1 className="pd-title">{bookOpen.name}</h1>
+          <h1 className="pd-title">{getBookText('name')}</h1>
           <p className="pd-author">{bookOpen.author}</p>
 
-          <p className="pd-description">{bookOpen.description}</p>
+          <p className="pd-description">{getBookText('description')}</p>
           <p className="pd-price">${bookOpen.price.toLocaleString("es-CL")}</p>
 
           {/* Opciones */}
@@ -38,7 +45,8 @@ export default function ProductDetail({ bookOpen, addToCart, aumentar, disminuir
 
             <button className="pd-add-btn" 
               onClick={ () => addToCart(bookOpen) }>
-            Añadir al carro</button>
+              {translations[language].libro_agregar_carro}
+            </button>
             <div className="pd-quantity-box">
               <button onClick={ () => disminuir(bookOpen._id) }>-</button>
               <span>{cantidad}</span>

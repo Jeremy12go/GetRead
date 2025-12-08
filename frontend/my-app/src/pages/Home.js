@@ -11,6 +11,13 @@ function Home({ stateLogin, search, addToCart, language, setBookOpen }){
     const [ genreFilter, setGenreFilter ] = useState("all");
     const [ ageFilter, setAgeFilter ] = useState("all");
 
+    const getBookText = (book, field) => {
+        if (language === 'en' && book[`${field}_en`]) {
+            return book[`${field}_en`];
+        }
+        return book[field] || book[`${field}_en`] || '';
+    };
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,7 +50,14 @@ function Home({ stateLogin, search, addToCart, language, setBookOpen }){
     const filteredBooks = books.filter( book => {
         const matchesGenre = genreFilter === "all" || book.genre?.includes(genreFilter);
         const matchesAge = ageFilter === "all" || book.public_range === ageFilter;
-        const matchesSearch = !search || search.trim() === "" || book.name?.toLowerCase().includes(search.toLowerCase());
+        
+        const searchLower = search?.toLowerCase() || "";
+        const matchesSearch = !search || search.trim() === "" || 
+            book.name?.toLowerCase().includes(searchLower) ||
+            book.name_en?.toLowerCase().includes(searchLower) ||
+            book.description?.toLowerCase().includes(searchLower) ||
+            book.description_en?.toLowerCase().includes(searchLower);
+        
         return matchesGenre && matchesAge && matchesSearch;
     });
 
@@ -110,14 +124,14 @@ function Home({ stateLogin, search, addToCart, language, setBookOpen }){
                                     onClick={() =>  addToCart(book)}/>
                                 <button className="detail-btn-login" onClick={() => {
                                 setBookOpen(book); navigate("/book-detail"); }}>
-                                Detalles  
+                                {translations[language].libro_detalles}  
                                 </button> 
                             </div>  
                         ):(
                            <div className="bottom-bar">
                                 <button className="detail-btn-Nlogin" onClick={() => {
                                 setBookOpen(book); navigate("/book-detail"); }}>
-                                Detalles  
+                                {translations[language].libro_detalles}  
                                 </button> 
                             </div> 
                         )}
