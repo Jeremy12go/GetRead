@@ -40,18 +40,16 @@ export const updateAccount = (idProfile, data) => axios.put(`${API_URL}/accounts
 
 export const updateProfile = (idProfile, data) => axios.put(`${API_URL}/accounts/buyer/${idProfile}`, data);
 
+export const addOrderToSeller = (idSeller, idSubOrder) => axios.put(`${API_URL}/accounts/seller/${idSeller}/addorder`, { orderId: idSubOrder});
 
 // ----------------------------Service-Order----------------------------
-export const getOrdersByIds = (ids) => axios.post(`${API_URL}/orders/byIds`, { ids });
+export const getSubOrderById = (idSubOrder) => axios.get(`${API_URL}/orders/suborder/${idSubOrder}`);
 
-export const ordersByProfile = (idProfile) => axios.get(`${API_URL}/orders/${idProfile}`);
+export const getOrderByIds = (idOrder) => axios.get(`${API_URL}/orders/${idOrder}`);
 
-export const createOrder = (idProfile, productList, totalPrice, idStore) => axios.post(`${API_URL}/orders`, { idProfile, productList, totalPrice, idStore }); //se entrega product list de id de productos -nelson
+export const ordersByProfile = (idProfile) => axios.get(`${API_URL}/orders/buyer/${idProfile}`);
 
-export const changeStateOrder = (id, state) => axios.put(`${API_URL}/orders/${id}`, state);
-
-export const addProductOrder = (id, product) => axios.put(`${API_URL}/orders/${id}`, product);
-
+export const createOrder = (idBuyer, productList, totalPrice) => axios.post(`${API_URL}/orders`, idBuyer, productList, totalPrice);
 
 // ----------------------------Service-Stores----------------------------
 export const updateStore = (id, data) => axios.put(`${API_URL}/stores/${id}`, data);
@@ -80,6 +78,8 @@ export const createBook = (bookData) => {
     }
   });
 };
+
+export const updateStockToBook = (idBook, data) =>  axios.put(`${API_URL}/stores/book/${idBook}`, data);
 
 // ----------------------------Services-Ranking----------------------------
 export const getRatingsByStore = (id) => axios.get(`${API_URL}/ratings/stores/${id}`);

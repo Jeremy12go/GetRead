@@ -11,8 +11,6 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.ID_CLIENTE);
 const { sendPasswordResetEmail } = require('../utils/sendMail');
 const verifyToken = require("../config/verifyToken");
-// TODO: proteger las rutas con verifyToken Ej. router.post("/:id/upload-image", verifyToken, upload.single("profileImage"), uploadAccountImage);
-
 
 // ----------------------------Account----------------------------
 router.post('/login', controllerAccount.login);

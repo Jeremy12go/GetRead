@@ -71,7 +71,7 @@
   gap: 10px;
 }
 
-.carrito-controls button {
+.buttons {
   background: #73a942;
   color: white;
   border: none;
@@ -83,8 +83,26 @@
   transition: 0.2s;
 }
 
-.carrito-controls button:hover {
+.buttons:hover {
   background: #5c8834;
+}
+
+.Bcomprar {
+  background: #73a942;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-left: auto;
+  display: block;
+}
+
+.Bcomprar:hover {
+ background: #5c8834;
 }
 
 .carrito-controls span {
@@ -143,6 +161,50 @@
 
 .button-generic:hover {
   background-color: #5c8834;
+}
+
+/* Compra exitosa */
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.success-modal {
+  background: white;
+  padding: 40px 60px;
+  border-radius: 20px;
+  text-align: center;
+  transform: scale(0.5);
+  animation: popIn 0.4s ease forwards;
+}
+
+.checkmark {
+  font-size: 60px;
+  color: #4caf50;
+  margin-bottom: 10px;
+  animation: checkPop 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { transform: scale(0.5); }
+  to   { transform: scale(1); }
+}
+
+@keyframes checkPop {
+  0%   { transform: scale(0); }
+  70%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
 
 

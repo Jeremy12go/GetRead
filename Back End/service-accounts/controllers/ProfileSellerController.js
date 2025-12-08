@@ -51,23 +51,40 @@ exports.addBookToSeller = async (req, res) => {
 // Vincular orden al vendedor
 exports.addOrder = async (req, res) => {
   try {
+    const sellerId = req.params.sellerId;
+    const { orderId } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ error: 'orderId es requerido' });
+    }
+
     const seller = await Profile.findByIdAndUpdate(
-        req.params.sellerId,
-        { $push: { orders: req.body.orderId } },
-        { new: true }
+      sellerId,
+      { $addToSet: { orders: orderId } },
+      { new: true }
     );
-    if (!seller) return res.status(404).json({ error: 'Vendedor no encontrado' });
-    res.json(seller);
+
+    if (!seller) {
+      return res.status(404).json({ error: 'Vendedor no encontrado' });
+    }
+
+    res.json({
+      message: 'Orden vinculada correctamente al vendedor',
+      seller
+    });
+
   } catch (e) {
-    console.error('Error en addOrder:', e);
-    res.status(500).json({ error: 'Error al vincular orden', detalle: e.message });
+    console.error('Error en addOrder (seller):', e);
+    res.status(500).json({ 
+      error: 'Error al vincular orden al vendedor', 
+      detalle: e.message 
+    });
   }
 };
 
 
 // Actualizar rating del vendedor
 exports.updateRating = async (req, res) => {
-  console.log('llegamos a update rating');
   try {
     const { ratingId } = req.body;
     const seller = await Profile.findById(req.params.idSeller); // usar idSeller
