@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
 import { createRating, addRatingToStore } from "../API/APIGateway";
 import "./Calificar.css";
 
@@ -7,6 +8,8 @@ function Calificar({ volver, idStore, idOrder, idProfile }) {
   const [comentario, setComentario] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleEnviar = async () => {
     setEnviando(true);

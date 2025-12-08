@@ -1,6 +1,5 @@
 import '../styles/carrito.css';
-import '../styles/styles.css';
-import { createOrder, getProfile, updateProfile } from '../API/APIGateway.js';
+import { createOrder, getProfile, updateProfile, updateStockToBook, getSubOrderById, addOrderToSeller } from '../API/APIGateway.js';
 import { useEffect, useState } from 'react';
 import { translations } from '../components/translations.js';
 import { useNavigate } from 'react-router-dom';
@@ -8,35 +7,82 @@ import { useNavigate } from 'react-router-dom';
 function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, language }) {
 
   const [ total, setTotal ] = useState(cart.reduce((sum, item) => sum + item.price * item.quantity, 0));
+  const [ purchaseSuccess, setPurchaseSuccess ] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     setTotal(cart.reduce((sum, item) => sum + item.price * item.quantity, 0));
-    console.log("Se activo Effect", total);
   }, [cart]);
 
   const handleMakePurchase = async () => {
-  
-    const objAccount = localStorage.getItem("objectAccount");
-    const profile = objAccount.profile;
-    const idsToBooks = cart.flatMap(item => Array(item.stock).fill(item._id));
-
     try {
-      const res = await createOrder(profile?.id, idsToBooks, total);
-      const orderId = res.data.id;
+      setPurchaseSuccess(true);
 
-      const orders = profile?.orders;
-      await updateProfile(profile?.id, { orders: [...orders, orderId] });
+      const objAccount = JSON.parse(localStorage.getItem("objectAccount"));
+      const idProfile = objAccount?.profile._id;
+      const profile = (await getProfile(idProfile)).data;
 
-      //setCart([]);
-      //setIdTiendaACalificar(infoTienda.id);
-      //setIdOrdenACalificar(orderId);
-      //irAConfirmacion();
+      // Crear lista de productos
+      const productList = cart.map(item => ({
+        book: item._id,
+        quantity: item.quantity,
+        priceAtPurchase: item.price,
+        idSeller: item.idseller,
+      }));
+
+      // Actualizar stock
+      for (const item of cart) {
+        await updateStockToBook(item._id, {
+          stock: item.stock - item.quantity
+        });
+      }
+
+      // Crear orden
+      const res = await createOrder({
+        idBuyer: idProfile,
+        productList,
+        totalPrice: total
+      });
+
+      const { order, subOrders } = res.data;
+      
+      // Asociar suborders a cada vendedor
+      for (const subOrderId of subOrders) {
+        const subOrder = await getSubOrderById(subOrderId);
+        await addOrderToSeller(subOrder.data.idSeller, subOrderId);
+      }
+
+      // Actualizar perfil del comprador
+      const booksPurchased = cart.map(item => ({
+        book: item._id,
+        quantity: item.quantity
+      }));
+
+      const currentBooks = profile.books;
+      const currentOrders = profile.orders;
+      
+      await updateProfile( idProfile, {
+        books: [...currentBooks, ...booksPurchased], // añadir libros
+        cart: [], // limpiar carrito
+        orders: [...currentOrders, order._id] // añadir orden
+      }).catch(err => {
+        console.error('Error al actualizar libros del comprador:', err.message);
+      });
+
+
+      // Mostrar animación y redirigir
+      setTimeout(() => {
+        setPurchaseSuccess(false);
+        navigate("/perfil");
+      }, 2000);
+
     } catch (e) {
-      alert('Error al guardar el pedido');
+      console.error(e);
+      alert("Error al procesar la compra");
     }
   };
+
 
   useEffect(() => {
     const saved = localStorage.getItem("objectAccount");
@@ -69,7 +115,6 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
             };
           })
         );
-        console.log(transformedCart);
         setCart(transformedCart);
       })
       .catch(err => console.error("Error cargando perfil:", err));
@@ -88,7 +133,6 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
           <img src={item.image} className="carrito-img"
           onClick={ () => {
             setBookOpen(item);
-            console.log("Libro Abierto:",item);
             navigate("/book-detail");
             }}  />
 
@@ -97,10 +141,10 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
             <p>${item.price}</p>
 
             <div className="carrito-controls">
-              <button onClick={() => disminuir(item._id)}>-</button>
+              <button className="buttons" onClick={() => disminuir(item._id)}>-</button>
               <span>{item.quantity}</span>
-              <button onClick={() => aumentar(item._id)}>+</button>
-              <button onClick={() => eliminar(item._id)}>Eliminar</button>
+              <button className="buttons" onClick={() => aumentar(item._id)}>+</button>
+              <button className="buttons" onClick={() => eliminar(item._id)}>Eliminar</button>
             </div>
           </div>
 
@@ -110,6 +154,19 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
       ))}
 
       <h3>Total: ${total}</h3>
+      
+      <button onClick={ handleMakePurchase } className="Bcomprar" >Comprar</button>
+
+      {purchaseSuccess && (
+        <div className="success-overlay">
+          <div className="success-modal">
+            <div className="checkmark">✓</div>
+            <h2>¡Compra exitosa!</h2>
+            <p>Gracias por tu compra :D</p>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 }

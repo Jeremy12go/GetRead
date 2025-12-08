@@ -2,12 +2,13 @@ import Home from "./Home.js";
 import Login from "./Login";
 import Register from "./Register.js";
 import Carrito from "./Carrito.js";
-import Header from "../incluides/header.js";
+import Header from "../incluides/Header.js";
 import Perfil from "./Perfil.js";
 import Editar from "./Editar.js";
 import ResetPassword from "../pages/ResetPassword";
 import PublicarLibro from "../pages/Publicar"
 import ProductDetail from "../pages/ProductDetail";
+import Calificar from "../components/Calificar.js";
 import { updateProfile } from "../API/APIGateway"
 import { useState, useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -23,6 +24,8 @@ function App() {
     const [ language, setLanguage ] = useState('es');
     const [ cart, setCart ] = useState([]);
     const [ loadingSession, setLoadingSession ] = useState(true);
+    const [ bookOpen, setBookOpen ] = useState(null);
+    const [ valueCart, setValueCart ] = useState(0);
 
     useEffect(() => {
         const browserLang = navigator.language.split('-')[0];
@@ -31,16 +34,12 @@ function App() {
         document.documentElement.lang = detectedLang;
     }, []);
 
-    const [ bookOpen, setBookOpen ] = useState(null);
-    const [ valueCart, setValueCart ] = useState(0);
-
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
         if(bookOpen !== null){
             localStorage.setItem("bookOpen", JSON.stringify(bookOpen));
         }
         calculateValueCart(cart);
-        console.log("value cart APP EFFECT",cart);
     }, [cart, bookOpen]);
 
     useEffect(() => {
@@ -203,6 +202,9 @@ function App() {
                     ? <Carrito cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar } setCart={ setCart }
                     setBookOpen={ setBookOpen } language={ language } />  
                     : <Navigate to="/login" replace />} />
+
+                {/*Calificar*/}
+                <Route path="/qualify" element={ <Calificar objectAccount={ objectAccount } /> } />
 
                 {/*Perfil*/}
                 <Route path="/perfil" element={ stateLogin

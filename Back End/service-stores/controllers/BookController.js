@@ -119,7 +119,7 @@ exports.createbook = async (req, res) => {
 
 exports.modifystock = async(req, res) =>{
   try {
-    const Book = require('../models/Book')(req.app.locals.mainDB);
+    const Book = require('../models/Book');
     const book = await Book.findByIdAndUpdate(
         req.params.id,
         { stock: req.body.stock },
