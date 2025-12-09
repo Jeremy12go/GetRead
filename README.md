@@ -76,7 +76,7 @@ Es una plataforma para la venta, arriendo y compra de libros, permitiendo que lo
 > Cada servicio debe instalar y iniciarse independientemente.
 > Para cada servicio se debe generar su respectivo .env, siguiendo el archivo 'exampleENV.txt' 
 
-- En la ruta de los servicio: accounts, orders, ratings.
+- En la ruta de los servicio: accounts y orders.
 ```bash
     npm i express mongoose dotenv
 ```
@@ -113,12 +113,6 @@ que contiene el proyecto:
 ```bash
     cd '.\Back End\service-orders'
     node \orders-app.js
-```
-
-- Servicio de ratings:
-```bash
-    cd '.\Back End\service-ratings'
-    node \ratings-app.js
 ```
 
 - Servicio de stores:

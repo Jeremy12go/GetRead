@@ -45,13 +45,18 @@ export const addOrderToSeller = (idSeller, idSubOrder) => axios.put(`${API_URL}/
 // ----------------------------Service-Order----------------------------
 export const getSubOrderById = (idSubOrder) => axios.get(`${API_URL}/orders/suborder/${idSubOrder}`);
 
-export const getOrderByIds = (idOrder) => axios.get(`${API_URL}/orders/${idOrder}`);
+export const getOrderById = (idOrder) => axios.get(`${API_URL}/orders/${idOrder}`);
 
 export const ordersByProfile = (idProfile) => axios.get(`${API_URL}/orders/buyer/${idProfile}`);
 
 export const createOrder = (idBuyer, productList, totalPrice) => axios.post(`${API_URL}/orders`, idBuyer, productList, totalPrice);
 
+// Calificar
+export const qualifySubOrder = (idSubOrder, data) => axios.put(`${API_URL}/orders/suborder/${idSubOrder}/qualify`, data);
+
 // ----------------------------Service-Stores----------------------------
+export const getAllBooks = () => axios.get(`${API_URL}/stores`);
+
 export const updateStore = (id, data) => axios.put(`${API_URL}/stores/${id}`, data);
 
 export const addRatingToStore = (idStore, ratingId) => axios.post(`${API_URL}/stores/${idStore}/addrating`, { ratingId });
@@ -80,9 +85,3 @@ export const createBook = (bookData) => {
 };
 
 export const updateStockToBook = (idBook, data) =>  axios.put(`${API_URL}/stores/book/${idBook}`, data);
-
-// ----------------------------Services-Ranking----------------------------
-export const getRatingsByStore = (id) => axios.get(`${API_URL}/ratings/stores/${id}`);
-
-export const createRating = (idStore, idOrder, idProfile, stars, comment) => axios
-    .post(`${API_URL}/ratings`,{ idStore, idOrder, idProfile, stars, comment });

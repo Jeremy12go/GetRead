@@ -70,11 +70,10 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
         console.error('Error al actualizar libros del comprador:', err.message);
       });
 
-
       // Mostrar animación y redirigir
       setTimeout(() => {
         setPurchaseSuccess(false);
-        navigate("/perfil");
+        navigate("/qualify");
       }, 2000);
 
     } catch (e) {
@@ -82,7 +81,6 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
       alert("Error al procesar la compra");
     }
   };
-
 
   useEffect(() => {
     const saved = localStorage.getItem("objectAccount");

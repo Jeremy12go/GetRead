@@ -1,4 +1,3 @@
-const axios = require('axios');
 const Order = require('../models/Order');
 const SubOrder = require('../models/SubOrder');
 
@@ -10,7 +9,7 @@ exports.getOrderById = async (req, res) => {
       return res.status(400).json({ error: 'ID de orden nula' });
     }
 
-    const order = await Order.findOne(id).lean();
+    const order = await Order.findById(id).lean();
     res.json(order);
   } catch (e) {
     res.status(500).json({ error: 'Error al obtener la orden', detalle: e.message });
@@ -135,3 +134,18 @@ exports.createOrderFromCart = async (req, res) => {
   }
 };
 
+exports.qualifySubOrder = async (req, res) => {
+  const { rating, comment } = req.body;
+
+  const updated = await SubOrder.findByIdAndUpdate(
+    req.params.subOrderId,
+    {
+      rating,
+      comment,
+      status: "Finalizado"
+    },
+    { new: true }
+  );
+
+  res.json(updated);
+};

@@ -91,7 +91,6 @@ function App() {
         });
 
         calculateValueCart(cart);
-        console.log("value cart APP",cart);
     };
 
     const aumentar = (id) => {
@@ -112,7 +111,6 @@ function App() {
             return updated;
         });
         calculateValueCart(cart);
-        console.log("value cart APP",cart);
     };
  
     const disminuir = (id) => {
@@ -135,7 +133,6 @@ function App() {
             return updated;
         });
         calculateValueCart(cart);
-        console.log("value cart APP",cart);
     };
 
     const eliminar = (id) => {
@@ -152,16 +149,13 @@ function App() {
             return updated;
         });
         calculateValueCart(cart);
-        console.log("value cart APP",cart);
     };
 
     const calculateValueCart = (cart) => {
         let value_cart = 0;
-        console.log("In Calculate-largo cart",cart.length);
         for ( let i = 0; i < cart.length; i++) {
             value_cart += cart[i].quantity;
         }
-        console.log("In Calculate-valor cart",value_cart);
         setValueCart(value_cart);
     }
 
@@ -181,7 +175,7 @@ function App() {
 
                 {/*Pagina principal*/}
                 <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart }
-                setBookOpen={ setBookOpen } language={ language } />} />
+                setBookOpen={ setBookOpen }  language={ language } />} />
 
                 {/*Login*/}
                 <Route path="/login" element={ <Login setStateLogin={ setStateLogin }

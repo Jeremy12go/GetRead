@@ -14,4 +14,6 @@ router.get('/buyer/:buyerId', controller.getByBuyer);
 // Crear orden en base al carrito
 router.post('/', controller.createOrderFromCart);
 
+router.put('/suborder/:subOrderId/qualify', controller.qualifySubOrder);
+
 module.exports = router;
