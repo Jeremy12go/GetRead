@@ -53,7 +53,7 @@ exports.getSubOrderById = async (req, res) => {
 //para tener ordenes por comprador
 exports.getByBuyer = async (req, res) => {
   try {
-    const orders = await Order.find({ buyer: req.params.buyerId });
+    const orders = await Order.find({ idBuyer: req.params.buyerId }).populate('subOrders');
     if (orders.length === 0) {
       return res.status(404).json({ error: 'No se encontraron órdenes para este comprador' });
     }

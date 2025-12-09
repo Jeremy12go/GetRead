@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { uploadAccountImage } from '../API/APIGateway.js';
+import { uploadAccountImage, getProfileSeller } from '../API/APIGateway.js';
 import "../styles/perfil.css";
 import { translations } from '../components/translations.js';
 
 import usuarioDefault from '../assets/usuario.png'
 
-export default function Perfil({ setStateLogin, setName, setObjectAccount, objectAccount, language, setLanguage }) {
+export default function Perfil({ setStateLogin, setName, setObjectAccount, objectAccount, language, setLanguage, setBookOpen, setFromPurchased }) {
   const [ profile, setProfile ] = useState(null);
   const [ account, setAccount ] = useState(null);
   const [ loading, setLoading ] = useState(true);
   const [ uploadingImage, setUploadingImage ] = useState(false);
+  const [ publishedBooks, setPublishedBooks ] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +23,31 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
     
         setAccount(account);
         setProfile(profile);
+
+        // Si es vendedor, cargar sus libros publicados
+        if (account?.profileseller && profile?._id) {
+          try {
+            const profileData = await getProfileSeller(profile._id);
+            const booksIds = profileData.data.books || [];
+
+            const booksWithDetails = await Promise.all(
+              booksIds.map(async (bookId) => {
+                try {
+                  const bookDetails = await fetch(`http://localhost:3004/stores/${bookId}`)
+                    .then(r => r.json());
+                  return bookDetails;
+                } catch (error) {
+                  console.error(`Error al cargar libro ${bookId}:`, error);
+                  return null;
+                }
+              })
+            );
+
+            setPublishedBooks(booksWithDetails.filter(book => book !== null));
+          } catch (error) {
+            console.error('Error al cargar libros publicados:', error);
+          }
+        }
   
       } catch (error) {
         console.error('Error al cargar perfil:', error);
@@ -146,14 +172,16 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
                 <button className="btn verde" onClick={() => navigate('/historial-pedidos')}>
                   {translations[language].btn_pedidos}
                 </button>
-                <button className="btn azul">{translations[language].btn_libros}</button>
+                <button className="btn azul" onClick={() => navigate('/libros-adquiridos')}>
+                  {translations[language].btn_libros}
+                </button>
               </>
             )}
 
             {/* Bloque Seller */}
             {account.profileseller && (
               <>
-                <button className="btn verde" onClick={() => navigate('/historial-publicaciones')}>
+                <button className="btn verde" onClick={() => navigate('/mis-publicaciones')}>
                   {translations[language].perfil_publicaciones2}
                 </button>
                 <button className="btn azul" onClick={() => navigate('/publicar')}>
@@ -180,7 +208,35 @@ export default function Perfil({ setStateLogin, setName, setObjectAccount, objec
             ) : account.profileseller ? (
               <>
                 <h2>{translations[language].perfil_publicaciones2}</h2>
-                {/* Aquí renderizas lista de publicaciones del seller */}
+                {publishedBooks.length === 0 ? (
+                  <p className="text-center color-gray mt-20">
+                    {translations[language].txt_no_publicaciones || 'No has publicado ningún libro todavía.'}
+                  </p>
+                ) : (
+                  <div className="publicaciones-grid">
+                    {publishedBooks.map((book, i) => (
+                      <div 
+                        key={i} 
+                        className="publicacion-item"
+                        onClick={() => {
+                          setBookOpen(book);
+                          setFromPurchased(false);
+                          navigate("/book-detail");
+                        }}
+                      >
+                        <img 
+                          src={book.image} 
+                          alt={book.name}
+                          className="publicacion-img"
+                        />
+                        <div className="publicacion-overlay">
+                          <p className="publicacion-name">{book.name}</p>
+                          <p className="publicacion-price">${book.price?.toLocaleString("es-CL") || 0}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </>
             ) : (
               <p>Este perfil no tiene tipo definido</p>

@@ -36,6 +36,8 @@ export const getAccount = (accountId) => axios.get(`${API_URL}/accounts/${accoun
 
 export const getProfile = (profileId) => axios.get(`${API_URL}/accounts/buyer/${profileId}`);
 
+export const getProfileSeller = (profileId) => axios.get(`${API_URL}/accounts/seller/${profileId}`);
+
 export const updateAccount = (idProfile, data) => axios.put(`${API_URL}/accounts/account/${idProfile}`, data);
 
 export const updateProfile = (idProfile, data) => axios.put(`${API_URL}/accounts/buyer/${idProfile}`, data);

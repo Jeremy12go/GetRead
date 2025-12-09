@@ -5,7 +5,7 @@ import ico_addCarrito from '../assets/anadirCarro.png';
 import { useNavigate } from 'react-router-dom';
 import { translations } from '../components/translations.js';
 
-function Home({ stateLogin, search, addToCart, language, setBookOpen }){
+function Home({ stateLogin, search, addToCart, language, setBookOpen, setFromPurchased }){
 
     const [ books, setBooks ] = useState([]);
     const [ genreFilter, setGenreFilter ] = useState("all");
@@ -120,17 +120,19 @@ function Home({ stateLogin, search, addToCart, language, setBookOpen }){
 
                         { stateLogin ? (
                             <div className="bottom-bar">
-                                <img src={ico_addCarrito} className="bar-btn"
-                                    onClick={() =>  addToCart(book)}/>
+                                {book.stock > 0 && (
+                                    <img src={ico_addCarrito} className="bar-btn"
+                                        onClick={() =>  addToCart(book)}/>
+                                )}
                                 <button className="detail-btn-login" onClick={() => {
-                                setBookOpen(book); navigate("/book-detail"); }}>
+                                setBookOpen(book); setFromPurchased(false); navigate("/book-detail"); }}>
                                 {translations[language].libro_detalles}  
                                 </button> 
                             </div>  
                         ):(
                            <div className="bottom-bar">
                                 <button className="detail-btn-Nlogin" onClick={() => {
-                                setBookOpen(book); navigate("/book-detail"); }}>
+                                setBookOpen(book); setFromPurchased(false); navigate("/book-detail"); }}>
                                 {translations[language].libro_detalles}  
                                 </button> 
                             </div> 

@@ -25,6 +25,7 @@
 .pd-image-box {
   display: flex;
   justify-content: center;
+  align-self: flex-start;
 }
 
 .pd-image {
@@ -97,7 +98,6 @@
   background-color: #3f751f;
 }
 
-/* Cantidad */
 .pd-quantity-box {
   display: flex;
   align-items: center;
@@ -128,7 +128,6 @@
   color: #555;
 }
 
-/* DETALLES */
 .pd-details {
   margin-top: 25px;
   padding-top: 15px;
@@ -147,7 +146,52 @@
   color: #333;
 }
 
-/* RESPONSIVE */
+.pd-precio-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.pd-precio-text {
+  margin: 0;
+  margin-top: 5px;
+}
+
+.pd-editar-precio-btn {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.pd-precio-edit-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pd-precio-input {
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  width: 100px;
+}
+
+.pd-precio-confirmar-btn {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.pd-precio-cancelar-btn {
+  padding: 6px 12px;
+  background-color: #6c757d;
+  font-size: 13px;
+}
+
+.pd-precio-cancelar-btn:hover {
+  background-color: #5a6268;
+}
+
 @media (max-width: 800px) {
   .pd-wrapper {
     grid-template-columns: 1fr;

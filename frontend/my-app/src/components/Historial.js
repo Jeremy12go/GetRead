@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Historial.css";
-import { getProfile, getOrdersByIds, getStoreById } from '../API/APIGateway';
+import { ordersByProfile, getStoreById } from '../API/APIGateway';
 
 function formatearFecha(fechaFormat) {
   const fecha = new Date(fechaFormat);
@@ -20,19 +20,24 @@ function Historial({ volver, verPedido }) {
     const cargarPedidos = async () => {
       setCargando(true);
       try {
-        // 1. Obtener perfil y array de order ids
+        // 1. Obtener perfil ID del localStorage
         const idProfile = localStorage.getItem('idProfile');
-        const profileRes = await getProfile(idProfile);
-        const ordersIds = profileRes.data.orders || [];
-        if (ordersIds.length === 0) {
+        if (!idProfile) {
           setPedidos([]);
           setCargando(false);
           return;
         }
 
-        // 2. Obtener las órdenes completas
-        const ordersRes = await getOrdersByIds(ordersIds);
+        // 2. Obtener las órdenes completas del comprador
+        const ordersRes = await ordersByProfile(idProfile);
         const pedidosData = ordersRes.data;
+        
+        if (!pedidosData || pedidosData.length === 0) {
+          setPedidos([]);
+          setCargando(false);
+          return;
+        }
+        
         setPedidos(pedidosData);
 
         // 3. Obtener tiendas individualmente usando idStore de cada order
@@ -53,6 +58,7 @@ function Historial({ volver, verPedido }) {
         setTiendas(tiendasTemp);
 
       } catch (e) {
+        console.error('Error cargando pedidos:', e);
         setPedidos([]);
       }
       setCargando(false);

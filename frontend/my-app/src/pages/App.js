@@ -2,9 +2,12 @@ import Home from "./Home.js";
 import Login from "./Login";
 import Register from "./Register.js";
 import Carrito from "./Carrito.js";
-import Header from "../incluides/Header.js";
+import Header from "../incluides/header.js";
 import Perfil from "./Perfil.js";
 import Editar from "./Editar.js";
+import LibrosAdquiridos from "./LibrosAdquiridos.js";
+import HistorialPedidos from "./HistorialPedidos.js";
+import MisPublicaciones from "./MisPublicaciones.js";
 import ResetPassword from "../pages/ResetPassword";
 import PublicarLibro from "../pages/Publicar"
 import ProductDetail from "../pages/ProductDetail";
@@ -26,6 +29,7 @@ function App() {
     const [ loadingSession, setLoadingSession ] = useState(true);
     const [ bookOpen, setBookOpen ] = useState(null);
     const [ valueCart, setValueCart ] = useState(0);
+    const [ fromPurchased, setFromPurchased ] = useState(false);
 
     useEffect(() => {
         const browserLang = navigator.language.split('-')[0];
@@ -66,18 +70,18 @@ function App() {
         setLoadingSession(false);
     }, []);
 
-    const addToCart = (book) => {
+    const addToCart = (book, cantidad = 1) => {
         setCart(prev => {
             const updated = (() => {
                 const exists = prev.find(item => item._id === book._id);
                 if (exists) {
                     return prev.map(item =>
                         item._id === book._id
-                            ? { ...item, quantity: item.quantity + 1 }
+                            ? { ...item, quantity: Math.min(item.stock, item.quantity + cantidad) }
                             : item
                     );
                 }
-                return [...prev, { ...book, quantity: 1 }];
+                return [...prev, { ...book, quantity: Math.min(book.stock, cantidad) }];
             })();
             
             const idProfile = objectAccount?.profile._id;
@@ -98,7 +102,7 @@ function App() {
         setCart(prev => {
             const updated = prev.map(item =>
                 item._id === id
-                    ? { ...item, quantity: item.quantity + 1 }
+                    ? { ...item, quantity: Math.min(item.stock, item.quantity + 1) }
                     : item
             );
 
@@ -177,11 +181,11 @@ function App() {
 
             <Routes>
                 <Route path="/home" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart } language={ language } 
-                setBookOpen={ setBookOpen } /> } />
+                setBookOpen={ setBookOpen } setFromPurchased={ setFromPurchased } /> } />
 
                 {/*Pagina principal*/}
                 <Route path="/" element={ <Home stateLogin={ stateLogin } search={ search } addToCart={ addToCart }
-                setBookOpen={ setBookOpen } language={ language } />} />
+                setBookOpen={ setBookOpen } language={ language } setFromPurchased={ setFromPurchased } />} />
 
                 {/*Login*/}
                 <Route path="/login" element={ <Login setStateLogin={ setStateLogin }
@@ -195,12 +199,12 @@ function App() {
 
                 {/*Detalles del libro*/}
                 <Route path="/book-detail" element={ <ProductDetail bookOpen={ bookOpen } addToCart={ addToCart } 
-                aumentar={ aumentar } disminuir={ disminuir } language={ language } /> }/>
+                aumentar={ aumentar } disminuir={ disminuir } language={ language } stateLogin={ stateLogin } fromPurchased={ fromPurchased } /> }/>
 
                 {/*Carrito*/}
                 <Route path="/cart" element={ stateLogin
                     ? <Carrito cart={ cart } aumentar={ aumentar } disminuir={ disminuir } eliminar={ eliminar } setCart={ setCart }
-                    setBookOpen={ setBookOpen } language={ language } />  
+                    setBookOpen={ setBookOpen } language={ language } setFromPurchased={ setFromPurchased } />  
                     : <Navigate to="/login" replace />} />
 
                 {/*Calificar*/}
@@ -208,10 +212,19 @@ function App() {
 
                 {/*Perfil*/}
                 <Route path="/perfil" element={ stateLogin
-                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } setObjectAccount={ setObjectAccount } objectAccount={ objectAccount } language={ language } /> 
+                    ? <Perfil setStateLogin={ setStateLogin } setName={ setName } setObjectAccount={ setObjectAccount } objectAccount={ objectAccount } language={ language } setBookOpen={ setBookOpen } setFromPurchased={ setFromPurchased } /> 
                     : <Navigate to="/home" replace /> } />
                 <Route path="/editar" element={ stateLogin 
                     ? <Editar setName={ setName } language={ language } setObjectAccount={ setObjectAccount } objectAccount={ objectAccount } /> 
+                    : <Navigate to="/login" replace /> } />
+                <Route path="/libros-adquiridos" element={ stateLogin 
+                    ? <LibrosAdquiridos language={ language } setBookOpen={ setBookOpen } setFromPurchased={ setFromPurchased } /> 
+                    : <Navigate to="/login" replace /> } />
+                <Route path="/historial-pedidos" element={ stateLogin 
+                    ? <HistorialPedidos language={ language } /> 
+                    : <Navigate to="/login" replace /> } />
+                <Route path="/mis-publicaciones" element={ stateLogin 
+                    ? <MisPublicaciones language={ language } setBookOpen={ setBookOpen } setFromPurchased={ setFromPurchased } /> 
                     : <Navigate to="/login" replace /> } />
                 <Route path="/publicar" element={ <PublicarLibro language={ language } /> } />
             </Routes>

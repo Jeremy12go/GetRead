@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { translations } from '../components/translations.js';
 import { useNavigate } from 'react-router-dom';
 
-function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, language }) {
+function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, language, setFromPurchased }) {
 
   const [ total, setTotal ] = useState(cart.reduce((sum, item) => sum + item.price * item.quantity, 0));
   const [ purchaseSuccess, setPurchaseSuccess ] = useState(false);
@@ -30,7 +30,6 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
       const idProfile = objAccount?.profile._id;
       const profile = (await getProfile(idProfile)).data;
 
-      // Crear lista de productos
       const productList = cart.map(item => ({
         book: item._id,
         quantity: item.quantity,
@@ -38,14 +37,12 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
         idSeller: item.idseller,
       }));
 
-      // Actualizar stock
       for (const item of cart) {
         await updateStockToBook(item._id, {
           stock: item.stock - item.quantity
         });
       }
 
-      // Crear orden
       const res = await createOrder({
         idBuyer: idProfile,
         productList,
@@ -54,13 +51,11 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
 
       const { order, subOrders } = res.data;
       
-      // Asociar suborders a cada vendedor
       for (const subOrderId of subOrders) {
         const subOrder = await getSubOrderById(subOrderId);
         await addOrderToSeller(subOrder.data.idSeller, subOrderId);
       }
 
-      // Actualizar perfil del comprador
       const booksPurchased = cart.map(item => ({
         book: item._id,
         quantity: item.quantity
@@ -70,15 +65,14 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
       const currentOrders = profile.orders;
       
       await updateProfile( idProfile, {
-        books: [...currentBooks, ...booksPurchased], // añadir libros
-        cart: [], // limpiar carrito
-        orders: [...currentOrders, order._id] // añadir orden
+        books: [...currentBooks, ...booksPurchased],
+        cart: [],
+        orders: [...currentOrders, order._id]
       }).catch(err => {
         console.error('Error al actualizar libros del comprador:', err.message);
       });
 
 
-      // Mostrar animación y redirigir
       setTimeout(() => {
         setPurchaseSuccess(false);
         navigate("/perfil");
@@ -86,7 +80,7 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
 
     } catch (e) {
       console.error(e);
-      alert("Error al procesar la compra");
+      alert(translations[language].alert_1);
     }
   };
 
@@ -142,6 +136,7 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
           <img src={item.image} className="carrito-img"
           onClick={ () => {
             setBookOpen(item);
+            setFromPurchased(false);
             navigate("/book-detail");
             }}  />
 
@@ -153,7 +148,7 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
               <button className="buttons" onClick={() => disminuir(item._id)}>-</button>
               <span>{item.quantity}</span>
               <button className="buttons" onClick={() => aumentar(item._id)}>+</button>
-              <button className="buttons" onClick={() => eliminar(item._id)}>Eliminar</button>
+              <button className="buttons" onClick={() => eliminar(item._id)}>{translations[language].carrito_eliminar}</button>
             </div>
           </div>
 
@@ -164,14 +159,14 @@ function Carrito({ cart, setCart, aumentar, disminuir, eliminar, setBookOpen, la
 
       <h3>Total: ${total}</h3>
       
-      <button onClick={ handleMakePurchase } className="Bcomprar" >Comprar</button>
+      <button onClick={ handleMakePurchase } className="Bcomprar" >{translations[language].btn_comprar}</button>
 
       {purchaseSuccess && (
         <div className="success-overlay">
           <div className="success-modal">
             <div className="checkmark">✓</div>
-            <h2>¡Compra exitosa!</h2>
-            <p>Gracias por tu compra :D</p>
+            <h2>{translations[language].txt_compra_exitosa}</h2>
+            <p>{translations[language].txt_compra_exitosa2}</p>
           </div>
         </div>
       )}
