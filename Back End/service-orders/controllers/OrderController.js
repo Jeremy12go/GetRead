@@ -52,16 +52,18 @@ exports.getSubOrderById = async (req, res) => {
 //para tener ordenes por comprador
 exports.getByBuyer = async (req, res) => {
   try {
-    const orders = await Order.find({ buyer: req.params.buyerId });
-    if (orders.length === 0) {
+    const id = req.params.buyerId;
+    const orders = await Order.find({ idBuyer: id }).lean();
+
+    if (!orders || orders.length === 0) {
       return res.status(404).json({ error: 'No se encontraron órdenes para este comprador' });
     }
+
     res.json(orders);
   } catch (e) {
     res.status(500).json({ error: 'Error al obtener órdenes', detalle: e.message });
   }
 };
-
 
 exports.createOrderFromCart = async (req, res) => {
   try {
