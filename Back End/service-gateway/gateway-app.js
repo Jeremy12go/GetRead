@@ -25,12 +25,6 @@ app.use('/orders', createProxyMiddleware({
   changeOrigin: true,
 }));
 
-// Proxy para Ratings
-app.use('/ratings', createProxyMiddleware({
-  target: 'http://localhost:3003/ratings',
-  changeOrigin: true,
-}));
-
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`API Gateway corriendo en http://localhost:${PORT}`);
