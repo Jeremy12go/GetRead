@@ -121,11 +121,6 @@ que contiene el proyecto:
     node \stores-app.js
 ```
 
-
-> [!NOTE]
-> Las bases se crean automaticamente, pero no tienen datos xD
-> LOS DATOS VIENEN EN EL DLC
-
 > [!TIP]
 > Se tiene que tener instalado mongoDB y preferentemente mongoDB Compass
 > https://www.mongodb.com/try/download/community
