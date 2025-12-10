@@ -1,6 +1,6 @@
 # Get & Read
 
-Es una plataforma para la venta, arriendo y compra de libros, permitiendo que los usuarios puedan adquirir libros físicos de locales o usuarios cercanas a sus zonas de forma online. Mejorando la productividad de los usuarios, al arrendar uno o varios libros resulta más barato que comprarlo directamente. 
+Es una plataforma para la venta y compra de libros, permitiendo que los usuarios puedan adquirir libros físicos de locales o usuarios cercanas a sus zonas de forma online. Mejorando la productividad de los usuarios, al arrendar uno o varios libros resulta más barato que comprarlo directamente. 
 
 ---
 
